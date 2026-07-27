@@ -105,6 +105,6 @@ From InKCre Token System:
 
 ## Files to Modify
 
-1. `packages/web-design/src/components/inkImage/inkImage.scss`
-2. `packages/web-design/src/components/inkImage/inkImage.vue`
-3. `packages/web-design/src/components/inkImage/inkImage.ts` (documentation only)
+1. `packages/web/src/components/inkImage/inkImage.scss`
+2. `packages/web/src/components/inkImage/inkImage.vue`
+3. `packages/web/src/components/inkImage/inkImage.ts` (documentation only)

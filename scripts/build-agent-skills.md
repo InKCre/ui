@@ -1,6 +1,6 @@
 # build-agent-skills.ts
 
-Generates Agent Skills for the `@inkcre/web-design` package following the [agentskills.io](https://agentskills.io) specification.
+Generates Agent Skills for the `@inkcre/ui-web` package following the [agentskills.io](https://agentskills.io) specification.
 
 ## Overview
 
@@ -21,7 +21,9 @@ Learn more at [agentskills.io](https://agentskills.io/specification).
 The script automatically generates the **components** skill in `agent-skills/components/`:
 
 ### components
+
 Main skill for using the component library with individual component reference files:
+
 - Main `SKILL.md` with overview and setup
 - `references/` directory with one markdown file per component
 - Each component file includes props, events, types, and usage examples
@@ -32,15 +34,19 @@ Main skill for using the component library with individual component reference f
 The following skills are maintained manually in `agent-skills/`:
 
 ### router
+
 Router integration patterns with Vue Router adapter setup.
 
 ### i18n
+
 Internationalization setup with vue-i18n integration.
 
 ### styling
+
 Design token system with SCSS utilities and theming examples.
 
 ### best-practices
+
 Development guidelines including naming conventions and accessibility.
 
 ## Usage
@@ -51,17 +57,17 @@ From the repository root:
 pnpm build-skills
 ```
 
-From the web-design package:
+From the web UI package:
 
 ```bash
-cd packages/web-design
+cd packages/web
 pnpm build:skills
 ```
 
 ## Output Structure
 
 ```
-packages/web-design/agent-skills/
+packages/web/agent-skills/
 ├── components/
 │   ├── SKILL.md                    # Main components skill
 │   └── references/                 # Individual component files
@@ -94,6 +100,7 @@ Instructions and examples...
 ## Integration
 
 Skills are:
+
 - Generated during the build process (components only)
 - Shipped with the npm package (via `agent-skills/` in `files` array)
 - Automatically discovered by compatible AI agents
@@ -102,6 +109,7 @@ Skills are:
 ## Agent Compatibility
 
 These skills work with:
+
 - Claude Code (Anthropic)
 - GitHub Copilot (VS Code, CLI)
 - OpenAI Codex
@@ -120,6 +128,7 @@ These skills work with:
 ## Progressive Disclosure
 
 The components skill uses progressive disclosure:
+
 - Main `SKILL.md` provides overview and component list
 - Individual component files in `references/` are loaded only when needed
 - This keeps context window small while providing access to all details
@@ -127,6 +136,7 @@ The components skill uses progressive disclosure:
 ## Maintenance
 
 The script automatically:
+
 - Extracts component info from TypeScript files
 - Cleans Histoire-specific syntax from documentation
 - Generates valid YAML frontmatter
@@ -134,4 +144,3 @@ The script automatically:
 - Validates skill names (lowercase, hyphens only)
 
 Manual skills should be updated directly in `agent-skills/` directory.
-

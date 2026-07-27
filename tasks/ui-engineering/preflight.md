@@ -1,5 +1,10 @@
 # UI Engineering Implementation Preflight
 
+> Historical snapshot: this file records the evidence and risks observed before
+> implementation began on 2026-07-27. [`packet.md`](packet.md) and the execution
+> records own current truth; later executions intentionally supersede several
+> states below.
+
 This file records the 2026-07-27 implementation rehearsal and volatile evidence behind [`packet.md`](packet.md) and [`roadmap.md`](roadmap.md). It is not implementation authorization.
 
 ## Verdict

@@ -36,7 +36,7 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
-  packages/web-design:
+  packages/web:
     dependencies:
       '@codemirror/autocomplete':
         specifier: ^6.20.0
@@ -59,6 +59,9 @@ importers:
       vscode-json-languageservice:
         specifier: ^5.6.4
         version: 5.6.4
+      vscode-languageserver-textdocument:
+        specifier: ^1.0.12
+        version: 1.0.12
       vue-router:
         specifier: ^4.0.0
         version: 4.6.4(vue@3.5.25(typescript@5.9.3))
@@ -1356,9 +1359,6 @@ packages:
 
   '@types/node@20.19.26':
     resolution: {integrity: sha512-0l6cjgF0XnihUpndDhk+nyD3exio3iKaYROSgvh/qSevPXax3L8p5DBRFjbvalnwatGgHEQn2R88y2fA3g4irg==}
-
-  '@types/node@25.0.1':
-    resolution: {integrity: sha512-czWPzKIAXucn9PtsttxmumiQ9N0ok9FrBwgRWrwmVLlp86BrMExzvXRLFYRJ+Ex3g6yqj+KuaxfX1JTgV2lpfg==}
 
   '@types/node@25.0.2':
     resolution: {integrity: sha512-gWEkeiyYE4vqjON/+Obqcoeffmk0NF15WSBwSs7zwVA2bAbTaE0SJ7P0WNGoJn8uE7fiaV5a7dKYIJriEqOrmA==}
@@ -4723,7 +4723,7 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 25.0.1
+      '@types/node': 25.0.2
 
   '@types/hast@3.0.4':
     dependencies:
@@ -4731,7 +4731,7 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 25.0.1
+      '@types/node': 25.0.2
 
   '@types/linkify-it@5.0.0': {}
 
@@ -4751,10 +4751,6 @@ snapshots:
   '@types/node@20.19.26':
     dependencies:
       undici-types: 6.21.0
-
-  '@types/node@25.0.1':
-    dependencies:
-      undici-types: 7.16.0
 
   '@types/node@25.0.2':
     dependencies:

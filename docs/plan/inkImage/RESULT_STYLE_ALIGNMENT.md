@@ -92,8 +92,8 @@ Mapped Figma tokens to InKCre system:
 
 ## Files Modified
 
-1. [inkImage.scss](packages/web-design/src/components/inkImage/inkImage.scss)
-2. [inkImage.vue](packages/web-design/src/components/inkImage/inkImage.vue)
+1. `packages/web/src/components/inkImage/inkImage.scss`
+2. `packages/web/src/components/inkImage/inkImage.vue`
 
 ## Testing
 

@@ -1,18 +1,21 @@
-import { readFileSync, readdirSync, writeFileSync, statSync, mkdirSync, existsSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { dirname } from "node:path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import {
+  readComponentManifest,
+  readPackageManifest,
+  resolveWebPackageRoot,
+  type PublicComponent,
+} from "./lib/ui-package.js";
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-const COMPONENTS_DIR = resolve(__dirname, "../packages/web-design/src/components");
-const SKILLS_OUTPUT_DIR = resolve(__dirname, "../packages/web-design/agent-skills");
-const PACKAGE_ROOT = resolve(__dirname, "../packages/web-design");
+const PACKAGE_ROOT = resolveWebPackageRoot();
+const COMPONENTS_DIR = resolve(PACKAGE_ROOT, "src/components");
+const STORIES_DIR = resolve(PACKAGE_ROOT, "stories");
+const SKILLS_OUTPUT_DIR = resolve(PACKAGE_ROOT, "agent-skills");
+const PACKAGE_NAME = readPackageManifest(PACKAGE_ROOT).name;
 
 // ============================================================================
 // Types
@@ -20,6 +23,7 @@ const PACKAGE_ROOT = resolve(__dirname, "../packages/web-design");
 
 interface ComponentInfo {
   name: string;
+  source: string;
   props?: string;
   emits?: string;
   types?: string;
@@ -73,27 +77,17 @@ function extractComponentInfo(tsContent: string): {
 }
 
 /**
- * Get all component directories
- */
-function getComponentDirs(): string[] {
-  const entries = readdirSync(COMPONENTS_DIR);
-  return entries.filter(entry => {
-    const fullPath = join(COMPONENTS_DIR, entry);
-    return statSync(fullPath).isDirectory() && entry.startsWith("ink");
-  });
-}
-
-/**
  * Collect information about a single component
  */
-function collectComponentInfo(componentName: string): ComponentInfo {
-  const componentPath = join(COMPONENTS_DIR, componentName);
+function collectComponentInfo(component: PublicComponent): ComponentInfo {
+  const componentPath = join(COMPONENTS_DIR, component.source);
   const info: ComponentInfo = {
-    name: componentName,
+    name: component.name,
+    source: component.source,
   };
 
   // Read .ts file for props and types
-  const tsFile = join(componentPath, `${componentName}.ts`);
+  const tsFile = join(componentPath, `${component.source}.ts`);
   const tsContent = readFileSafe(tsFile);
   if (tsContent) {
     const extracted = extractComponentInfo(tsContent);
@@ -103,7 +97,7 @@ function collectComponentInfo(componentName: string): ComponentInfo {
   }
 
   // Read .story.md file for documentation
-  const storyMdFile = join(componentPath, `${componentName}.story.md`);
+  const storyMdFile = join(STORIES_DIR, component.category, `${component.source}.story.md`);
   const storyMdContent = readFileSafe(storyMdFile);
   if (storyMdContent) {
     // Clean Histoire-specific syntax
@@ -139,24 +133,24 @@ function ensureDir(dir: string) {
 function generateComponentsSkillIndex(components: ComponentInfo[]): string {
   return `---
 name: components
-description: Use @inkcre/web-design Vue 3 components. Includes all ${components.length} components with props, events, and usage examples.
+description: Use ${PACKAGE_NAME} Vue 3 components. Includes all ${components.length} components with props, events, and usage examples.
 ---
 
-# @inkcre/web-design Components
+# ${PACKAGE_NAME} Components
 
-Use this skill when working with the @inkcre/web-design Vue 3 component library.
+Use this skill when working with the ${PACKAGE_NAME} Vue 3 component library.
 
 ## Overview
 
-@inkcre/web-design provides ${components.length} UI components for Vue 3 applications:
-${components.map(c => `- [${c.name}](references/${c.name}.md)`).join("\n")}
+${PACKAGE_NAME} provides ${components.length} UI components for Vue 3 applications:
+${components.map((component) => `- [${component.name}](references/${component.source}.md)`).join("\n")}
 
 ## Installation
 
 \`\`\`bash
-npm install @inkcre/web-design
+npm install ${PACKAGE_NAME}
 # or
-pnpm add @inkcre/web-design
+pnpm add ${PACKAGE_NAME}
 \`\`\`
 
 ## Setup
@@ -164,18 +158,18 @@ pnpm add @inkcre/web-design
 \`\`\`typescript
 // main.ts
 import { createApp } from 'vue'
-import InKCreWebDesign from '@inkcre/web-design'
-import "@inkcre/web-design/styles"
+import InKCreUIWeb from '${PACKAGE_NAME}'
+import "${PACKAGE_NAME}/styles"
 
 const app = createApp(App)
-app.use(InKCreWebDesign)
+app.use(InKCreUIWeb)
 \`\`\`
 
 ## Component References
 
 Each component has detailed documentation in the \`references/\` directory:
 
-${components.map(c => `- [\`${c.name}\`](references/${c.name}.md) - Component with props, events, and examples`).join("\n")}
+${components.map((component) => `- [\`${component.name}\`](references/${component.source}.md) - Component with props, events, and examples`).join("\n")}
 `;
 }
 
@@ -201,7 +195,7 @@ function generateComponentReference(component: ComponentInfo): string {
     content += `## Types\n\n\`\`\`typescript\n${component.types}\n\`\`\`\n\n`;
   }
 
-  content += `## Import\n\n\`\`\`typescript\nimport { ${component.name} } from '@inkcre/web-design';\n\`\`\`\n`;
+  content += `## Import\n\n\`\`\`typescript\nimport { ${component.name} } from '${PACKAGE_NAME}';\n\`\`\`\n`;
 
   return content;
 }
@@ -215,14 +209,13 @@ async function main() {
   process.stdout.write("📚 Building Agent Skills...\n\n");
 
   try {
-    // Collect all component information
-    const componentDirs = getComponentDirs();
-    process.stdout.write(`Found ${componentDirs.length} components\n`);
+    const publicComponents = readComponentManifest(PACKAGE_ROOT);
+    process.stdout.write(`Found ${publicComponents.length} components\n`);
 
     const components: ComponentInfo[] = [];
-    for (const dir of componentDirs) {
-      process.stdout.write(`  Processing ${dir}...\n`);
-      const info = collectComponentInfo(dir);
+    for (const component of publicComponents) {
+      process.stdout.write(`  Processing ${component.source}...\n`);
+      const info = collectComponentInfo(component);
       components.push(info);
     }
 
@@ -235,6 +228,7 @@ async function main() {
 
     // Create references directory
     const referencesDir = join(componentsSkillDir, "references");
+    rmSync(referencesDir, { recursive: true, force: true });
     ensureDir(referencesDir);
 
     // Generate main SKILL.md
@@ -246,15 +240,17 @@ async function main() {
     // Generate individual component reference files
     for (const component of components) {
       const referenceContent = generateComponentReference(component);
-      const referenceFile = join(referencesDir, `${component.name}.md`);
+      const referenceFile = join(referencesDir, `${component.source}.md`);
       writeFileSync(referenceFile, referenceContent, "utf-8");
-      process.stdout.write(`  ✓ Created components/references/${component.name}.md\n`);
+      process.stdout.write(`  ✓ Created components/references/${component.source}.md\n`);
     }
 
     const elapsed = Date.now() - startTime;
     process.stdout.write("\n✅ Agent Skills built successfully!\n");
     process.stdout.write(`📁 Output directory: ${SKILLS_OUTPUT_DIR}/\n`);
-    process.stdout.write(`📊 Created components skill with ${components.length} component references\n`);
+    process.stdout.write(
+      `📊 Created components skill with ${components.length} component references\n`,
+    );
     process.stdout.write(`⏱️  Completed in ${elapsed}ms\n`);
   } catch (error) {
     process.stderr.write("\n❌ Error building Agent Skills:\n");

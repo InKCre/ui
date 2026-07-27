@@ -155,14 +155,15 @@ Display an image with the ability to click it to expand to full-screen view in a
 ## File Structure
 
 ```
-packages/web-design/src/components/
-├── inkImage/
+packages/web/
+├── src/components/inkImage/
 │   ├── inkImage.ts           # Props, emits, types
 │   ├── inkImage.vue          # Component template and logic
 │   ├── inkImage.scss         # Component styles
-│   ├── inkImage.test.ts      # Unit tests
-│   ├── inkImage.story.md     # Documentation
-│   └── inkImage.story.vue    # Storybook stories
+│   └── inkImage.test.ts      # Unit tests
+└── stories/media/
+    ├── inkImage.story.md     # Documentation
+    └── inkImage.story.vue    # Histoire story
 ```
 
 ## Dependencies

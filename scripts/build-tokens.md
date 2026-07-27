@@ -9,7 +9,7 @@ Transforms design tokens from JSON (follows W3C DTCG) to SCSS format.
 
 ## Output
 
-For packages/web-design:
+For packages/web:
 
 - src/style/tokens/_ref.scss: Reference/primitive tokens
   - color (from `ref.color`)

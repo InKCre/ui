@@ -15,8 +15,29 @@ const __dirname = dirname(__filename);
 // Constants
 // ============================================================================
 
+const REPOSITORY_ROOT = resolve(__dirname, "..");
 const DEFAULT_TOKEN_FILE = "tokens/inkcre.tokens.json";
-const OUTPUT_DIR = "packages/web-design/styles/tokens";
+
+function parseArguments(args: string[]): {
+  repositoryRoot: string;
+  tokenFile: string;
+} {
+  const rootIndex = args.indexOf("--root");
+  const repositoryRoot = rootIndex >= 0 ? resolve(args[rootIndex + 1] ?? "") : REPOSITORY_ROOT;
+  const positional =
+    rootIndex >= 0
+      ? args.filter((_argument, index) => index !== rootIndex && index !== rootIndex + 1)
+      : args;
+
+  if (rootIndex >= 0 && !args[rootIndex + 1]) {
+    throw new Error("--root requires a directory");
+  }
+
+  return {
+    repositoryRoot,
+    tokenFile: positional[0] ?? DEFAULT_TOKEN_FILE,
+  };
+}
 
 // ============================================================================
 // Utility Functions
@@ -56,9 +77,7 @@ function tokenPathToScssRef(path: string[]): string {
     const tokenKeys = keys.slice(1); // ['text', 'base']
 
     if (tokenCategory === "color") {
-      return `fn.map-deep-get(sys.$color-${mode}, ${tokenKeys
-        .map((k) => `"${k}"`)
-        .join(", ")})`;
+      return `fn.map-deep-get(sys.$color-${mode}, ${tokenKeys.map((k) => `"${k}"`).join(", ")})`;
     }
     // For non-color sys tokens, reference from base
     return `fn.map-deep-get(sys.$base, ${[tokenCategory, ...tokenKeys]
@@ -67,9 +86,7 @@ function tokenPathToScssRef(path: string[]): string {
   }
 
   // For ref tokens: ref.color.neutral.2 → fn.map-deep-get(ref.$color, "neutral", "2")
-  return `fn.map-deep-get(${module}.$${mapName}, ${keys
-    .map((k) => `"${k}"`)
-    .join(", ")})`;
+  return `fn.map-deep-get(${module}.$${mapName}, ${keys.map((k) => `"${k}"`).join(", ")})`;
 }
 
 /**
@@ -115,11 +132,7 @@ function formatScssValue(value: any): string {
       return value;
     }
     // Quote strings unless they're already quoted or are color values
-    if (
-      value.startsWith("#") ||
-      value.startsWith("rgb") ||
-      value.startsWith("hsl")
-    ) {
+    if (value.startsWith("#") || value.startsWith("rgb") || value.startsWith("hsl")) {
       return value;
     }
     // For values that contain commas (like font stacks), they need to be fully quoted
@@ -147,10 +160,7 @@ function formatScssValue(value: any): string {
 /**
  * Format an object as a SCSS map with proper indentation
  */
-function formatScssMap(
-  obj: Record<string, any>,
-  indentLevel: number = 0
-): string {
+function formatScssMap(obj: Record<string, any>, indentLevel: number = 0): string {
   const indent = "  ".repeat(indentLevel);
   const innerIndent = "  ".repeat(indentLevel + 1);
 
@@ -158,10 +168,7 @@ function formatScssMap(
     const scssKey = `"${toKebabCase(key)}"`;
 
     if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-      return `${innerIndent}${scssKey}: ${formatScssMap(
-        value,
-        indentLevel + 1
-      )}`;
+      return `${innerIndent}${scssKey}: ${formatScssMap(value, indentLevel + 1)}`;
     } else {
       return `${innerIndent}${scssKey}: ${formatScssValue(value)}`;
     }
@@ -173,10 +180,7 @@ function formatScssMap(
 /**
  * Build a nested map structure from token array
  */
-function buildNestedMap(
-  tokens: TransformedToken[],
-  pathOffset: number = 0
-): Record<string, any> {
+function buildNestedMap(tokens: TransformedToken[], pathOffset: number = 0): Record<string, any> {
   const result: Record<string, any> = {};
 
   for (const token of tokens) {
@@ -268,9 +272,7 @@ const formatScssRef = ({ dictionary }: { dictionary: Dictionary }) => {
   // Filter tokens by category
   const getTokensByPath = (pathPrefix: string[]) => {
     return tokens.filter(
-      (t) =>
-        t.path.length > pathPrefix.length &&
-        pathPrefix.every((part, i) => t.path[i] === part)
+      (t) => t.path.length > pathPrefix.length && pathPrefix.every((part, i) => t.path[i] === part),
     );
   };
 
@@ -373,10 +375,10 @@ const formatScssSys = ({ dictionary }: { dictionary: Dictionary }) => {
 
   // Build light and dark color maps
   const lightColorTokens = tokens.filter(
-    (t) => t.path[0] === "sys" && t.path[1] === "light" && t.path[2] === "color"
+    (t) => t.path[0] === "sys" && t.path[1] === "light" && t.path[2] === "color",
   );
   const darkColorTokens = tokens.filter(
-    (t) => t.path[0] === "sys" && t.path[1] === "dark" && t.path[2] === "color"
+    (t) => t.path[0] === "sys" && t.path[1] === "dark" && t.path[2] === "color",
   );
 
   // Helper to build color map with references
@@ -439,16 +441,14 @@ const formatUnoPreset = ({ dictionary }: { dictionary: Dictionary }) => {
   // Helper to get tokens by path prefix
   const getTokensByPath = (pathPrefix: string[]) => {
     return tokens.filter(
-      (t) =>
-        t.path.length > pathPrefix.length &&
-        pathPrefix.every((part, i) => t.path[i] === part)
+      (t) => t.path.length > pathPrefix.length && pathPrefix.every((part, i) => t.path[i] === part),
     );
   };
 
   // Build system colors (CSS variable references)
   const buildSysColors = () => {
     const lightColorTokens = tokens.filter(
-      (t) => t.path[0] === "sys" && t.path[1] === "light" && t.path[2] === "color"
+      (t) => t.path[0] === "sys" && t.path[1] === "light" && t.path[2] === "color",
     );
 
     const colorMap: Record<string, Record<string, string>> = {};
@@ -528,7 +528,7 @@ const formatUnoPreset = ({ dictionary }: { dictionary: Dictionary }) => {
   // Build size values
   const buildSizes = () => {
     const sizeTokens = tokens.filter(
-      (t) => t.path[0] === "ref" && t.path[1] === "size" && t.path.length === 3
+      (t) => t.path[0] === "ref" && t.path[1] === "size" && t.path.length === 3,
     );
     const sizeMap: Record<string, string> = {};
 
@@ -733,12 +733,8 @@ const formatScssComp = ({ dictionary }: { dictionary: Dictionary }) => {
   output += '@use "./sys" as sys;\n\n';
 
   // Get light and dark component tokens
-  const lightTokens = tokens.filter(
-    (t) => t.path[0] === "comp" && t.path[1] === "light"
-  );
-  const darkTokens = tokens.filter(
-    (t) => t.path[0] === "comp" && t.path[1] === "dark"
-  );
+  const lightTokens = tokens.filter((t) => t.path[0] === "comp" && t.path[1] === "light");
+  const darkTokens = tokens.filter((t) => t.path[0] === "comp" && t.path[1] === "dark");
 
   // Helper to build component map with references
   const buildCompMap = (compTokens: TransformedToken[]) => {
@@ -800,47 +796,47 @@ interface PlatformConfig {
   files: SDFile[];
 }
 
-const scssPlatform: PlatformConfig = {
-  name: "scss",
-  buildPath: `${OUTPUT_DIR}/`,
-  transforms: ["attribute/kebab-path", "color/hex-no-alpha", "size/px"],
-  files: [
-    {
-      destination: "_ref.scss",
-      format: "scss/ref",
-      filter: (token) => {
-        const path = token.path;
-        return (
-          path[0] === "ref" || path[0] === "effect" || path[0] === "typography"
-        );
+function createScssPlatform(outputDirectory: string): PlatformConfig {
+  return {
+    name: "scss",
+    buildPath: `${outputDirectory}/`,
+    transforms: ["attribute/kebab-path", "color/hex-no-alpha", "size/px"],
+    files: [
+      {
+        destination: "_ref.scss",
+        format: "scss/ref",
+        filter: (token) => {
+          const path = token.path;
+          return path[0] === "ref" || path[0] === "effect" || path[0] === "typography";
+        },
       },
-    },
-    {
-      destination: "_sys.scss",
-      format: "scss/sys",
-      filter: (token) => token.path[0] === "sys",
-    },
-    {
-      destination: "_comp.scss",
-      format: "scss/comp",
-      filter: (token) => token.path[0] === "comp",
-    },
-  ],
-};
+      {
+        destination: "_sys.scss",
+        format: "scss/sys",
+        filter: (token) => token.path[0] === "sys",
+      },
+      {
+        destination: "_comp.scss",
+        format: "scss/comp",
+        filter: (token) => token.path[0] === "comp",
+      },
+    ],
+  };
+}
 
-const UNOCSS_OUTPUT_DIR = "packages/web-design/styles/uno";
-
-const unocssPlatform: PlatformConfig = {
-  name: "unocss",
-  buildPath: `${UNOCSS_OUTPUT_DIR}/`,
-  transforms: ["attribute/kebab-path", "color/hex-no-alpha", "size/px"],
-  files: [
-    {
-      destination: "preset-ink.ts",
-      format: "unocss/preset",
-    },
-  ],
-};
+function createUnocssPlatform(outputDirectory: string): PlatformConfig {
+  return {
+    name: "unocss",
+    buildPath: `${outputDirectory}/`,
+    transforms: ["attribute/kebab-path", "color/hex-no-alpha", "size/px"],
+    files: [
+      {
+        destination: "preset-ink.ts",
+        format: "unocss/preset",
+      },
+    ],
+  };
+}
 
 // Future platform configurations (placeholders)
 // const dartPlatform: PlatformConfig = {
@@ -869,10 +865,11 @@ async function main() {
   const startTime = Date.now();
   process.stdout.write("🎨 Building design tokens...\n\n");
 
-  // Parse CLI arguments
-  const args = process.argv.slice(2);
-  const tokenFile = args[0] || DEFAULT_TOKEN_FILE;
-  const tokenPath = resolve(process.cwd(), tokenFile);
+  const { repositoryRoot, tokenFile } = parseArguments(process.argv.slice(2));
+  const packageDirectory = "packages/web";
+  const outputDirectory = resolve(repositoryRoot, packageDirectory, "styles/tokens");
+  const unocssOutputDirectory = resolve(repositoryRoot, packageDirectory, "styles/uno");
+  const tokenPath = resolve(repositoryRoot, tokenFile);
 
   process.stdout.write(`📖 Reading tokens from: ${tokenPath}\n`);
 
@@ -895,8 +892,8 @@ async function main() {
         },
       },
       platforms: {
-        scss: scssPlatform,
-        unocss: unocssPlatform,
+        scss: createScssPlatform(outputDirectory),
+        unocss: createUnocssPlatform(unocssOutputDirectory),
       },
       log: {
         verbosity: "default",
@@ -908,11 +905,11 @@ async function main() {
 
     const elapsed = Date.now() - startTime;
     process.stdout.write("\n✅ Design tokens built successfully!\n");
-    process.stdout.write(`\n📁 SCSS output: ${OUTPUT_DIR}/\n`);
+    process.stdout.write(`\n📁 SCSS output: ${outputDirectory}/\n`);
     process.stdout.write("  - _ref.scss\n");
     process.stdout.write("  - _sys.scss\n");
     process.stdout.write("  - _comp.scss\n");
-    process.stdout.write(`\n📁 UnoCSS output: ${UNOCSS_OUTPUT_DIR}/\n`);
+    process.stdout.write(`\n📁 UnoCSS output: ${unocssOutputDirectory}/\n`);
     process.stdout.write("  - preset-ink.ts\n");
     process.stdout.write(`\n⏱️  Completed in ${elapsed}ms\n`);
   } catch (error) {

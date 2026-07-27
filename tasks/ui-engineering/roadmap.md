@@ -146,6 +146,8 @@ Repository configuration owns registry routing. A developer's trusted user confi
 
 ## Execution 03 — Package And Generator Contract
 
+**Status:** implemented and locally verified on 2026-07-27. See [`execution-03.md`](execution-03.md).
+
 ### Planned work
 
 1. Correct the invalid `exports` map, including the `./uno` subpath.
@@ -172,6 +174,8 @@ Repository configuration owns registry routing. A developer's trusted user confi
 
 ## Execution 04 — Story And Component Verification Baseline
 
+**Status:** implemented and locally verified on 2026-07-27. See [`execution-04.md`](execution-04.md).
+
 ### Planned work
 
 1. Keep Histoire as the primary interactive component catalog.
@@ -190,6 +194,8 @@ Repository configuration owns registry routing. A developer's trusted user confi
 
 ## Execution 05 — Local Identity Migration And New Package Publication
 
+**Status:** completed and verified on 2026-07-27. `@inkcre/ui-web@1.2.2` is published privately, installable by exact version, linked to `InKCre/design`, and readable by `InKCre/client-web` Actions. See [`execution-05.md`](execution-05.md).
+
 ### Planned work
 
 1. Rename the private root to `@inkcre/ui`.
@@ -204,7 +210,7 @@ Repository configuration owns registry routing. A developer's trusted user confi
 
 ### Exit proof
 
-- Both old and new package contract probes are reproducible.
+- The repaired artifact can be reproducibly repacked and probed under both old and new identities; this identity proof is distinct from the immutable historical registry tarball.
 - The new registry package is installable by exact version.
 - The old exact version remains recoverable under the documented compatibility policy, and the migration guide names the bounded consumer commit that can be reverted.
 

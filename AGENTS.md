@@ -1,11 +1,11 @@
-# `@inkcre/design` coding guide
+# `@inkcre/ui` coding guide
 
-This repo includes everything about the design of InKCre.
+This repository owns the InKCre design system and UI libraries.
 
 ## Project Structure
 
 - `packages/`: this is a monorepo
-  - `web-design`: InKCre Design System for web projects
+  - `web`: `@inkcre/ui-web`, the InKCre UI library for web projects
 - `tokens/`
   - `inkcre.tokens.json`: Design tokens follows W3C DTCG format
 - `scripts/`

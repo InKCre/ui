@@ -1,0 +1,139 @@
+{
+  "name": "@inkcre/ui-web",
+  "version": "1.2.2",
+  "description": "Design System for InKCre Web Projects",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InKCre/ui.git",
+    "directory": "packages/web"
+  },
+  "style": "dist/index.css",
+  "files": [
+    "dist/",
+    "styles/",
+    "agent-skills/",
+    "MIGRATION.md"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./dist/index.css",
+    "./styles/**/*.scss"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "sass": "./styles/index.scss",
+      "style": "./dist/index.css",
+      "default": "./dist/index.js"
+    },
+    "./styles": {
+      "sass": "./styles/index.scss",
+      "style": "./dist/index.css",
+      "default": "./dist/index.css"
+    },
+    "./styles/functions": {
+      "sass": "./styles/_functions.scss",
+      "default": "./styles/_functions.scss"
+    },
+    "./styles/mixins": {
+      "sass": "./styles/_mixins.scss",
+      "default": "./styles/_mixins.scss"
+    },
+    "./tokens/*": {
+      "sass": "./styles/tokens/_*.scss",
+      "default": "./styles/tokens/_*.scss"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "default": "./dist/utils/index.js"
+    },
+    "./locales": {
+      "types": "./dist/locales/index.d.ts",
+      "import": "./dist/locales/index.js",
+      "default": "./dist/locales/index.js"
+    },
+    "./uno": {
+      "types": "./dist/uno/preset-ink.d.ts",
+      "import": "./dist/uno/preset-ink.js",
+      "default": "./dist/uno/preset-ink.js"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "pnpm run clean && pnpm run type-check && pnpm run build:js && pnpm run build:subpaths && pnpm run build:subpath-types && pnpm run build:finalize && pnpm run build:skills",
+    "build:js": "vite build",
+    "build:subpaths": "vite build --config vite.subpaths.config.js",
+    "build:subpath-types": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --declarationMap false --composite false -p tsconfig.exports.json",
+    "build:finalize": "tsx ../../scripts/finalize-package.ts",
+    "build:tokens": "tsx ../../scripts/build-tokens.ts",
+    "build:skills": "tsx ../../scripts/build-agent-skills.ts",
+    "clean": "rimraf dist",
+    "preview": "vite preview",
+    "story:dev": "histoire dev",
+    "story:build": "histoire build",
+    "story:preview": "histoire preview",
+    "type-check": "vue-tsc --noEmit -p tsconfig.check.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
+  },
+  "devDependencies": {
+    "@histoire/plugin-vue": "1.0.0-alpha.5",
+    "@iconify-json/mdi": "^1.2.3",
+    "@unocss/preset-icons": "^66.5.10",
+    "@unocss/preset-wind3": "^66.5.10",
+    "@vitejs/plugin-vue": "^6.0.3",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
+    "@vue/shared": "3.5.25",
+    "@vue/test-utils": "^2.4.6",
+    "@vueuse/core": "^14.1.0",
+    "cpr": "^3.0.1",
+    "dayjs": "^1.11.19",
+    "happy-dom": "^20.0.11",
+    "histoire": "1.0.0-alpha.5",
+    "rimraf": "^6.0.1",
+    "rollup-plugin-visualizer": "^6.0.5",
+    "sass": "^1.94.2",
+    "unocss": "^66.5.10",
+    "vite": "^7.2.7",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.0.15",
+    "vue": "^3.4.0",
+    "vue-i18n": "^11.2.7",
+    "vue-tsc": "^3.1.8"
+  },
+  "peerDependencies": {
+    "@codemirror/autocomplete": "^6.20.0",
+    "@codemirror/commands": "^6.10.0",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lint": "^6.9.2",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.38.8",
+    "@vueuse/core": "^14.0.0",
+    "dayjs": "^1.11.0",
+    "unocss": "^66.5.0",
+    "vscode-json-languageservice": "^5.6.4",
+    "vscode-languageserver-textdocument": "^1.0.12",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "unocss": {
+      "optional": true
+    },
+    "vue-router": {
+      "optional": true
+    }
+  },
+  "sass": "styles/index.scss"
+}

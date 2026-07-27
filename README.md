@@ -1,6 +1,7 @@
-# InKCre Design
+# InKCre UI
 
-The InKCre design system and web UI library.
+The InKCre design system and multi-platform UI workspace. The current web
+renderer is published as `@inkcre/ui-web`.
 
 ## Single Source of Truth
 
@@ -9,10 +10,10 @@ authoritative source and edit generated files only through the generators.
 
 `scripts/build-tokens.ts` transforms the token source into:
 
-- `packages/web-design/styles/tokens/_ref.scss`
-- `packages/web-design/styles/tokens/_sys.scss`
-- `packages/web-design/styles/tokens/_comp.scss`
-- `packages/web-design/styles/uno/preset-ink.ts`
+- `packages/web/styles/tokens/_ref.scss`
+- `packages/web/styles/tokens/_sys.scss`
+- `packages/web/styles/tokens/_comp.scss`
+- `packages/web/styles/uno/preset-ink.ts`
 
 The generator uses
 [Style Dictionary](https://www.npmjs.com/package/style-dictionary).
@@ -53,7 +54,9 @@ pnpm story        # Build the component catalog
 pnpm check        # Run the complete local/CI baseline
 ```
 
-Generate derived files with `pnpm build-tokens` and `pnpm build-skills`.
+Generate derived files with `pnpm generate`. The public component manifest
+drives the runtime registry, global component types, package version, Story
+coverage, and generated Agent Skills.
 
 ## GitHub Packages authentication
 
@@ -80,7 +83,7 @@ Do not add that credential line to the repository `.npmrc`. Verify access with
 the package manager itself:
 
 ```bash
-pnpm view @inkcre/web-design version
+pnpm view @inkcre/ui-web version
 pnpm install --frozen-lockfile
 ```
 

@@ -1,0 +1,110 @@
+{
+  "$schema": "./component-manifest.schema.json",
+  "components": [
+    {
+      "name": "InkAutoForm",
+      "source": "inkAutoForm",
+      "category": "forms"
+    },
+    {
+      "name": "InkButton",
+      "source": "inkButton",
+      "category": "controls"
+    },
+    {
+      "name": "InkDatetimePickerView",
+      "source": "inkDatetimePickerView",
+      "category": "specialized"
+    },
+    {
+      "name": "InkDialog",
+      "source": "inkDialog",
+      "category": "feedback"
+    },
+    {
+      "name": "InkDoubleCheck",
+      "source": "inkDoubleCheck",
+      "category": "feedback"
+    },
+    {
+      "name": "InkDropdown",
+      "source": "inkDropdown",
+      "category": "forms"
+    },
+    {
+      "name": "InkField",
+      "source": "inkField",
+      "category": "forms"
+    },
+    {
+      "name": "InkForm",
+      "source": "inkForm",
+      "category": "forms"
+    },
+    {
+      "name": "InkHeader",
+      "source": "inkHeader",
+      "category": "controls"
+    },
+    {
+      "name": "InkImage",
+      "source": "inkImage",
+      "category": "media"
+    },
+    {
+      "name": "InkInput",
+      "source": "inkInput",
+      "category": "forms"
+    },
+    {
+      "name": "InkJsonEditor",
+      "source": "inkJsonEditor",
+      "category": "specialized"
+    },
+    {
+      "name": "InkLoading",
+      "source": "inkLoading",
+      "category": "feedback"
+    },
+    {
+      "name": "InkPagination",
+      "source": "inkPagination",
+      "category": "controls"
+    },
+    {
+      "name": "InkPicker",
+      "source": "inkPicker",
+      "category": "forms"
+    },
+    {
+      "name": "InkPlaceholder",
+      "source": "inkPlaceholder",
+      "category": "feedback"
+    },
+    {
+      "name": "InkPopup",
+      "source": "inkPopup",
+      "category": "feedback"
+    },
+    {
+      "name": "InkScrim",
+      "source": "inkScrim",
+      "category": "overlays"
+    },
+    {
+      "name": "InkSwitch",
+      "source": "inkSwitch",
+      "category": "controls"
+    },
+    {
+      "name": "InkTextarea",
+      "source": "inkTextarea",
+      "category": "forms"
+    },
+    {
+      "name": "InkTooltip",
+      "source": "inkTooltip",
+      "category": "feedback"
+    }
+  ]
+}

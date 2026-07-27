@@ -2,14 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(web-design)histoire dev",
+            "name": "(ui-web) histoire dev",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "pnpm",
             "args": [
                 "run",
                 "--filter",
-                "web-design",
+                "@inkcre/ui-web",
                 "story:dev"
             ],
             "cwd": "${workspaceFolder}",

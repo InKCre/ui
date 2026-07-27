@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InKCre public web component manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["components"],
+  "properties": {
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "source", "category"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^Ink[A-Z][A-Za-z0-9]+$"
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^ink[A-Z][A-Za-z0-9]+$"
+          },
+          "category": {
+            "enum": ["controls", "feedback", "forms", "media", "overlays", "specialized"]
+          }
+        }
+      }
+    }
+  }
+}
