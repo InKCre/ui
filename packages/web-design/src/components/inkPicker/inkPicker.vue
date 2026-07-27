@@ -53,7 +53,8 @@ const closePopup = () => {
   showPopup.value = false;
 };
 
-const [DefinePicker, ReusePicker] = createReusableTemplate();
+const [DefinePicker, ReusePicker] =
+  createReusableTemplate<Record<string, never>>();
 </script>
 
 <template>

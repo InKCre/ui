@@ -86,6 +86,22 @@ describe("InkScrim", () => {
 
       expect(wrapper.vm.open).toBe(true);
     });
+
+    it("closes once when the close button is clicked", async () => {
+      const wrapper = mount(InkScrim, {
+        ...mountOptions,
+        props: {
+          open: true,
+          showCloseButton: true,
+        },
+      });
+
+      await wrapper.get("[data-testid='ink-scrim-close-btn']").trigger("click");
+
+      expect(wrapper.emitted("close")).toHaveLength(1);
+      expect(wrapper.emitted("update:open")).toEqual([[false]]);
+      expect(wrapper.emitted("scrim-click")).toBeUndefined();
+    });
   });
 
   describe("v-model:open", () => {

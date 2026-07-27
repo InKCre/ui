@@ -1,6 +1,6 @@
 ---
 name: components
-description: Use @inkcre/web-design Vue 3 components. Includes all 22 components with props, events, and usage examples.
+description: Use @inkcre/web-design Vue 3 components. Includes all 21 components with props, events, and usage examples.
 ---
 
 # @inkcre/web-design Components
@@ -10,7 +10,6 @@ Use this skill when working with the @inkcre/web-design Vue 3 component library.
 ## Overview
 
 @inkcre/web-design provides 21 UI components for Vue 3 applications:
-
 - [inkAutoForm](references/inkAutoForm.md)
 - [inkButton](references/inkButton.md)
 - [inkDatetimePickerView](references/inkDatetimePickerView.md)
@@ -70,7 +69,6 @@ Each component has detailed documentation in the `references/` directory:
 - [`inkInput`](references/inkInput.md) - Component with props, events, and examples
 - [`inkJsonEditor`](references/inkJsonEditor.md) - Component with props, events, and examples
 - [`inkLoading`](references/inkLoading.md) - Component with props, events, and examples
-- [`inkOverlay`](references/inkOverlay.md) - Component with props, events, and examples
 - [`inkPagination`](references/inkPagination.md) - Component with props, events, and examples
 - [`inkPicker`](references/inkPicker.md) - Component with props, events, and examples
 - [`inkPlaceholder`](references/inkPlaceholder.md) - Component with props, events, and examples

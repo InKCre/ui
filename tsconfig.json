@@ -1,14 +1,11 @@
 {
-    "include": [
-        "scripts/**/*"
-    ],
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
-        "types": [
-            "node"
-        ],
-        "strict": true
-    }
+  "include": ["scripts/**/*"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true,
+    "types": ["node"],
+    "strict": true
+  }
 }

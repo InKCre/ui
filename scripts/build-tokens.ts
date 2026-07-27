@@ -1,12 +1,10 @@
 import StyleDictionary from "style-dictionary";
 import { fileURLToPath } from "node:url";
-import { dirname, join, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import type {
   Transform,
-  Format,
   TransformedToken,
   Dictionary,
-  Platform,
   File as SDFile,
 } from "style-dictionary/types";
 

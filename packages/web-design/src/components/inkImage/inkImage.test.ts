@@ -1,16 +1,25 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { nextTick } from "vue";
-import { mount } from "@vue/test-utils";
+import { afterEach, describe, expect, it } from "vitest";
+import { mount, type VueWrapper } from "@vue/test-utils";
 import InkImage from "./inkImage.vue";
 
-describe("InkImage", () => {
-  const defaultProps = {
-    src: "https://example.com/image.jpg",
-    alt: "Test image",
-  };
+const defaultProps = {
+  src: "https://example.com/image.jpg",
+  alt: "Test image",
+};
 
-  const mountOptions = {
+const mountedWrappers: VueWrapper[] = [];
+
+const mountImage = (
+  options: Parameters<typeof mount<typeof InkImage>>[1] = {}
+) => {
+  const wrapper = mount(InkImage, {
+    ...options,
+    props: {
+      ...defaultProps,
+      ...options.props,
+    },
     global: {
+      ...options.global,
       stubs: {
         Teleport: {
           template: "<div><slot /></div>",
@@ -18,290 +27,135 @@ describe("InkImage", () => {
         Transition: {
           template: "<div><slot /></div>",
         },
+        ...options.global?.stubs,
       },
     },
-  };
+  });
 
+  mountedWrappers.push(wrapper);
+  return wrapper;
+};
+
+const openImage = async (wrapper: VueWrapper) => {
+  await wrapper.get("[data-testid='ink-image-thumbnail']").trigger("click");
+};
+
+afterEach(() => {
+  mountedWrappers.splice(0).forEach((wrapper) => wrapper.unmount());
+});
+
+describe("InkImage", () => {
   describe("rendering", () => {
-    it("renders thumbnail image with provided src and alt", () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
+    it("renders the thumbnail with accessible image attributes", () => {
+      const wrapper = mountImage();
+      const image = wrapper.get("[data-testid='ink-image-img']");
 
-      const img = wrapper.find("[data-testid='ink-image-img']");
-      expect(img.exists()).toBe(true);
-      expect(img.attributes("src")).toBe(defaultProps.src);
-      expect(img.attributes("alt")).toBe(defaultProps.alt);
+      expect(image.attributes("src")).toBe(defaultProps.src);
+      expect(image.attributes("alt")).toBe(defaultProps.alt);
+      expect(image.attributes("loading")).toBe("lazy");
     });
 
-    it("renders custom thumbnail slot when provided", () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
+    it("supports a custom thumbnail", () => {
+      const wrapper = mountImage({
         slots: {
           thumbnail: "<div class='custom-thumbnail'>Custom</div>",
         },
       });
 
-      expect(wrapper.find(".custom-thumbnail").exists()).toBe(true);
+      expect(wrapper.get(".custom-thumbnail").text()).toBe("Custom");
+      expect(
+        wrapper.find("[data-testid='ink-image-img']").exists()
+      ).toBe(false);
     });
 
-    it("shows title in expanded view when provided", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
+    it("shows the expanded title and custom header", async () => {
+      const wrapper = mountImage({
         props: {
-          ...defaultProps,
           title: "Test Image Title",
+        },
+        slots: {
+          "expanded-header": "<div class='custom-header'>Header</div>",
         },
       });
 
-      // Expand the image
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
+      await openImage(wrapper);
 
-      expect(wrapper.find(".ink-image__expanded-title").text()).toBe(
+      expect(wrapper.get("[data-testid='ink-scrim']").exists()).toBe(true);
+      expect(wrapper.get(".custom-header").text()).toBe("Header");
+      expect(wrapper.get(".ink-image__expanded-title").text()).toBe(
         "Test Image Title"
       );
     });
   });
 
-  describe("expand functionality", () => {
-    it("expands image when thumbnail is clicked", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
+  describe("expanded state", () => {
+    it("opens from the thumbnail and publishes the state change", async () => {
+      const wrapper = mountImage();
 
-      expect(wrapper.vm.expanded).toBe(false);
+      expect(wrapper.find("[data-testid='ink-scrim']").exists()).toBe(false);
 
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
+      await openImage(wrapper);
 
-      await nextTick();
-
-      expect(wrapper.vm.expanded).toBe(true);
-    });
-
-    it("emits expand event when clicking thumbnail", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
-
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-
+      expect(wrapper.get("[data-testid='ink-scrim']").exists()).toBe(true);
       expect(wrapper.emitted("expand")).toHaveLength(1);
-    });
-  });
-
-  describe("close functionality", () => {
-    it("closes expanded view when close button is clicked", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
-
-      // Expand
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
-      expect(wrapper.vm.expanded).toBe(true);
-
-      // Close
-      const closeBtn = wrapper.find("[data-testid='ink-scrim-close-btn']");
-      await closeBtn.trigger("click", { stopPropagation: () => {} });
-
-      expect(wrapper.vm.expanded).toBe(false);
+      expect(wrapper.emitted("update:expanded")).toEqual([[true]]);
     });
 
-    it("emits close event when closing expanded view", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
+    it("closes from the scrim and publishes the close action", async () => {
+      const wrapper = mountImage();
+      await openImage(wrapper);
 
-      // Expand first
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
+      await wrapper.get("[data-testid='ink-scrim']").trigger("click");
 
-      // Close
-      await wrapper
-        .find("[data-testid='ink-scrim-close-btn']")
-        .trigger("click", { stopPropagation: () => {} });
-
+      expect(wrapper.find("[data-testid='ink-scrim']").exists()).toBe(false);
       expect(wrapper.emitted("close")).toHaveLength(1);
+      expect(wrapper.emitted("update:expanded")).toEqual([[true], [false]]);
     });
 
-    it("closes on ESC key press", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
+    it("closes on Escape", async () => {
+      const wrapper = mountImage();
+      await openImage(wrapper);
 
-      // Expand
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
-      expect(wrapper.vm.expanded).toBe(true);
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+      await wrapper.vm.$nextTick();
 
-      // Press ESC
-      await wrapper.trigger("keydown", { key: "Escape" });
-
-      expect(wrapper.vm.expanded).toBe(false);
+      expect(wrapper.find("[data-testid='ink-scrim']").exists()).toBe(false);
+      expect(wrapper.emitted("close")).toHaveLength(1);
+      expect(wrapper.emitted("update:expanded")).toEqual([[true], [false]]);
     });
-  });
 
-  describe("lazy loading", () => {
-    it("adds lazy loading attribute when lazy prop is true", () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
+    it("leaves a controlled model unchanged until its parent updates it", async () => {
+      const wrapper = mountImage({
         props: {
-          ...defaultProps,
-          lazy: true,
-        },
-      });
-
-      const img = wrapper.find("[data-testid='ink-image-img']");
-      expect(img.attributes("loading")).toBe("lazy");
-    });
-
-    it("does not add lazy loading attribute when lazy prop is false", () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: {
-          ...defaultProps,
-          lazy: false,
-        },
-      });
-
-      const img = wrapper.find("[data-testid='ink-image-img']");
-      expect(img.attributes("loading")).toBeUndefined();
-    });
-  });
-
-  describe("error handling", () => {
-    it("emits error event when image fails to load", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
-
-      const img = wrapper.find("[data-testid='ink-image-img']");
-      const errorEvent = new Event("error");
-
-      await img.trigger("error", errorEvent);
-
-      const emitted = wrapper.emitted("error");
-      expect(emitted).toHaveLength(1);
-      expect(emitted?.[0]?.[0]).toHaveProperty("src", defaultProps.src);
-    });
-  });
-
-  describe("v-model:expanded", () => {
-    it("updates expanded state via v-model", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: {
-          ...defaultProps,
           expanded: false,
         },
       });
 
-      expect(wrapper.vm.expanded).toBe(false);
+      await openImage(wrapper);
+
+      expect(wrapper.emitted("update:expanded")).toEqual([[true]]);
+      expect(wrapper.find("[data-testid='ink-scrim']").exists()).toBe(false);
 
       await wrapper.setProps({ expanded: true });
+      expect(wrapper.get("[data-testid='ink-scrim']").exists()).toBe(true);
 
-      expect(wrapper.vm.expanded).toBe(true);
+      await wrapper.get("[data-testid='ink-scrim']").trigger("click");
+      expect(wrapper.emitted("update:expanded")).toEqual([[true], [false]]);
+      expect(wrapper.get("[data-testid='ink-scrim']").exists()).toBe(true);
+
+      await wrapper.setProps({ expanded: false });
+      expect(wrapper.find("[data-testid='ink-scrim']").exists()).toBe(false);
     });
   });
 
-  describe("slots", () => {
-    it("renders expanded-header slot when provided", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-        slots: {
-          "expanded-header": "<div class='custom-header'>Custom Header</div>",
-        },
-      });
+  it("emits the failed source with image load errors", async () => {
+    const wrapper = mountImage();
 
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
+    await wrapper.get("[data-testid='ink-image-img']").trigger("error");
 
-      expect(wrapper.find(".custom-header").exists()).toBe(true);
-    });
-
-    it("renders expanded-footer slot when provided", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-        slots: {
-          "expanded-footer": "<div class='custom-footer'>Custom Footer</div>",
-        },
-      });
-
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
-
-      expect(wrapper.find(".custom-footer").exists()).toBe(true);
-    });
-
-    it("does not render footer container when no footer slot is provided", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
-
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
-
-      expect(wrapper.find(".ink-image__expanded-footer").exists()).toBe(false);
-    });
-  });
-
-  describe("accessibility", () => {
-    it("has proper alt text for accessibility", () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: {
-          ...defaultProps,
-          alt: "Descriptive alt text",
-        },
-      });
-
-      const img = wrapper.find("[data-testid='ink-image-img']");
-      expect(img.attributes("alt")).toBe("Descriptive alt text");
-    });
-
-    it("close button has aria-label", async () => {
-      const wrapper = mount(InkImage, {
-        ...mountOptions,
-        props: defaultProps,
-      });
-
-      await wrapper
-        .find("[data-testid='ink-image-thumbnail']")
-        .trigger("click");
-      await nextTick();
-
-      const closeBtn = wrapper.find("[data-testid='ink-scrim-close-btn']");
-      expect(closeBtn.attributes("aria-label")).toBe("Close");
+    expect(wrapper.emitted("error")).toHaveLength(1);
+    expect(wrapper.emitted("error")?.[0]?.[0]).toMatchObject({
+      src: defaultProps.src,
     });
   });
 });

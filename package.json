@@ -3,14 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.25.0",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
+    "dev": "pnpm --filter @inkcre/web-design dev",
+    "build": "pnpm --filter @inkcre/web-design build",
     "build-tokens": "tsx scripts/build-tokens.ts",
     "build-skills": "tsx scripts/build-agent-skills.ts",
+    "generate": "pnpm build-tokens && pnpm build-skills",
+    "check:generated": "tsx scripts/check-generated.ts",
+    "type-check": "pnpm type-check:root && pnpm --filter @inkcre/web-design type-check",
+    "type-check:root": "tsc --noEmit",
+    "test": "pnpm --filter @inkcre/web-design test",
+    "story": "pnpm --filter @inkcre/web-design story:build",
+    "story:dev": "pnpm --filter @inkcre/web-design story:dev",
+    "format": "oxfmt .oxfmtrc.json package.json pnpm-workspace.yaml tsconfig.json packages/web-design/package.json packages/web-design/tsconfig.json packages/web-design/tsconfig.check.json packages/web-design/vite.config.js packages/web-design/vite.locales.config.js packages/web-design/vitest.config.ts .github/workflows/*.yml README.md",
+    "format:check": "pnpm format --check",
+    "lint": "oxlint --quiet scripts packages/web-design/src packages/web-design/histoire.config.ts packages/web-design/vite.config.js packages/web-design/vite.locales.config.js packages/web-design/vitest.config.ts",
+    "check": "pnpm format:check && pnpm lint && pnpm check:generated && pnpm type-check && pnpm test && pnpm build && pnpm story",
     "changeset": "changeset",
     "changeset:add": "changeset add",
     "changeset:version": "changeset version",
@@ -21,8 +33,16 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
     "@types/node": "^25.0.2",
+    "oxfmt": "0.60.0",
+    "oxlint": "1.75.0",
     "sass": "^1.94.2",
     "style-dictionary": "^5.1.1",
-    "tsx": "^4.21.0"
-  }
+    "tsx": "^4.21.0",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": "22.22.3",
+    "pnpm": "11.17.0"
+  },
+  "packageManager": "pnpm@11.17.0"
 }

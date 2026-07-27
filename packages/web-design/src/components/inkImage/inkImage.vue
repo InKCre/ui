@@ -31,6 +31,10 @@ const handleThumbnailClick = () => {
   emit("expand");
 };
 
+const handleClose = () => {
+  emit("close");
+};
+
 const handleImageError = (error: Event) => {
   const payload: InkImageErrorPayload = {
     error,
@@ -66,6 +70,7 @@ const handleImageError = (error: Event) => {
       v-model:open="expanded"
       :close-on-scrim="true"
       :show-close-button="true"
+      @close="handleClose"
     >
       <div class="ink-image__expanded" data-testid="ink-image-expanded">
         <!-- Header -->

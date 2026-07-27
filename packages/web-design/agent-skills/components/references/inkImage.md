@@ -171,6 +171,11 @@ export const inkImageProps = {
   title: makeStringProp(""),
   /** Whether to lazy load the image */
   lazy: makeBooleanProp(true),
+  /** Whether the image is expanded */
+  expanded: {
+    type: Boolean as PropType<boolean>,
+    default: undefined,
+  },
 } as const;
 ```
 
@@ -184,6 +189,8 @@ export const inkImageEmits = {
   close: () => true,
   /** Triggered when image fails to load */
   error: (payload: InkImageErrorPayload) => true,
+  /** Triggered when expanded state changes */
+  "update:expanded": (value: boolean) => true,
 } as const;
 ```
 

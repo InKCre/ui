@@ -18,7 +18,10 @@ export const inkImageProps = {
   /** Whether to lazy load the image */
   lazy: makeBooleanProp(true),
   /** Whether the image is expanded */
-  expanded: makeBooleanProp(false),
+  expanded: {
+    type: Boolean as PropType<boolean>,
+    default: undefined,
+  },
 } as const;
 
 // --- Emits ---

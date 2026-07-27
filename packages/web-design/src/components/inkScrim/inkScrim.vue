@@ -53,12 +53,12 @@ onUnmounted(() => {
         @click="onScrimClick"
       >
         <div class="ink-scrim__wrapper">
-          <div class="ink-scrim__close-btn">
+          <div class="ink-scrim__close-btn" @click.stop>
             <inkButton
               v-if="props.showCloseButton"
               data-testid="ink-scrim-close-btn"
               aria-label="Close"
-              @click.stop="close"
+              @click="close"
               type="square"
               icon="i-mdi-close"
             >

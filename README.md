@@ -1,19 +1,51 @@
 # InKCre Design
 
-Design system and any other design stuff of InKCre
+The InKCre design system and web UI library.
 
 ## Single Source of Truth
 
-Designer will push tokens from Figma using plugin [lukasoppermann/design-token-transformer](/lukasoppermann/design-token-transformer). So keep `tokens/inkcre.tokens.json` read-only.
+Designers publish tokens from Figma. Keep `tokens/inkcre.tokens.json` as the
+authoritative source and edit generated files only through the generators.
 
-`scripts/build-tokens.mjs` will transform `tokens/inkcre.tokens.json` into each packages styles code:
+`scripts/build-tokens.ts` transforms the token source into:
 
-- For `packages/web-design`, will generates `styles/tokens/_ref.scss`, `styles/tokens/_sys.scss` and `styles/tokens/_comp.scss`
+- `packages/web-design/styles/tokens/_ref.scss`
+- `packages/web-design/styles/tokens/_sys.scss`
+- `packages/web-design/styles/tokens/_comp.scss`
+- `packages/web-design/styles/uno/preset-ink.ts`
 
-`scripts/build-tokens.mjs` relies on [Style Dictionary](https://www.npmjs.com/package/style-dictionary) to transform tokens.
+The generator uses
+[Style Dictionary](https://www.npmjs.com/package/style-dictionary).
 
-Tokens are listed in `tokens/tokes.md`
+## Toolchain
 
-## Development
+Use the versions pinned by `.node-version` and the root `packageManager` field:
 
-Packages are hosted on Github NPM Registry, make sure you configure environment variable `NODE_AUTH_TOKEN` or you will get warnings from your package manager.
+- Node.js `22.22.3`
+- pnpm `11.17.0`
+
+Install once at the repository root:
+
+```bash
+pnpm install --frozen-lockfile
+```
+
+Do not install from an individual package directory. The root
+`pnpm-lock.yaml` is the only dependency lock.
+Dependency lifecycle scripts are denied by default; the small reviewed
+allowlist lives in `pnpm-workspace.yaml`.
+
+## Development commands
+
+```bash
+pnpm dev          # Run the web package development server
+pnpm story:dev    # Run the interactive component catalog
+pnpm test         # Run the unit suite once
+pnpm type-check   # Check root scripts and Vue source
+pnpm generate     # Rebuild tokens and Agent Skills
+pnpm build        # Build the publishable package
+pnpm story        # Build the component catalog
+pnpm check        # Run the complete local/CI baseline
+```
+
+Generate derived files with `pnpm build-tokens` and `pnpm build-skills`.

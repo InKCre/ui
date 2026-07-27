@@ -1,187 +1,136 @@
-import { describe, it, expect, vi } from "vitest";
-import { mount, flushPromises } from "@vue/test-utils";
+import { describe, expect, it } from "vitest";
+import { mount } from "@vue/test-utils";
 import InkDialog from "./inkDialog.vue";
 import { INK_I18N_KEY } from "../../i18n";
 
+const transitionStubs = {
+  Teleport: {
+    template: "<div><slot /></div>",
+  },
+  Transition: {
+    template: "<div><slot /></div>",
+  },
+};
+
 describe("InkDialog", () => {
-  it("renders with basic props", async () => {
+  it("renders its public content and default actions", () => {
     const wrapper = mount(InkDialog, {
       props: {
         modelValue: true,
         title: "Test Dialog",
         subtitle: "Test Subtitle",
       },
-      attachTo: document.body,
+      global: {
+        stubs: transitionStubs,
+      },
     });
 
-    await flushPromises();
-
-    // Just verify component mounted successfully
-    expect(wrapper.vm).toBeTruthy();
+    expect(wrapper.get(".ink-dialog__title").text()).toBe("Test Dialog");
+    expect(wrapper.get(".ink-dialog__subtitle").text()).toBe("Test Subtitle");
+    expect(wrapper.text()).toContain("Cancel");
+    expect(wrapper.text()).toContain("Confirm");
   });
 
-  it("emits update:modelValue event", async () => {
+  it("emits cancel and requests closing when the cancel action is clicked", async () => {
     const wrapper = mount(InkDialog, {
       props: {
         modelValue: true,
       },
-      attachTo: document.body,
+      global: {
+        stubs: transitionStubs,
+      },
     });
 
-    await flushPromises();
+    const cancelButton = wrapper
+      .findAll("button")
+      .find((button) => button.text() === "Cancel");
+    expect(cancelButton).toBeDefined();
 
-    // Manually trigger the open setter
-    await wrapper.vm.$emit("update:modelValue", false);
+    await cancelButton!.trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toBeTruthy();
-    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([false]);
+    expect(wrapper.emitted("cancel")).toHaveLength(1);
+    expect(wrapper.emitted("update:modelValue")).toEqual([[false]]);
   });
 
-  it("emits cancel event", async () => {
+  it("emits confirm when the confirm action is clicked", async () => {
     const wrapper = mount(InkDialog, {
       props: {
         modelValue: true,
       },
-      attachTo: document.body,
+      global: {
+        stubs: transitionStubs,
+      },
     });
 
-    await flushPromises();
+    const confirmButton = wrapper
+      .findAll("button")
+      .find((button) => button.text() === "Confirm");
+    expect(confirmButton).toBeDefined();
 
-    await wrapper.vm.$emit("cancel");
+    await confirmButton!.trigger("click");
 
-    expect(wrapper.emitted("cancel")).toBeTruthy();
+    expect(wrapper.emitted("confirm")).toHaveLength(1);
   });
 
-  it("emits confirm event", async () => {
+  it("supports custom action visibility and text", () => {
     const wrapper = mount(InkDialog, {
       props: {
         modelValue: true,
+        showCancel: false,
+        confirmText: "Continue",
       },
-      attachTo: document.body,
+      global: {
+        stubs: transitionStubs,
+      },
     });
 
-    await flushPromises();
-
-    await wrapper.vm.$emit("confirm");
-
-    expect(wrapper.emitted("confirm")).toBeTruthy();
+    expect(wrapper.text()).not.toContain("Cancel");
+    expect(wrapper.text()).toContain("Continue");
   });
 
-  it("accepts position prop", () => {
+  it("applies position without closing when scrim close is disabled", async () => {
     const wrapper = mount(InkDialog, {
       props: {
-        modelValue: false,
+        modelValue: true,
         position: "left",
-      },
-    });
-
-    expect(wrapper.props("position")).toBe("left");
-  });
-
-  it("accepts closeOnScrim prop", () => {
-    const wrapper = mount(InkDialog, {
-      props: {
-        modelValue: false,
         closeOnScrim: false,
       },
-    });
-
-    expect(wrapper.props("closeOnScrim")).toBe(false);
-  });
-
-  it("accepts showCancel and showConfirm props", () => {
-    const wrapper = mount(InkDialog, {
-      props: {
-        modelValue: false,
-        showCancel: false,
-        showConfirm: false,
+      global: {
+        stubs: transitionStubs,
       },
     });
 
-    expect(wrapper.props("showCancel")).toBe(false);
-    expect(wrapper.props("showConfirm")).toBe(false);
+    expect(wrapper.get(".ink-popup").classes()).toContain("ink-popup--left");
+
+    await wrapper.get(".ink-popup-overlay").trigger("click");
+
+    expect(wrapper.find(".ink-dialog").exists()).toBe(true);
+    expect(wrapper.emitted("update:modelValue")).toBeUndefined();
   });
 
-  it("accepts custom button text props", () => {
+  it("renders translated action labels when i18n is provided", () => {
+    const mockI18n = {
+      t: (key: string) =>
+        ({
+          "dialog.cancel": "Translated Cancel",
+          "dialog.confirm": "Translated Confirm",
+        })[key] ?? key,
+      locale: { value: "en" },
+    };
+
     const wrapper = mount(InkDialog, {
       props: {
-        modelValue: false,
-        cancelText: "Custom Cancel",
-        confirmText: "Custom Confirm",
+        modelValue: true,
+      },
+      global: {
+        stubs: transitionStubs,
+        provide: {
+          [INK_I18N_KEY as symbol]: mockI18n,
+        },
       },
     });
 
-    expect(wrapper.props("cancelText")).toBe("Custom Cancel");
-    expect(wrapper.props("confirmText")).toBe("Custom Confirm");
-  });
-
-  describe("i18n integration", () => {
-    it("uses i18n translations for button text when no custom text provided", () => {
-      const mockI18n = {
-        t: (key: string) => {
-          const translations: Record<string, string> = {
-            "dialog.cancel": "Translated Cancel",
-            "dialog.confirm": "Translated Confirm",
-          };
-          return translations[key] || key;
-        },
-        locale: { value: "en" },
-      };
-
-      const wrapper = mount(InkDialog, {
-        props: {
-          modelValue: false,
-        },
-        global: {
-          provide: {
-            [INK_I18N_KEY as symbol]: mockI18n,
-          },
-        },
-      });
-
-      // The computed properties should use i18n
-      expect(wrapper.vm.defaultCancelText).toBe("Translated Cancel");
-      expect(wrapper.vm.defaultConfirmText).toBe("Translated Confirm");
-    });
-
-    it("uses custom text over i18n translations", () => {
-      const mockI18n = {
-        t: (key: string) => {
-          const translations: Record<string, string> = {
-            "dialog.cancel": "Translated Cancel",
-            "dialog.confirm": "Translated Confirm",
-          };
-          return translations[key] || key;
-        },
-        locale: { value: "en" },
-      };
-
-      const wrapper = mount(InkDialog, {
-        props: {
-          modelValue: false,
-          cancelText: "Custom Cancel",
-          confirmText: "Custom Confirm",
-        },
-        global: {
-          provide: {
-            [INK_I18N_KEY as symbol]: mockI18n,
-          },
-        },
-      });
-
-      expect(wrapper.vm.defaultCancelText).toBe("Custom Cancel");
-      expect(wrapper.vm.defaultConfirmText).toBe("Custom Confirm");
-    });
-
-    it("falls back to English when i18n not provided", () => {
-      const wrapper = mount(InkDialog, {
-        props: {
-          modelValue: false,
-        },
-      });
-
-      expect(wrapper.vm.defaultCancelText).toBe("Cancel");
-      expect(wrapper.vm.defaultConfirmText).toBe("Confirm");
-    });
+    expect(wrapper.text()).toContain("Translated Cancel");
+    expect(wrapper.text()).toContain("Translated Confirm");
   });
 });

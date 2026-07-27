@@ -4,8 +4,25 @@ import dts from "vite-plugin-dts";
 import UnoCSS from "unocss/vite";
 import { resolve } from "path";
 
+const failOnDiagnostics = (diagnostics) => {
+  if (diagnostics.length > 0) {
+    throw new Error(`Declaration generation failed with ${diagnostics.length} diagnostic(s).`);
+  }
+};
+
 export default defineConfig({
-  plugins: [vue(), UnoCSS(), dts({ rollupTypes: true })],
+  plugins: [
+    vue(),
+    UnoCSS(),
+    dts({
+      rollupTypes: true,
+      pathsToAliases: false,
+      bundledPackages: ["@vue/shared"],
+      skipDiagnostics: false,
+      logDiagnostics: true,
+      afterDiagnostic: failOnDiagnostics,
+    }),
+  ],
 
   build: {
     lib: {

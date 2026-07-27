@@ -1,13 +1,22 @@
 {
   "name": "@inkcre/web-design",
   "version": "1.2.2",
-  "type": "module",
-  "packageManager": "pnpm@10.25.0",
   "description": "Design System for InKCre Web Projects",
+  "style": "dist/index.css",
+  "files": [
+    "dist/",
+    "styles/",
+    "agent-skills/"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.sass",
+    "*.scss",
+    "*.css",
+    "*.vue"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "style": "dist/index.css",
-  "sass": "styles/index.scss",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -39,20 +48,9 @@
       "import": "./styles/uno/preset-ink.ts"
     }
   },
-  "sideEffects": [
-    "*.sass",
-    "*.scss",
-    "*.css",
-    "*.vue"
-  ],
-  "files": [
-    "dist/",
-    "styles/",
-    "agent-skills/"
-  ],
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run clean && pnpm run build:js && pnpm run build:locales && pnpm run build:skills",
+    "build": "pnpm run clean && pnpm run type-check && pnpm run build:js && pnpm run build:locales && pnpm run build:skills",
     "build:js": "vite build",
     "build:locales": "vite build --config vite.locales.config.js",
     "build:tokens": "tsx ../../scripts/build-tokens.ts",
@@ -62,7 +60,9 @@
     "story:dev": "histoire dev",
     "story:build": "histoire build",
     "story:preview": "histoire preview",
-    "test": "vitest",
+    "type-check": "vue-tsc --noEmit -p tsconfig.check.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage"
   },
@@ -74,6 +74,7 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/coverage-v8": "^4.0.15",
     "@vitest/ui": "^4.0.15",
+    "@vue/shared": "3.5.25",
     "@vue/test-utils": "^2.4.6",
     "@vueuse/core": "^14.1.0",
     "cpr": "^3.0.1",
@@ -103,5 +104,6 @@
     "vscode-json-languageservice": "^5.6.4",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"
-  }
+  },
+  "sass": "styles/index.scss"
 }
