@@ -2,6 +2,11 @@
   "name": "@inkcre/web-design",
   "version": "1.2.2",
   "description": "Design System for InKCre Web Projects",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InKCre/design.git",
+    "directory": "packages/web-design"
+  },
   "style": "dist/index.css",
   "files": [
     "dist/",
@@ -47,6 +52,9 @@
     "uno": {
       "import": "./styles/uno/preset-ink.ts"
     }
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "dev": "vite",

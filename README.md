@@ -19,10 +19,15 @@ The generator uses
 
 ## Toolchain
 
-Use the versions pinned by `.node-version` and the root `packageManager` field:
+The root manifest delegates both tools to pnpm:
 
-- Node.js `22.22.3`
 - pnpm `11.17.0`
+- Node.js runtime `22.22.3`
+
+The root `packageManager` selects pnpm. Its `devEngines.runtime` entry makes
+pnpm resolve the exact Node.js runtime into the lockfile and use it for project
+scripts. Run project commands through pnpm rather than a separately managed
+Node installation.
 
 Install once at the repository root:
 
@@ -49,3 +54,37 @@ pnpm check        # Run the complete local/CI baseline
 ```
 
 Generate derived files with `pnpm build-tokens` and `pnpm build-skills`.
+
+## GitHub Packages authentication
+
+The committed `.npmrc` routes only the `@inkcre` scope to GitHub Packages. It
+never stores or expands a credential. Local credentials belong to the trusted
+user configuration.
+
+For interactive one-time setup, create a classic GitHub personal access token
+with `read:packages`, then let npm write it to your user-level configuration:
+
+```bash
+npm login --scope=@inkcre --auth-type=legacy --registry=https://npm.pkg.github.com
+```
+
+Use your GitHub username, the token as the password, and your public email when
+prompted. Alternatively, a credential manager may inject `NODE_AUTH_TOKEN`
+into the current process if your user-level `~/.npmrc` contains:
+
+```ini
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+```
+
+Do not add that credential line to the repository `.npmrc`. Verify access with
+the package manager itself:
+
+```bash
+pnpm view @inkcre/web-design version
+pnpm install --frozen-lockfile
+```
+
+Treat `401` or `403` as an expired token, missing `read:packages`, or missing
+package access. A `404` can also mean that the package name or repository
+access is wrong. Re-run the native login flow after correcting the underlying
+GitHub permission; this repository intentionally has no separate auth doctor.

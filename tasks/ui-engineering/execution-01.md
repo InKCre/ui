@@ -4,7 +4,7 @@ Execution 01 was explicitly authorized by Sir on 2026-07-27. This record describ
 
 ## Delivered
 
-- Pinned Node `22.22.3` and pnpm `11.17.0` through `.node-version`, `engines`, and `packageManager`.
+- Initially pinned Node `22.22.3` and pnpm `11.17.0` through `.node-version`, `engines`, and `packageManager`; Execution 02 later moved Node authority to pnpm's locked runtime.
 - Added an explicit pnpm 11 build-script allowlist for `@parcel/watcher` and `esbuild`, the native tooling required by Sass, Vite, and TSX.
 - Removed the package-local lockfile; the root `pnpm-lock.yaml` is the only dependency graph.
 - Added root `dev`, `build`, `type-check`, `test`, `story`, `format`, `lint`, generator, and `check` commands.

@@ -3,10 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
-  },
   "scripts": {
     "dev": "pnpm --filter @inkcre/web-design dev",
     "build": "pnpm --filter @inkcre/web-design build",
@@ -40,9 +36,12 @@
     "tsx": "^4.21.0",
     "typescript": "5.9.3"
   },
-  "engines": {
-    "node": "22.22.3",
-    "pnpm": "11.17.0"
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "22.22.3",
+      "onFail": "download"
+    }
   },
   "packageManager": "pnpm@11.17.0"
 }

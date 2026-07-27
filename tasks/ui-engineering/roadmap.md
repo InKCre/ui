@@ -95,6 +95,8 @@ One pinned toolchain, one lockfile, and one canonical root developer contract
 
 ## Execution 02 — Registry Authentication Boundary
 
+**Status:** implemented and locally verified on 2026-07-27. A disposable `../client-web` copy passed frozen installation of the current private package through trusted temporary auth. Remote PR and release execution, future-package visibility, new-package consumer Actions access, and Dependabot proof remain tied to their real pushed/published artifacts. See [`execution-02.md`](execution-02.md).
+
 ### Authority model
 
 ```mermaid
@@ -135,8 +137,8 @@ Repository configuration owns registry routing. A developer's trusted user confi
 
 ### Exit proof
 
-- Local frozen install succeeds with trusted user auth; missing or invalid auth remains a direct package-manager error documented in the setup guide.
-- Pull-request install succeeds with `packages: read`.
+- Trusted user auth resolves the current private package, local frozen installation succeeds without a project credential, and missing or invalid auth remains a direct package-manager error documented in the setup guide.
+- A consumer pull-request install that resolves a private `@inkcre` package succeeds with `packages: read`; producer-only jobs retain `contents: read` until they have such a dependency.
 - Changesets publishes with the repository `GITHUB_TOKEN` and no long-lived publish PAT.
 - Dependabot can resolve the package through an explicitly proven access path.
 - Repository search finds no persisted package credential.
