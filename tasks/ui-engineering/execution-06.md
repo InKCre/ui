@@ -1,9 +1,10 @@
 # Execution 06 — Registry-Backed Consumer Migration
 
-Sir explicitly started Execution 06 on 2026-07-27. This slice migrates every
-known `../client-web` consumer from the frozen old package to the already
-published exact `@inkcre/ui-web@1.2.2` artifact. It does not rename the remote,
-introduce a source overlay, or change the producer toolchain or skill delivery.
+Sir explicitly started Execution 06 on 2026-07-27. It was committed, pushed,
+and remotely verified on 2026-07-28. This slice migrates every known
+`../client-web` consumer from the frozen old package to the already published
+exact `@inkcre/ui-web@1.2.2` artifact. It did not introduce a source overlay or
+change the producer toolchain or skill delivery.
 
 ## Baseline And Scope
 
@@ -74,6 +75,8 @@ repository.
 | type-aware Oxlint shadow lane                 | pass                     |
 | native TypeScript 7 shadow lane               | pass                     |
 | `git diff --check`                            | pass                     |
+| pre-rename complete Client checks             | pass                     |
+| post-rename complete Client checks rerun      | pass                     |
 
 The root build proves the new JavaScript, declaration, CSS, Sass, token, and
 global-component surfaces through the normal Vite/Vitest resolvers with no UI
@@ -91,7 +94,7 @@ identity-only slice.
   `b08cade2e1b527dc5720e8e84de7b3c703cca8d6`. Reverting that bounded commit
   restores the three old manifest entries, lock, imports, and aliases.
 - `@inkcre/web-design@1.2.2` remains installable and is not yet deprecated.
-- Remote repository and local checkout rename remain Execution 07.
+- The remote repository rename is recorded in Execution 07; only the local
+  checkout directory rename remains deferred.
 - Web DX/native TypeScript and Intent delivery remain Executions 08A and 08B.
 - The optional source overlay remains Execution 09.
-- Remote CI evidence remains pending push authorization.

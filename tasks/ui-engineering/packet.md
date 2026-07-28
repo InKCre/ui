@@ -3,15 +3,16 @@
 - **Objective**: establish a reproducible, agent-friendly engineering and development contract for the InKCre UI library, then migrate the repository and published package identity from `design` to `ui` without carrying existing package-contract defects into the new identity. Complete the registry-backed consumer migration and remote identity closure against the already-published artifact before making the web package a first-class Oxc/native-TypeScript development unit and replacing its nominal Agent Skill delivery with an installed-package TanStack Intent contract.
 - **Guardrails**: preserve current product behavior, Vue component APIs (`Ink*`), CSS classes (`.ink-*`), and token contracts (`--ref-*`, `--sys-*`, `--comp-*`) unless a separate breaking-change decision is explicitly approved; retain accurate domain terms such as “Design System” and “design tokens” instead of mechanically replacing every `design` string; keep `tokens/inkcre.tokens.json` authoritative and generated Sass, UnoCSS, component facts, and Agent Skill references derived; keep reviewed intent/composition guidance explicit rather than inferring product judgment from source syntax; treat the published tarball rather than a source alias as the consumer contract; preserve the frozen-install contract in `../client-web`; keep repository, package, consumer, and remote-governance changes in bounded slices; do not implement, commit, publish, rename a remote repository, or mutate `../client-web` until Sir explicitly starts the relevant slice.
 - **Verification**: prove one pinned runtime and one lockfile can reproduce installation; provide one green root check covering package-local formatting/linting, one workspace TypeScript host, Vue type/declaration checking, tests, build, generator consistency, Intent validation/load, and package-contract smoke tests; verify the packed target web package through its JavaScript, types, CSS, Sass, token, locales, utilities, UnoCSS, and installed skill surfaces; run the complete `../client-web` check and affected extension builds against the published package; confirm generated artifacts are deterministic; confirm release and token-update workflows produce the required changeset and package through a deterministic workflow fixture; verify active code, configuration, and consumer documentation no longer depend on the old identity except for an explicitly approved historical or compatibility surface; verify GitHub Packages and remote URLs after the repository rename, with a live Figma dispatch retained as a post-deployment smoke rather than the only gate.
-- **Current Truth**: Executions 01 and 02 are committed as `b1e0d6a` and `322dcf6`; Executions 03 through 05 are committed together as `5d05693`. Execution 06 is committed in `../client-web` as `b08cade`: all three known importers use exact `@inkcre/ui-web@1.2.2`, active old-name references and direct UI filesystem aliases are gone, the lock matches the published GitHub Packages integrity, and frozen installation plus the complete consumer check and both shadow lanes pass on Node `22.22.3` with pnpm `11.11.0`. This producer packet records the Execution 06 evidence and the started Execution 07 preflight. No push, source overlay, remote rename, or old-package deprecation has occurred.
-- **Next Step**: Sir has explicitly started Execution 07. Commit the bounded producer task packet, then perform the just-in-time remote-name, permission, integration-owner, package-association, and rollback preflight before mutating the GitHub repository. The local checkout directory rename remains deferred to a session boundary.
+- **Current Truth**: Executions 01 and 02 are committed as `b1e0d6a` and `322dcf6`; Executions 03 through 05 are committed together as `5d05693`; the producer packet is committed as `1d4ab92`. Execution 06 is committed and pushed in `../client-web` as `b08cade`: all three known importers use exact `@inkcre/ui-web@1.2.2`, active old-name references and direct UI filesystem aliases are gone, and complete client checks pass before and after the producer rename. The GitHub repository is now `InKCre/ui` with the same repository ID, the local remote and private package association follow the new identity, fresh-clone and Release checks pass, and default Actions authority is read-only. Release PR #31 exposed two real closure defects: generated `version.ts` was not updated by Changesets, and Cloudflare Pages used the removed `web-design` package filter/output path. The bounded Changesets fix is locally green and authorized for commit/push. Cloudflare now builds with `pnpm story` and `packages/web/.histoire/dist`; a retried 21-story preview deployment passes. Live Figma integration remains an external handoff.
+- **Next Step**: commit and push the authorized release-version fix, let Changesets refresh release PR #31, and require the workspace check only after it is green. Make a separate explicit decision before merging/publishing. The local checkout directory rename remains deferred to a session boundary.
 
 ## Classification And Active Posture
 
 - Constraint: engineering, package, registry, workspace, CI, and cross-repository development boundaries must change while product behavior remains stable.
 - Reality: the producer package, first registry artifact, source association, known-consumer Actions read boundary, and local registry-backed consumer graph are green. The migration artifact is frozen at `@inkcre/ui-web@1.2.2`; newly requested Oxc/native-TypeScript and installed Agent Skill contracts follow remote identity closure rather than redefining it.
 - Artifact: this packet, the phased migration plan, package-contract fixture, story-coverage gate, web-DX and Intent task files, migration guide, and execution evidence.
-- Active posture: Migrate. Execution 06 is committed locally; Execution 07 remote-identity preflight is active.
+- Active posture: Migrate. The Execution 07 remote identity is applied and
+  proven; release/Cloudflare/governance integration closure is active.
 
 ## Evidence Snapshot
 
@@ -34,15 +35,30 @@
 - `../client-web/apps/client-web/vitest.config.ts` no longer bypasses the UI exports map; its four old direct filesystem aliases were removed.
 - `../client-web` has three exact `@inkcre/ui-web@1.2.2` importers: the web app, extension development utilities, and the Twitter remote. The browser extension does not consume it.
 - The consumer lock resolves the published new-package URL and integrity, including the required text-document peer and optional UnoCSS peer. Node `22.22.3` and pnpm `11.11.0` pass frozen install, the full 35-test/root build gate, type-aware Oxlint, and native TypeScript 7.
-- GitHub reports `InKCre/design` as public, `@inkcre/web-design@1.2.2` as private, Actions default workflow permissions as `write`, and no required status-check rule on `main`; the existing ruleset only blocks deletion and non-fast-forward updates.
-- `@inkcre/ui-web@1.2.2` is the only published new-name version. GitHub reports private visibility, an `InKCre/design` source association, and explicit `Read` Actions access for `InKCre/client-web`; a disposable exact-version install and ESM import pass.
+- GitHub reports `InKCre/ui` as public with the same repository ID as the old
+  name. The old web URL redirects, the local remote uses the new SSH URL,
+  default workflow permissions are `read`, and workflow-token PR approval is
+  disabled. The existing ruleset still only blocks deletion and non-fast-forward
+  updates until the canonical PR check is green.
+- `@inkcre/ui-web@1.2.2` is the only published new-name version. GitHub reports
+  private visibility, an `InKCre/ui` source association, and retained
+  `InKCre/client-web` Actions access; a post-rename frozen consumer CI rerun
+  passes.
+- A fresh clone from `InKCre/ui` passes frozen install and the full 104-test,
+  package, packed-consumer, and Histoire baseline. The renamed repository's
+  Release workflow also passes and creates release PR #31 without publishing.
+- Cloudflare Pages still displays the cached `InKCre/design` source label, but
+  its functional integration receives renamed-repository PRs. The corrected
+  `pnpm story` and `packages/web/.histoire/dist` configuration passes a preview
+  build of all 21 stories / 108 variants.
 - Both repositories were clean at the opening audit on 2026-07-27.
 
 ## Approved Target Identity
 
 | Surface                               | Current                              | Candidate        |
 | ------------------------------------- | ------------------------------------ | ---------------- |
-| GitHub repository and local directory | `InKCre/design`                      | `InKCre/ui`      |
+| GitHub repository                     | `InKCre/ui`                          | `InKCre/ui`      |
+| Local checkout directory              | `design`                             | `ui`             |
 | Private workspace                     | `inkcre-design`                      | `@inkcre/ui`     |
 | Package directory                     | `packages/web-design`                | `packages/web`   |
 | Published package                     | `@inkcre/web-design`                 | `@inkcre/ui-web` |
@@ -76,6 +92,7 @@ flowchart LR
 - Execution 04 implementation evidence: [`execution-04.md`](execution-04.md)
 - Execution 05 implementation evidence: [`execution-05.md`](execution-05.md)
 - Execution 06 implementation evidence: [`execution-06.md`](execution-06.md)
+- Execution 07 implementation evidence: [`execution-07.md`](execution-07.md)
 - Execution 08A implementation plan and preflight: [`execution-08a.md`](execution-08a.md)
 - Execution 08B implementation plan and preflight: [`execution-08b.md`](execution-08b.md)
 - External engineering reference: [`partner-up-dev/ui`](https://github.com/partner-up-dev/ui)
@@ -83,8 +100,9 @@ flowchart LR
 ## Open Decisions
 
 There are no unresolved naming or architecture decisions inside the completed
-local Execution 06 diff. Execution 07 still requires just-in-time remote-name
-availability and external Figma dispatch ownership confirmation. For Execution
+Execution 06 diff. Execution 07 still requires the Cloudflare correction,
+release/publish decision, required-check closure, and external Figma dispatch
+ownership confirmation. For Execution
 08A, the recommended compiler posture is one
 exact-pinned bridge-backed TypeScript host after a one-time stock parity check,
 not a permanent dual toolchain. For Execution 08B, the recommended skill
@@ -143,3 +161,11 @@ SVC adoption is no longer on this task's critical path. The recommended disposit
 - 2026-07-27: trusted temporary authentication downloaded the exact GitHub Packages artifact without persisting a credential. Frozen installation, the complete client check, type-aware Oxlint, and native TypeScript 7 passed on the supported Node runtime. Execution 06 is locally complete.
 - 2026-07-28: Sir authorized the bounded Execution 06 commits and explicitly started Execution 07.
 - 2026-07-28: the `../client-web` consumer migration was committed as `b08cade`.
+- 2026-07-28: `b08cade` was pushed to `InKCre/client-web`; all Client checks passed.
+- 2026-07-28: GitHub accepted `InKCre/design -> InKCre/ui` while preserving repository ID, old-URL redirects, Git history, and the private `@inkcre/ui-web` source association.
+- 2026-07-28: producer commits through `1d4ab92` were pushed to the renamed repository; the Release workflow and a separate fresh-clone full check passed.
+- 2026-07-28: a post-rename rerun of the complete `client-web` workflow passed, proving that repository Actions access to the private package survived the source-repository rename.
+- 2026-07-28: default Actions authority was reduced to read-only and workflow-token PR approval was disabled.
+- 2026-07-28: release PR #31 exposed stale generated version metadata; the bounded Changesets custom-version fix passed a disposable `1.2.2 -> 1.2.3` rehearsal and awaits explicit commit authorization.
+- 2026-07-28: authenticated Cloudflare logs proved that Pages still used the removed `web-design` filter and output path.
+- 2026-07-28: Sir confirmed the Cloudflare and bounded commit mutations; Pages now uses `pnpm story` and `packages/web/.histoire/dist`, and retried deployment `2aae170b-edb4-4a14-a86c-86a6bfb51f96` passes.

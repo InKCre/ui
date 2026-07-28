@@ -224,8 +224,9 @@ Repository configuration owns registry routing. A developer's trusted user confi
 
 ## Execution 06 — Consumer Migration
 
-**Status:** implemented, locally verified, and committed in `../client-web` as
-`b08cade` on 2026-07-28; remote CI evidence is pending. See
+**Status:** completed on 2026-07-28. The migration is committed and pushed in
+`../client-web` as `b08cade`; complete client checks passed before and after the
+producer repository rename. See
 [`execution-06.md`](execution-06.md).
 
 The already-published `@inkcre/ui-web@1.2.2` registry path becomes green before
@@ -248,8 +249,9 @@ the producer toolchain, skill delivery, or source loop changes.
 
 ## Execution 07 — Remote Rename And Identity Closure
 
-**Status:** explicitly started by Sir on 2026-07-28; just-in-time remote and
-integration preflight is active.
+**Status:** remote rename applied and core identity proofs passed on
+2026-07-28; integration and governance closure is in progress. See
+[`execution-07.md`](execution-07.md).
 
 The repository rename now immediately follows consumer migration. At that
 point code, registry package, and all known consumers use the UI identity; the

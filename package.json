@@ -27,10 +27,10 @@
     "check": "pnpm format:check && pnpm lint && pnpm check:generated && pnpm check:stories && pnpm check:token-workflow && pnpm type-check && pnpm test && pnpm build && pnpm check:package && pnpm story",
     "changeset": "changeset",
     "changeset:add": "changeset add",
-    "changeset:version": "changeset version",
+    "changeset:version": "changeset version && pnpm build-package-metadata",
     "changeset:publish": "changeset publish",
     "changeset:status": "changeset status",
-    "release": "changeset version && changeset publish"
+    "release": "pnpm changeset:version && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
