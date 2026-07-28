@@ -1,5 +1,19 @@
 # @inkcre/ui-web
 
+## 1.3.0
+
+### Minor Changes
+
+- f9a65a3: Give the web package first-class Oxc and native TypeScript development
+  workflows, and replace the non-discoverable `agent-skills/` folders with the
+  installed, validated `@inkcre/ui-web#ui-web` TanStack Intent skill.
+
+### Patch Changes
+
+- b1e0d6a: Fix uncontrolled image expansion and reliable scrim close-button behavior.
+- 322dcf6: Move GitHub Packages routing and repository metadata to the publishable package.
+- 5d05693: Publish the renamed web UI package with complete exports, deterministic generation, packed-consumer verification, and a categorized Histoire catalog.
+
 ## 1.2.2
 
 ### Patch Changes
