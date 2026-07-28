@@ -28,6 +28,19 @@ const editorRef = ref<HTMLDivElement>();
 let editorView: EditorView | null = null;
 const editableCompartment = new Compartment();
 
+function diagnosticMessage(message: unknown): string {
+  if (typeof message === "string") return message;
+  if (
+    message &&
+    typeof message === "object" &&
+    "value" in message &&
+    typeof message.value === "string"
+  ) {
+    return message.value;
+  }
+  return String(message);
+}
+
 const jsonSchemaLinter = linter(async (view) => {
   if (!props.schema) return [];
 
@@ -46,7 +59,7 @@ const jsonSchemaLinter = linter(async (view) => {
       from,
       to,
       severity: d.severity === 1 ? "error" : "warning",
-      message: d.message,
+      message: diagnosticMessage(d.message),
     };
   });
 });

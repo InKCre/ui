@@ -28,12 +28,6 @@ import type { JSONSchema, JSONSchemaProperty } from "./components/inkAutoForm/in
 import type { InkRouter } from "./router";
 import type { InkI18n } from "./i18n";
 
-export {
-  DropdownOption,
-  JSONSchema,
-  JSONSchemaProperty,
-  InkRouter,
-  INK_ROUTER_KEY,
-  InkI18n,
-  INK_I18N_KEY,
-};
+export { INK_ROUTER_KEY, INK_I18N_KEY };
+
+export type { DropdownOption, JSONSchema, JSONSchemaProperty, InkRouter, InkI18n };

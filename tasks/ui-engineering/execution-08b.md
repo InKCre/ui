@@ -1,9 +1,9 @@
 # Execution 08B — Intent-Based Agent Skill Delivery
 
-Execution 08B is implemented and locally verified. Sir authorized it on
-2026-07-28 together with the web DX slice after consumer and remote identity
-closure. Its release-PR refresh, exact registry publication, and
-post-publication probe are the next external gates.
+Execution 08B is complete and published in `@inkcre/ui-web@1.3.0`. Sir
+authorized it on 2026-07-28 together with the web DX slice after consumer and
+remote identity closure. Release PR #31 merged, and the exact registry
+artifact passed installed-package discovery and loading.
 
 ## Problem Statement
 
@@ -154,8 +154,9 @@ reopened rather than silently adding a permanent mirror.
 - The working and frozen-install root checks pass Intent, generation,
   package-contract, tests, build, and Histoire.
 - Sir authorized the bounded commit and release-PR merge on 2026-07-28.
-  Registry publication remains successful only after CI, the release workflow,
-  and the exact installed-package probe pass.
+  Commit `f9a65a3` passed CI; release PR #31 merged as `7b0034c`, and the exact
+  `@inkcre/ui-web@1.3.0` registry artifact passed installed-package discovery
+  and loading.
 
 ## Primary References
 
