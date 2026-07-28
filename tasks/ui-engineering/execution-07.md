@@ -78,9 +78,28 @@ the version/update command and that the default is `changeset version`. A
 disposable clone rehearsed `1.2.2 -> 1.2.3`, generated the new version constant,
 and passed `check:generated`.
 
-This fix is implemented and locally verified. Sir explicitly authorized its
-bounded commit and push on 2026-07-28. PR #31 must not be merged or used to
-publish until the updated release PR is green.
+This fix was committed as `a423ea0` and pushed after Sir's explicit
+authorization. Release run
+[`30322305378`](https://github.com/InKCre/ui/actions/runs/30322305378) passed
+and refreshed PR #31. The refreshed diff contains matching
+`@inkcre/ui-web@1.2.3` manifest and generated version values.
+
+The refreshed PR's workspace check then passed the complete root verification
+but exposed a second changeset-gate boundary: `check-changeset.ts` tried to
+read the three changeset files that a release PR intentionally deletes and
+raised `ENOENT`. It also did not yet classify the generated `src/version.ts` as
+part of a version-only release diff. The bounded local follow-up:
+
+1. permits generated `src/version.ts` in the release-version-only file set;
+2. excludes deleted changeset paths before reading current changeset contents.
+
+A disposable checkout of the actual release branch now reports
+`Changesets release-version change detected.` A negative fixture that combines
+the deleted changesets with an additional source change fails cleanly with the
+required-changeset diagnostic instead of throwing `ENOENT`. This follow-up is
+implemented and verified; Sir explicitly authorized its commit on 2026-07-28.
+PR #31 must not be merged or used to publish until the updated release PR is
+green.
 
 ## Cloudflare Pages Correction
 
@@ -120,9 +139,9 @@ deployment contracts are green.
 
 ## Remaining Closure Gates
 
-1. Commit and push the authorized release-version synchronization fix so
-   Changesets refreshes PR #31.
-2. Prove the refreshed `Reproducible workspace check`, then add that exact
+1. Commit and push the authorized changeset deletion/version-only gate fix,
+   then prove the refreshed `Reproducible workspace check`.
+2. Add that proven exact
    context to the existing `main`/`develop` ruleset. Do not install a failing or
    unproven required check.
 3. Merge/publish PR #31 only under an explicit release decision. Verify the new

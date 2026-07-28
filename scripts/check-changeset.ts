@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { readPackageManifest, repositoryRoot, resolveWebPackageRoot } from "./lib/ui-package.js";
@@ -38,6 +38,7 @@ const versionOnly =
     (file) =>
       file === `${packageDirectory}package.json` ||
       file === `${packageDirectory}CHANGELOG.md` ||
+      file === `${packageDirectory}src/version.ts` ||
       file.startsWith(".changeset/"),
   ) &&
   changedFiles.includes(`${packageDirectory}CHANGELOG.md`);
@@ -49,7 +50,10 @@ if (versionOnly) {
 const packageName = readPackageManifest(packageRoot).name;
 const changesets = changedFiles.filter(
   (file) =>
-    file.startsWith(".changeset/") && file.endsWith(".md") && file !== ".changeset/README.md",
+    file.startsWith(".changeset/") &&
+    file.endsWith(".md") &&
+    file !== ".changeset/README.md" &&
+    existsSync(resolve(repositoryRoot, file)),
 );
 const targetsPackage = changesets.some((file) => {
   const contents = readFileSync(resolve(repositoryRoot, file), "utf8");
