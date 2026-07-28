@@ -15,7 +15,9 @@
   word-wrap: break-word;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
   pointer-events: none;
 
   @include apply-elevation(md);

@@ -11,9 +11,7 @@ const emit = defineEmits(inkInputEmits);
 const formContext = inject(INK_FORM_CONTEXT_KEY, null);
 
 const useField = computed(() => formContext !== null && props.label);
-const fieldLayout = computed(
-  () => props.layout || formContext?.layout || "inline"
-);
+const fieldLayout = computed(() => props.layout || formContext?.layout || "inline");
 
 const isInlineEditing = ref(false);
 const originalValue = ref("");
@@ -92,12 +90,7 @@ const [DefineInput, ReuseInput] = createReusableTemplate();
     </div>
   </DefineInput>
 
-  <InkField
-    v-if="useField"
-    :label="label"
-    :layout="fieldLayout"
-    :required="required"
-  >
+  <InkField v-if="useField" :label="label" :layout="fieldLayout" :required="required">
     <ReuseInput />
   </InkField>
 

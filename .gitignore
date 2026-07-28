@@ -9,6 +9,7 @@ yarn.lock
 !.vscode/*.example.jsonc
 !.vscode/*.code-snippets
 !.vscode/extensions.json
+!.vscode/settings.json
 
 # temp files
 tmp

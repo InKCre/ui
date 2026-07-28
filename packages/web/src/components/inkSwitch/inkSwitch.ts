@@ -19,5 +19,5 @@ export const inkSwitchProps = {
 
 // --- Emits ---
 export const inkSwitchEmits = {
-  "update:modelValue": (value: boolean) => true,
+  "update:modelValue": (_value: boolean) => true,
 } as const;

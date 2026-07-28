@@ -18,7 +18,7 @@
 
 @mixin apply-icon($size, $centered: false) {
   font-size: fn.sys-var("size", "iconfont", $size);
-  
+
   @if $centered {
     height: fn.sys-var("size", "icon", $size);
     width: fn.sys-var("size", "icon", $size);
@@ -29,5 +29,9 @@
 }
 
 @mixin apply-elevation($level) {
-  box-shadow: fn.sys-var("elevation", "raised", $level, "offset-x") fn.sys-var("elevation", "raised", $level, "offset-y") fn.sys-var("elevation", "raised", $level, "radius") fn.sys-var("elevation", "raised", $level, "spread") fn.sys-var("elevation", "raised", $level, "color");
+  box-shadow: fn.sys-var("elevation", "raised", $level, "offset-x")
+    fn.sys-var("elevation", "raised", $level, "offset-y")
+    fn.sys-var("elevation", "raised", $level, "radius")
+    fn.sys-var("elevation", "raised", $level, "spread")
+    fn.sys-var("elevation", "raised", $level, "color");
 }

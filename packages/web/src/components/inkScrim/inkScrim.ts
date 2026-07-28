@@ -11,5 +11,5 @@ export const inkScrimProps = {
 export const inkScrimEmits = {
   "scrim-click": () => true,
   close: () => true,
-  "update:open": (value: boolean) => true,
+  "update:open": (_value: boolean) => true,
 } as const;

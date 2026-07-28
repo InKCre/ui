@@ -22,10 +22,7 @@ import { INK_ROUTER_KEY } from "./router";
 import { INK_I18N_KEY } from "./i18n";
 
 import type { DropdownOption } from "./components/inkDropdown/inkDropdown";
-import type {
-  JSONSchema,
-  JSONSchemaProperty,
-} from "./components/inkAutoForm/inkAutoForm";
+import type { JSONSchema, JSONSchemaProperty } from "./components/inkAutoForm/inkAutoForm";
 
 // others
 import type { InkRouter } from "./router";

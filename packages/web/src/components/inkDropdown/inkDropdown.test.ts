@@ -32,9 +32,7 @@ describe("InkDropdown", () => {
       },
     });
 
-    expect(wrapper.find(".ink-dropdown__value").text()).toBe(
-      "Select an option"
-    );
+    expect(wrapper.find(".ink-dropdown__value").text()).toBe("Select an option");
   });
 
   it("displays selected option label", () => {
@@ -77,11 +75,11 @@ describe("InkDropdown", () => {
       { label: "Lazy 3", value: "lazy3" },
     ];
 
-    const refresher = vi.fn(async () => {
+    const refresher = vi.fn<() => Promise<DropdownOption[]>>(async () => {
       return Promise.resolve(lazyOptions);
     });
 
-    const wrapper = mount(InkDropdown, {
+    mount(InkDropdown, {
       props: {
         refresher,
         modelValue: "lazy2",
@@ -97,7 +95,7 @@ describe("InkDropdown", () => {
   });
 
   it("does not load lazy options immediately when modelValue is empty", async () => {
-    const refresher = vi.fn(async () => {
+    const refresher = vi.fn<() => Promise<DropdownOption[]>>(async () => {
       return Promise.resolve([]);
     });
 
@@ -115,7 +113,7 @@ describe("InkDropdown", () => {
   });
 
   it("does not load lazy options immediately when modelValue is null", async () => {
-    const refresher = vi.fn(async () => {
+    const refresher = vi.fn<() => Promise<DropdownOption[]>>(async () => {
       return Promise.resolve([]);
     });
 
@@ -133,7 +131,7 @@ describe("InkDropdown", () => {
   });
 
   it("does not load lazy options when static options already exist", async () => {
-    const refresher = vi.fn(async () => {
+    const refresher = vi.fn<() => Promise<DropdownOption[]>>(async () => {
       return Promise.resolve([]);
     });
 
@@ -162,7 +160,7 @@ describe("InkDropdown", () => {
   });
 
   it("calls refresher when refresh button is clicked", async () => {
-    const refresher = vi.fn(async () => []);
+    const refresher = vi.fn<() => Promise<DropdownOption[]>>(async () => []);
 
     const wrapper = mount(InkDropdown, {
       props: {
@@ -276,9 +274,7 @@ describe("InkDropdown", () => {
 
       // First option should be hovered (index 1 after initial 0)
       const optionElements = wrapper.findAll(".ink-dropdown__option");
-      expect(optionElements[1].classes()).toContain(
-        "ink-dropdown__option--hovered"
-      );
+      expect(optionElements[1].classes()).toContain("ink-dropdown__option--hovered");
     });
 
     it("navigates up with ArrowUp key", async () => {
@@ -302,9 +298,7 @@ describe("InkDropdown", () => {
 
       // Last option should be hovered
       const optionElements = wrapper.findAll(".ink-dropdown__option");
-      expect(optionElements[2].classes()).toContain(
-        "ink-dropdown__option--hovered"
-      );
+      expect(optionElements[2].classes()).toContain("ink-dropdown__option--hovered");
     });
 
     it("wraps around when navigating past last option", async () => {
@@ -330,9 +324,7 @@ describe("InkDropdown", () => {
 
       // Should wrap back to first option
       const optionElements = wrapper.findAll(".ink-dropdown__option");
-      expect(optionElements[0].classes()).toContain(
-        "ink-dropdown__option--hovered"
-      );
+      expect(optionElements[0].classes()).toContain("ink-dropdown__option--hovered");
     });
 
     it("selects hovered option with Enter key", async () => {
@@ -401,9 +393,7 @@ describe("InkDropdown", () => {
 
       // Second option should be hovered (matching modelValue)
       const optionElements = wrapper.findAll(".ink-dropdown__option");
-      expect(optionElements[1].classes()).toContain(
-        "ink-dropdown__option--hovered"
-      );
+      expect(optionElements[1].classes()).toContain("ink-dropdown__option--hovered");
     });
   });
 });

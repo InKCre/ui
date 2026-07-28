@@ -5,12 +5,13 @@ import {
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import * as sass from "sass";
 import {
@@ -21,7 +22,11 @@ import {
 } from "./lib/ui-package.js";
 
 interface PublishedPackageManifest {
+  dependencies?: Record<string, string>;
+  files?: string[];
+  keywords?: string[];
   name: string;
+  peerDependencies?: Record<string, string>;
   version: string;
   exports: Record<string, unknown>;
   sideEffects?: string[];
@@ -70,7 +75,10 @@ function linkDependency(dependency: string, consumerModules: string): void {
   symlinkSync(source, destination, "junction");
 }
 
-function assertNoDeclarationLeaks(packedRoot: string): void {
+function assertNoDeclarationLeaks(
+  packedRoot: string,
+  packedManifest: PublishedPackageManifest,
+): void {
   const declarationFiles = readdirSync(resolve(packedRoot, "dist"), {
     recursive: true,
     withFileTypes: true,
@@ -86,6 +94,103 @@ function assertNoDeclarationLeaks(packedRoot: string): void {
       declaration.includes("../src/")
     ) {
       throw new Error(`Declaration leaks workspace paths: ${declarationFile}`);
+    }
+
+    const moduleSpecifiers = [
+      ...declaration.matchAll(/(?:from\s+|import\s*\()\s*["']([^"']+)["']/g),
+      ...declaration.matchAll(/import\s+["']([^"']+)["']/g),
+    ].map((match) => match[1]);
+    const relativeSpecifiers = [
+      ...moduleSpecifiers.filter((specifier) => specifier.startsWith(".")),
+      ...[...declaration.matchAll(/<reference\s+path=["'](\.[^"']+)["']/g)].map(
+        (match) => match[1],
+      ),
+    ];
+
+    for (const specifier of relativeSpecifiers) {
+      const target = resolve(dirname(declarationFile), specifier);
+      const candidates = [
+        target,
+        `${target}.d.ts`,
+        `${target}.ts`,
+        `${target}.tsx`,
+        resolve(target, "index.d.ts"),
+      ];
+      const relativeTarget = relative(packedRoot, target);
+      if (
+        relativeTarget.startsWith("..") ||
+        !candidates.some((candidate) => existsSync(candidate) && lstatSync(candidate).isFile())
+      ) {
+        throw new Error(
+          `Declaration import does not resolve inside the packed artifact: ${declarationFile} -> ${specifier}`,
+        );
+      }
+    }
+
+    const declaredDependencies = new Set([
+      ...Object.keys(packedManifest.dependencies ?? {}),
+      ...Object.keys(packedManifest.peerDependencies ?? {}),
+    ]);
+    for (const specifier of moduleSpecifiers.filter(
+      (candidate) => !candidate.startsWith(".") && !candidate.startsWith("node:"),
+    )) {
+      const dependency = specifier.startsWith("@")
+        ? specifier.split("/").slice(0, 2).join("/")
+        : specifier.split("/")[0];
+      if (!declaredDependencies.has(dependency)) {
+        throw new Error(
+          `Declaration imports an undeclared package dependency: ${declarationFile} -> ${dependency}`,
+        );
+      }
+    }
+  }
+}
+
+function listFiles(root: string): string[] {
+  return readdirSync(root, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => resolve(entry.parentPath, entry.name))
+    .sort();
+}
+
+function assertSkillTree(packedRoot: string): void {
+  const skillRoot = resolve(packedRoot, "skills/ui-web");
+  const skillFiles = listFiles(skillRoot);
+  const markdownFiles = skillFiles.filter((path) => path.endsWith(".md"));
+
+  if (existsSync(resolve(packedRoot, "agent-skills"))) {
+    throw new Error("Packed artifact still exposes the retired agent-skills path");
+  }
+  if (existsSync(resolve(packedRoot, "skill.seed.json"))) {
+    throw new Error("Packed artifact exposes maintainer-only skill.seed.json");
+  }
+  if (markdownFiles.length === 0) {
+    throw new Error("Packed artifact contains no UI skill Markdown");
+  }
+
+  for (const markdownFile of markdownFiles) {
+    const content = readFileSync(markdownFile, "utf8");
+    if (
+      content.includes("src/components/") ||
+      content.includes("stories/") ||
+      content.includes("../")
+    ) {
+      throw new Error(`Packed skill leaks repository paths: ${markdownFile}`);
+    }
+
+    const markdownTargets = [...content.matchAll(/\]\(([^)]+\.md)\)/g)].map((match) => match[1]);
+    const routedTargets = [...content.matchAll(/`(references\/[^`*]+\.md)`/g)].map(
+      (match) => match[1],
+    );
+    const targets = [
+      ...markdownTargets.map((target) => resolve(dirname(markdownFile), target)),
+      ...routedTargets.map((target) => resolve(skillRoot, target)),
+    ];
+
+    for (const target of targets) {
+      if (!lstatSync(target).isFile()) {
+        throw new Error(`Packed skill reference is missing: ${target}`);
+      }
     }
   }
 }
@@ -138,6 +243,12 @@ try {
   ) {
     throw new Error("Packed package identity differs from the source manifest");
   }
+  if (
+    !packedManifest.files?.includes("skills") ||
+    !packedManifest.keywords?.includes("tanstack-intent")
+  ) {
+    throw new Error("Packed package metadata does not advertise Intent skills");
+  }
 
   const requiredFiles = [
     "dist/index.js",
@@ -157,6 +268,12 @@ try {
     "styles/tokens/_sys.scss",
     "styles/tokens/_comp.scss",
     "styles/uno/preset-ink.ts",
+    "skills/ui-web/SKILL.md",
+    "skills/ui-web/references/component-map.md",
+    "skills/ui-web/references/composition-recipes.md",
+    "skills/ui-web/references/integration.md",
+    "skills/ui-web/references/styling-and-themes.md",
+    "skills/ui-web/references/common-mistakes.md",
   ];
   for (const requiredFile of requiredFiles) {
     if (!lstatSync(resolve(packedRoot, requiredFile)).isFile()) {
@@ -186,7 +303,8 @@ try {
   ) {
     throw new Error("Packed artifact exposes unintended runtime source files");
   }
-  assertNoDeclarationLeaks(packedRoot);
+  assertNoDeclarationLeaks(packedRoot, packedManifest);
+  assertSkillTree(packedRoot);
 
   const consumerRoot = resolve(temporaryRoot, "consumer");
   const consumerModules = resolve(consumerRoot, "node_modules");
@@ -197,23 +315,65 @@ try {
   ensureParent(packageLink);
   symlinkSync(packedRoot, packageLink, "junction");
 
-  const peerDependencies = Object.keys(
-    (
-      JSON.parse(readFileSync(resolve(packageRoot, "package.json"), "utf8")) as {
-        peerDependencies: Record<string, string>;
-      }
-    ).peerDependencies,
-  );
-  for (const dependency of peerDependencies) {
+  const installedDependencies = new Set([
+    ...Object.keys(packedManifest.dependencies ?? {}),
+    ...Object.keys(packedManifest.peerDependencies ?? {}),
+  ]);
+  for (const dependency of installedDependencies) {
     linkDependency(dependency, consumerModules);
     linkDependency(dependency, runtimeModules);
   }
 
   writeFileSync(
     resolve(consumerRoot, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
+    JSON.stringify({
+      private: true,
+      type: "module",
+      intent: {
+        skills: [targetPackageName],
+      },
+    }),
     "utf8",
   );
+
+  const intentCli = resolve(packageRoot, "node_modules/@tanstack/intent/dist/cli.mjs");
+  const intentList = JSON.parse(
+    run(process.execPath, [intentCli, "list", "--json"], {
+      cwd: consumerRoot,
+      capture: true,
+    }),
+  ) as {
+    skills: Array<{ use: string; packageName: string; skillName: string }>;
+  };
+  const expectedSkill = `${targetPackageName}#ui-web`;
+  if (
+    intentList.skills.length !== 1 ||
+    intentList.skills[0]?.use !== expectedSkill ||
+    intentList.skills[0]?.packageName !== targetPackageName ||
+    intentList.skills[0]?.skillName !== "ui-web"
+  ) {
+    throw new Error(
+      `Intent did not discover exactly ${expectedSkill}: ${JSON.stringify(intentList.skills)}`,
+    );
+  }
+
+  const loadedSkillPath = run(process.execPath, [intentCli, "load", expectedSkill, "--path"], {
+    cwd: consumerRoot,
+    capture: true,
+  }).trim();
+  const resolvedSkillPath = realpathSync(resolve(consumerRoot, loadedSkillPath));
+  const resolvedPackedRoot = realpathSync(packedRoot);
+  const relativeSkillPath = relative(resolvedPackedRoot, resolvedSkillPath);
+  const expectedSkillPath = resolve(resolvedPackedRoot, "skills/ui-web/SKILL.md");
+  if (relativeSkillPath.startsWith("..") || resolve(resolvedSkillPath) !== expectedSkillPath) {
+    throw new Error(
+      `Intent loaded a skill outside the packed artifact: ${JSON.stringify({
+        loadedSkillPath,
+        resolvedSkillPath,
+        expectedSkillPath,
+      })}`,
+    );
+  }
 
   const componentName = publicComponents.find(
     (component) => component.source === "inkButton",

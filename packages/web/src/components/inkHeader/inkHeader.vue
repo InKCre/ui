@@ -9,9 +9,7 @@ const emit = defineEmits(inkHeaderEmits);
 const router = useOptionalRouter();
 
 // --- computed ---
-const displayPageTitle = computed(
-  () => props.pageTitle ?? router?.currentName.value
-);
+const displayPageTitle = computed(() => props.pageTitle ?? router?.currentName.value);
 
 // --- methods ---
 const onMenuClick = () => {
@@ -26,23 +24,13 @@ const onTitleClick = () => {
 <template>
   <header class="ink-header">
     <div class="ink-header__logo" @click="onTitleClick">
-      <img
-        v-if="logoSrc"
-        class="ink-header__logo-icon"
-        :src="logoSrc"
-        alt="InKCre Logo"
-      />
+      <img v-if="logoSrc" class="ink-header__logo-icon" :src="logoSrc" alt="InKCre Logo" />
       <span class="ink-header__logo-text">{{ title }}</span>
     </div>
     <div class="ink-header__right">
-      <span v-if="displayPageTitle" class="ink-header__page-title">{{
-        displayPageTitle
-      }}</span>
+      <span v-if="displayPageTitle" class="ink-header__page-title">{{ displayPageTitle }}</span>
       <slot name="right-icon">
-        <span
-          class="i-mdi-menu ink-header__menu-icon"
-          @click="onMenuClick"
-        ></span>
+        <span class="i-mdi-menu ink-header__menu-icon" @click="onMenuClick"></span>
       </slot>
     </div>
   </header>

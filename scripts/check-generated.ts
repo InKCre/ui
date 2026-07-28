@@ -10,7 +10,7 @@ const packageDirectory = relative(repositoryRoot, packageRoot);
 const generatedPaths = [
   `${packageDirectory}/styles/tokens`,
   `${packageDirectory}/styles/uno/preset-ink.ts`,
-  `${packageDirectory}/agent-skills`,
+  `${packageDirectory}/skills`,
   `${packageDirectory}/src/public-components.ts`,
   `${packageDirectory}/src/components.d.ts`,
   `${packageDirectory}/src/version.ts`,

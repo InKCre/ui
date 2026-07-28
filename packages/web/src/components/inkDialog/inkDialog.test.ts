@@ -41,9 +41,7 @@ describe("InkDialog", () => {
       },
     });
 
-    const cancelButton = wrapper
-      .findAll("button")
-      .find((button) => button.text() === "Cancel");
+    const cancelButton = wrapper.findAll("button").find((button) => button.text() === "Cancel");
     expect(cancelButton).toBeDefined();
 
     await cancelButton!.trigger("click");
@@ -62,9 +60,7 @@ describe("InkDialog", () => {
       },
     });
 
-    const confirmButton = wrapper
-      .findAll("button")
-      .find((button) => button.text() === "Confirm");
+    const confirmButton = wrapper.findAll("button").find((button) => button.text() === "Confirm");
     expect(confirmButton).toBeDefined();
 
     await confirmButton!.trigger("click");

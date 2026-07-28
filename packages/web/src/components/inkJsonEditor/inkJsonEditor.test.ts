@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import InkJsonEditor from "./inkJsonEditor.vue";
@@ -7,10 +7,10 @@ import { jsonService } from "./jsonSchemaService";
 // Mock the jsonService.configure method
 vi.mock("./jsonSchemaService", () => ({
   jsonService: {
-    configure: vi.fn(),
-    parseJSONDocument: vi.fn(() => ({})),
-    doValidation: vi.fn(async () => []),
-    doComplete: vi.fn(async () => null),
+    configure: vi.fn<(settings: unknown) => void>(),
+    parseJSONDocument: vi.fn<() => Record<string, never>>(() => ({})),
+    doValidation: vi.fn<() => Promise<never[]>>(async () => []),
+    doComplete: vi.fn<() => Promise<null>>(async () => null),
   },
 }));
 
@@ -80,7 +80,7 @@ describe("InkJsonEditor", () => {
 
     const finalCallCount = (jsonService.configure as any).mock.calls.length;
     expect(finalCallCount).toBeGreaterThan(initialCallCount);
-    
+
     const lastCall = (jsonService.configure as any).mock.calls[finalCallCount - 1];
     expect(lastCall[0]).toEqual({
       schemas: [

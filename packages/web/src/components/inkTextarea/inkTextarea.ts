@@ -1,8 +1,5 @@
-import { makeStringProp, makeBooleanProp } from "../../utils/vue-props";
+import { makeStringProp } from "../../utils/vue-props";
 import { formControlCommonProps } from "../inkForm/inkForm";
-
-// --- Types ---
-type FieldLayout = "inline" | "col" | "row";
 
 // --- Props ---
 export const inkTextareaProps = {
@@ -17,5 +14,5 @@ export const inkTextareaProps = {
 
 // --- Emits ---
 export const inkTextareaEmits = {
-  "update:value": (value: string) => true,
+  "update:value": (_value: string) => true,
 } as const;

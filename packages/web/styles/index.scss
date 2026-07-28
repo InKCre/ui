@@ -26,5 +26,3 @@ html[data-theme="light"] {
     @include fn.emit-css-variables(comp.$dark, "comp");
   }
 }
-
-

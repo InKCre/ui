@@ -6,10 +6,7 @@ import { useOptionalI18n } from "../../i18n";
 const props = defineProps(inkPlaceholderProps);
 const i18n = useOptionalI18n();
 
-const placeholderClass = computed(() => [
-  "ink-placeholder",
-  `ink-placeholder--${props.state}`,
-]);
+const placeholderClass = computed(() => ["ink-placeholder", `ink-placeholder--${props.state}`]);
 
 const defaultIllustration = computed(() => {
   if (props.illustration) return props.illustration;
@@ -18,19 +15,17 @@ const defaultIllustration = computed(() => {
 
 const getTranslatedText = (messageType: "title" | "description") => {
   const isError = props.state === "error";
-  
+
   if (i18n) {
     const key = `placeholder.${isError ? "error" : "empty"}.${messageType}`;
     return i18n.t(key);
   }
-  
+
   if (messageType === "title") {
     return isError ? "Something went wrong" : "No data";
   }
-  
-  return isError 
-    ? "An error occurred. Please try again." 
-    : "There's nothing here yet.";
+
+  return isError ? "An error occurred. Please try again." : "There's nothing here yet.";
 };
 
 const defaultTitle = computed(() => {
@@ -51,19 +46,19 @@ const defaultDescription = computed(() => {
         <span :class="defaultIllustration" />
       </slot>
     </div>
-    
+
     <div class="ink-placeholder__title">
       <slot name="title">
         <span>{{ defaultTitle }}</span>
       </slot>
     </div>
-    
+
     <div class="ink-placeholder__description">
       <slot name="description">
         <span>{{ defaultDescription }}</span>
       </slot>
     </div>
-    
+
     <div v-if="$slots.actions" class="ink-placeholder__actions">
       <slot name="actions"></slot>
     </div>

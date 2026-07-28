@@ -1,0 +1,586 @@
+{
+  "skill": {
+    "name": "ui-web",
+    "description": "Use @inkcre/ui-web Vue components for forms, feedback, overlays, media, navigation, JSON editing, styling, router adapters, and i18n integration.",
+    "title": "InKCre UI Web",
+    "quickSelection": {
+      "Application navigation and branding": "InkHeader",
+      "Single action": "InkButton",
+      "Structured form": "InkForm with InkField and the matching form control",
+      "Schema-driven primitive form": "InkAutoForm",
+      "JSON configuration editing": "InkJsonEditor",
+      "Destructive confirmation": "InkDoubleCheck for a compact guard; InkDialog for a focused modal decision",
+      "Custom or positioned overlay": "InkPopup; add InkScrim only when the composition does not already own one",
+      "Loading state": "InkLoading",
+      "Empty or error state": "InkPlaceholder",
+      "Expandable media": "InkImage",
+      "Paged collection": "InkPagination"
+    },
+    "rules": [
+      "Choose components by product intent and interaction semantics, not only visual resemblance.",
+      "Prefer package components over local substitutes when the public component contract fits.",
+      "Use public package exports and documented subpaths; never import src/components files.",
+      "Keep form labels, controls, and layout context explicit through InkForm and InkField.",
+      "Distinguish loading, empty, error, and confirmation states instead of using one generic feedback surface.",
+      "Read only the component references needed for the current task."
+    ],
+    "avoid": [
+      "Do not invent props or events from conventions used by another UI library.",
+      "Do not treat low-level InkPopup or InkScrim as a replacement for InkDialog when the standard dialog workflow fits.",
+      "Do not expose repository paths, generated implementation files, or internal prop helpers to consumers.",
+      "Do not edit this generated skill tree directly; update skill.seed.json or public component facts and regenerate it."
+    ]
+  },
+  "components": {
+    "InkAutoForm": {
+      "intent": ["schema-driven form", "flat JSON Schema editor", "automatic primitive controls"],
+      "preferWhen": [
+        "A flat JSON Schema should produce consistent controls with little application boilerplate.",
+        "String, number, and boolean properties can map to the package's existing field controls."
+      ],
+      "avoidWhen": [
+        "The workflow needs deeply nested schemas, conditional branches, arrays, or bespoke field composition.",
+        "The user should edit raw JSON text; use InkJsonEditor instead."
+      ],
+      "composeWith": ["InkForm", "InkInput", "InkSwitch"],
+      "apiCaveats": [
+        "Treat the supported schema subset as a deliberate flat-form contract.",
+        "Supply custom component mappings only when the generated default control is insufficient."
+      ],
+      "commonMistakes": [
+        "Do not assume complete JSON Schema coverage.",
+        "Do not use it merely to avoid designing a workflow-specific form."
+      ],
+      "publicTypes": ["JSONSchema", "JSONSchemaProperty"]
+    },
+    "InkButton": {
+      "intent": ["button", "single-click action", "icon or text command"],
+      "preferWhen": [
+        "The user initiates one immediate command.",
+        "An action needs package-consistent theme, size, icon, or loading treatment."
+      ],
+      "avoidWhen": [
+        "The control represents navigation and should preserve link semantics.",
+        "The workflow requires a multi-step confirmation surface rather than one click."
+      ],
+      "composeWith": ["InkDialog", "InkDoubleCheck", "InkHeader", "InkTooltip"],
+      "apiCaveats": [
+        "Choose theme from the component's actual public values; do not borrow variant names from another library.",
+        "Keep icon-only commands accessible with surrounding context or a tooltip."
+      ],
+      "commonMistakes": [
+        "Do not replace a destructive confirmation flow with a danger-colored button alone."
+      ]
+    },
+    "InkDatetimePickerView": {
+      "intent": ["date and time columns", "weekday picker view", "low-level datetime selection"],
+      "preferWhen": [
+        "A picker composition needs scrollable date, time, datetime, or weekday columns.",
+        "InkPicker owns the field and popup while this component owns the selection view."
+      ],
+      "avoidWhen": [
+        "A native text/date input is sufficient.",
+        "A standalone form field is required without a surrounding InkPicker composition."
+      ],
+      "composeWith": ["InkPicker", "InkPopup"],
+      "apiCaveats": [
+        "Use Date values for date/time modes and preserve the selected mode contract.",
+        "Treat this as a view primitive, not the complete labelled form control."
+      ],
+      "commonMistakes": [
+        "Do not duplicate popup, formatting, and field responsibilities already owned by InkPicker."
+      ]
+    },
+    "InkDialog": {
+      "intent": ["dialog", "confirmation modal", "focused overlay workflow"],
+      "preferWhen": [
+        "A focused decision needs a title, content, cancel/confirm actions, and a backdrop.",
+        "A short modal workflow benefits from the package's complete dialog structure."
+      ],
+      "avoidWhen": [
+        "Only a low-level positioned surface is needed; use InkPopup.",
+        "A compact second-click guard is enough; use InkDoubleCheck."
+      ],
+      "composeWith": ["InkButton", "InkForm", "InkLoading", "InkPopup"],
+      "apiCaveats": [
+        "Use the actual model event contract and slots documented in the generated API facts.",
+        "Keep destructive consequences visible in the dialog content before confirmation."
+      ],
+      "commonMistakes": [
+        "Do not nest a second independently controlled scrim beneath the dialog.",
+        "Do not invent open/update:open semantics without checking the emitted events."
+      ]
+    },
+    "InkDoubleCheck": {
+      "intent": ["two-step confirmation", "accidental-click guard", "compact destructive action"],
+      "preferWhen": [
+        "A nearby action needs one additional deliberate click without opening a modal.",
+        "The consequence is already understood and only accidental activation must be prevented."
+      ],
+      "avoidWhen": [
+        "The user needs explanatory content, input, or multiple choices; use InkDialog.",
+        "The action is harmless and the extra confirmation would add friction."
+      ],
+      "composeWith": ["InkButton", "InkTooltip"],
+      "apiCaveats": [
+        "Make the second state visually and textually clear.",
+        "Reset confirmation state when the surrounding workflow changes."
+      ],
+      "commonMistakes": [
+        "Do not use a two-click guard for every action.",
+        "Do not hide the destructive meaning behind an unlabeled icon."
+      ]
+    },
+    "InkDropdown": {
+      "intent": ["single selection", "dropdown options", "lazy-loaded choice"],
+      "preferWhen": [
+        "The user selects one value from a known or asynchronously loaded option list.",
+        "Optional stepping controls help move through an ordered option set."
+      ],
+      "avoidWhen": [
+        "The user enters free text; use InkInput.",
+        "The interaction needs multi-selection or arbitrary tagging."
+      ],
+      "composeWith": ["InkField", "InkForm"],
+      "apiCaveats": [
+        "Use DropdownOption for public option values.",
+        "Choose either static options or the refresher lifecycle deliberately.",
+        "Editable state controls whether selection interactions are available."
+      ],
+      "commonMistakes": [
+        "Do not assume an empty model triggers lazy loading.",
+        "Do not mix static options and refresher behavior without defining precedence."
+      ],
+      "publicTypes": ["DropdownOption"]
+    },
+    "InkField": {
+      "intent": ["form field wrapper", "label and value layout", "field-level structure"],
+      "preferWhen": [
+        "A control needs a label, required state, and consistent inline, row, or column layout.",
+        "A custom control must align with other InkForm fields."
+      ],
+      "avoidWhen": [
+        "Content is not a form value.",
+        "A control already renders its own field wrapper through InkForm context and label props."
+      ],
+      "composeWith": ["InkDropdown", "InkInput", "InkJsonEditor", "InkPicker", "InkTextarea"],
+      "apiCaveats": [
+        "Keep field layout consistent with the surrounding InkForm unless an intentional local override is needed."
+      ],
+      "commonMistakes": [
+        "Do not create nested duplicate labels around controls that already consume form context."
+      ]
+    },
+    "InkForm": {
+      "intent": ["form layout context", "grouped fields", "consistent field composition"],
+      "preferWhen": [
+        "Multiple package controls should share one field layout.",
+        "Child controls should receive layout context through the package's provider contract."
+      ],
+      "avoidWhen": [
+        "The content is read-only or is not a form.",
+        "The application expects the component to provide a complete validation framework."
+      ],
+      "composeWith": [
+        "InkAutoForm",
+        "InkDropdown",
+        "InkField",
+        "InkInput",
+        "InkJsonEditor",
+        "InkPicker",
+        "InkSwitch",
+        "InkTextarea"
+      ],
+      "apiCaveats": [
+        "InkForm primarily owns layout context; application validation and submission remain explicit.",
+        "Use the emitted native submit event rather than relying on browser navigation."
+      ],
+      "commonMistakes": [
+        "Do not infer full validation orchestration from the form wrapper.",
+        "Do not bypass the shared layout with unrelated local field markup."
+      ]
+    },
+    "InkHeader": {
+      "intent": ["application header", "branding", "top navigation"],
+      "preferWhen": [
+        "An application shell needs logo, title, current-page context, or menu actions.",
+        "The header should consume the optional router adapter."
+      ],
+      "avoidWhen": [
+        "A content section only needs a heading.",
+        "A footer or generic horizontal layout is required."
+      ],
+      "composeWith": ["InkButton", "InkTooltip"],
+      "apiCaveats": [
+        "Router integration is adapter-based and optional; the component does not import the consuming router."
+      ],
+      "commonMistakes": ["Do not use the application header as a generic card or section title."]
+    },
+    "InkImage": {
+      "intent": ["image display", "thumbnail", "click-to-expand media"],
+      "preferWhen": [
+        "An image needs package-consistent loading, error, and expandable viewing behavior.",
+        "A compact thumbnail should open a larger view."
+      ],
+      "avoidWhen": [
+        "A decorative image needs only native img behavior.",
+        "The media is not an image or needs a dedicated gallery workflow."
+      ],
+      "composeWith": ["InkLoading", "InkPlaceholder", "InkPopup"],
+      "apiCaveats": [
+        "Always provide meaningful alt text for informative images.",
+        "Handle the public error payload instead of relying on internal image state."
+      ],
+      "commonMistakes": [
+        "Do not enable expansion when the source cannot provide a useful larger view."
+      ]
+    },
+    "InkInput": {
+      "intent": ["single-line text input", "inline text editing", "form text field"],
+      "preferWhen": [
+        "The user enters or edits one line of text.",
+        "A details view needs the component's inline editing mode."
+      ],
+      "avoidWhen": [
+        "The value spans multiple lines; use InkTextarea.",
+        "The value is selected from options; use InkDropdown or InkPicker."
+      ],
+      "composeWith": ["InkField", "InkForm"],
+      "apiCaveats": [
+        "Use the component's value event contract rather than assuming modelValue naming.",
+        "When used inside InkForm, let form context own the default field layout."
+      ],
+      "commonMistakes": [
+        "Do not use the inline visual mode as a substitute for explicit edit permissions."
+      ]
+    },
+    "InkJsonEditor": {
+      "intent": [
+        "JSON text editor",
+        "schema-aware JSON configuration",
+        "structured text validation"
+      ],
+      "preferWhen": [
+        "Users need to edit raw JSON with completion and validation support.",
+        "A schema should guide a CodeMirror-based JSON editing experience."
+      ],
+      "avoidWhen": [
+        "A flat schema can be represented as ordinary form controls; consider InkAutoForm.",
+        "The content is general prose or arbitrary code."
+      ],
+      "composeWith": ["InkField", "InkForm", "InkPlaceholder"],
+      "apiCaveats": [
+        "The model is JSON text, not an automatically parsed application object.",
+        "The CodeMirror and VS Code language-service packages remain part of the declared peer contract."
+      ],
+      "commonMistakes": [
+        "Do not silently coerce invalid JSON into a different value.",
+        "Do not use it for ordinary multiline text."
+      ]
+    },
+    "InkLoading": {
+      "intent": ["loading indicator", "async progress feedback", "pending state"],
+      "preferWhen": [
+        "An operation is currently pending and the user needs immediate visual feedback.",
+        "A screen, region, or inline action has no determinate progress value."
+      ],
+      "avoidWhen": [
+        "Content is empty or failed; use InkPlaceholder.",
+        "A static skeleton layout is required."
+      ],
+      "composeWith": ["InkButton", "InkDialog", "InkImage"],
+      "apiCaveats": [
+        "Choose size and density for the surrounding context instead of scaling with local CSS."
+      ],
+      "commonMistakes": [
+        "Do not leave a loading indicator active after the operation reaches an empty or error state."
+      ]
+    },
+    "InkPagination": {
+      "intent": ["pagination", "previous and next navigation", "paged collection"],
+      "preferWhen": [
+        "A dataset has an explicit current page and total page count.",
+        "Users need deterministic movement through bounded pages."
+      ],
+      "avoidWhen": [
+        "All content fits comfortably on one page.",
+        "The product deliberately uses infinite scrolling without page identity."
+      ],
+      "composeWith": ["InkLoading", "InkPlaceholder"],
+      "apiCaveats": [
+        "Keep the controlled page value aligned with the data request lifecycle.",
+        "Use the text mode only when numbered page affordances are intentionally unnecessary."
+      ],
+      "commonMistakes": ["Do not render inaccessible or clickable pages outside the valid range."]
+    },
+    "InkPicker": {
+      "intent": ["formatted value picker", "date or time field", "custom popup selection"],
+      "preferWhen": [
+        "A value needs field layout, display formatting, a popup, and a custom selection surface.",
+        "Date, time, datetime, or weekday selection should use InkDatetimePickerView."
+      ],
+      "avoidWhen": [
+        "A simple option list fits InkDropdown.",
+        "A single-line text field fits InkInput."
+      ],
+      "composeWith": ["InkDatetimePickerView", "InkField", "InkForm", "InkPopup"],
+      "apiCaveats": [
+        "The generic value type must stay consistent across formatter, model value, and emitted update.",
+        "Custom picker content uses the default slot and owns its own value interaction."
+      ],
+      "commonMistakes": [
+        "Do not assume every picker value is a Date.",
+        "Do not duplicate the popup state outside the component without a controlled-state reason."
+      ]
+    },
+    "InkPlaceholder": {
+      "intent": ["empty state", "error state", "unavailable content guidance"],
+      "preferWhen": [
+        "A region has no data, no results, or a recoverable error.",
+        "The user needs a concise explanation and optional next action."
+      ],
+      "avoidWhen": [
+        "The operation is still pending; use InkLoading.",
+        "The message is a transient hover hint; use InkTooltip."
+      ],
+      "composeWith": ["InkButton", "InkLoading"],
+      "apiCaveats": ["Make the state and recovery action specific to the surrounding task."],
+      "commonMistakes": [
+        "Do not use the same generic copy for empty, filtered-empty, permission, and error states."
+      ]
+    },
+    "InkPopup": {
+      "intent": ["positioned popup", "low-level overlay surface", "custom controlled overlay"],
+      "preferWhen": [
+        "A custom overlay needs center, edge, or coordinate positioning.",
+        "The consumer must own most of the interior composition."
+      ],
+      "avoidWhen": [
+        "A standard confirmation dialog fits InkDialog.",
+        "Only supplementary hover information is needed; use InkTooltip."
+      ],
+      "composeWith": ["InkButton", "InkPicker", "InkScrim"],
+      "apiCaveats": [
+        "Treat open state as controlled through the component's public model contract.",
+        "Decide explicitly whether scrim click should close the popup."
+      ],
+      "commonMistakes": [
+        "Do not stack multiple scrims for one overlay.",
+        "Do not omit focus and keyboard behavior when building a dialog-like custom popup."
+      ]
+    },
+    "InkScrim": {
+      "intent": ["backdrop", "background interaction blocker", "overlay foundation"],
+      "preferWhen": [
+        "A custom overlay composition needs a full-screen backdrop and dismiss interaction.",
+        "No higher-level component already owns the scrim."
+      ],
+      "avoidWhen": [
+        "InkDialog or InkPopup already supplies the required backdrop behavior.",
+        "Background interaction should remain available."
+      ],
+      "composeWith": ["InkPopup"],
+      "apiCaveats": [
+        "Keep open state and click-to-close behavior synchronized with the owning overlay."
+      ],
+      "commonMistakes": [
+        "Do not render an orphan scrim without an overlay lifecycle.",
+        "Do not rely on visual dimming alone for modal accessibility."
+      ]
+    },
+    "InkSwitch": {
+      "intent": ["boolean toggle", "immediate setting", "async on/off control"],
+      "preferWhen": [
+        "A boolean setting takes effect immediately.",
+        "The state transition may be asynchronous and needs pending feedback."
+      ],
+      "avoidWhen": [
+        "The choice is one of several values.",
+        "The decision is deferred until form submission and checkbox semantics are more accurate."
+      ],
+      "composeWith": ["InkField", "InkForm", "InkLoading"],
+      "apiCaveats": [
+        "Keep the controlled boolean or promised state consistent with the async update lifecycle.",
+        "Provide a visible label whenever context is not otherwise explicit."
+      ],
+      "commonMistakes": [
+        "Do not optimistically show a successful state when the async change can still fail."
+      ]
+    },
+    "InkTextarea": {
+      "intent": ["multiline text input", "description field", "long-form form value"],
+      "preferWhen": [
+        "The user enters comments, descriptions, or other multiline text.",
+        "The field should share InkForm layout context."
+      ],
+      "avoidWhen": [
+        "The value is one line; use InkInput.",
+        "The content is JSON and needs structured editing; use InkJsonEditor."
+      ],
+      "composeWith": ["InkField", "InkForm"],
+      "apiCaveats": [
+        "The public value contract uses value/update:value rather than modelValue.",
+        "Use rows to communicate expected input scale without forcing fixed-height local CSS."
+      ],
+      "commonMistakes": [
+        "Do not assume v-model without checking the argument used by the value contract."
+      ]
+    },
+    "InkTooltip": {
+      "intent": ["contextual hint", "hover explanation", "supplementary label"],
+      "preferWhen": [
+        "An icon, abbreviation, or truncated value needs optional supporting context.",
+        "The information is helpful but not required to complete the task."
+      ],
+      "avoidWhen": [
+        "The information is critical and must remain visible.",
+        "The interaction is touch-only with no dependable hover or focus path."
+      ],
+      "composeWith": ["InkButton", "InkHeader"],
+      "apiCaveats": ["Keep tooltip content concise and preserve keyboard access to the trigger."],
+      "commonMistakes": [
+        "Do not hide validation errors, destructive consequences, or required instructions in a tooltip."
+      ]
+    }
+  },
+  "recipes": [
+    {
+      "name": "Structured Form",
+      "intent": "Build a form whose fields share labels and layout while each control keeps its own value semantics.",
+      "components": [
+        "InkForm",
+        "InkField",
+        "InkInput",
+        "InkTextarea",
+        "InkDropdown",
+        "InkPicker",
+        "InkSwitch",
+        "InkButton"
+      ],
+      "steps": [
+        "Use InkForm to establish the shared field layout.",
+        "Choose one control per value intent: input, textarea, dropdown, picker, or switch.",
+        "Use InkField for custom controls or explicit field structure not already supplied by form context.",
+        "Keep validation, submission, and async error handling in application code.",
+        "Use InkButton for submit or secondary commands."
+      ],
+      "caveats": [
+        "Do not normalize every control to the same model prop name; use each component's actual API.",
+        "Do not wrap controls in duplicate InkField labels when they already consume InkForm context."
+      ]
+    },
+    {
+      "name": "Schema Configuration",
+      "intent": "Choose between an automatically generated primitive form and raw schema-aware JSON editing.",
+      "components": ["InkAutoForm", "InkJsonEditor", "InkForm", "InkPlaceholder"],
+      "steps": [
+        "Use InkAutoForm when a flat schema maps cleanly to ordinary primitive controls.",
+        "Use InkJsonEditor when users must see or edit the raw JSON document.",
+        "Keep parsing and persistence errors separate from schema validation feedback.",
+        "Use InkPlaceholder for unrecoverable schema-loading or permission states."
+      ],
+      "caveats": [
+        "Do not claim complete JSON Schema support from InkAutoForm.",
+        "Do not silently replace invalid user JSON with a generated object."
+      ]
+    },
+    {
+      "name": "Destructive Confirmation",
+      "intent": "Prevent accidental irreversible actions with the least disruptive accurate confirmation.",
+      "components": ["InkDoubleCheck", "InkDialog", "InkButton", "InkLoading"],
+      "steps": [
+        "Use InkDoubleCheck when the consequence is already understood and a second deliberate click is enough.",
+        "Use InkDialog when the user needs explanation, choices, or a focused decision.",
+        "Show pending state while the destructive request is running.",
+        "Close or reset confirmation state only after the application lifecycle is explicit."
+      ],
+      "caveats": [
+        "A danger theme is not a confirmation mechanism.",
+        "Do not combine a double-check and dialog unless risk evidence justifies both layers."
+      ]
+    },
+    {
+      "name": "Custom Overlay",
+      "intent": "Build a positioned or custom overlay while keeping backdrop and state ownership unambiguous.",
+      "components": ["InkPopup", "InkScrim", "InkButton"],
+      "steps": [
+        "Use InkPopup as the controlled surface and choose its position deliberately.",
+        "Use the popup's existing scrim behavior when it meets the interaction contract.",
+        "Add InkScrim only when the custom composition has no backdrop owner.",
+        "Provide explicit close controls and application-appropriate keyboard behavior."
+      ],
+      "caveats": [
+        "Prefer InkDialog when the composition is semantically a standard dialog.",
+        "Never render two independently controlled backdrops for one overlay."
+      ]
+    },
+    {
+      "name": "Collection Feedback",
+      "intent": "Represent pending, empty, error, and paged collection states without conflating them.",
+      "components": ["InkLoading", "InkPlaceholder", "InkPagination", "InkButton"],
+      "steps": [
+        "Show InkLoading only while a request is pending.",
+        "After completion, choose a specific empty, filtered-empty, permission, or error InkPlaceholder.",
+        "Render InkPagination only when a valid bounded page model exists.",
+        "Offer a retry or recovery InkButton only when the action is available."
+      ],
+      "caveats": [
+        "Do not leave stale pagination controls visible for an invalid result set.",
+        "Do not use loading feedback as a permanent empty state."
+      ]
+    },
+    {
+      "name": "Expandable Media",
+      "intent": "Show compact imagery with optional larger viewing and explicit fallback states.",
+      "components": ["InkImage", "InkLoading", "InkPlaceholder"],
+      "steps": [
+        "Provide the image source and meaningful alt text.",
+        "Enable expansion only when a useful larger asset or view exists.",
+        "Use image loading and error events to align surrounding feedback.",
+        "Use InkPlaceholder only when the surrounding media region needs recovery guidance."
+      ]
+    }
+  ],
+  "integration": {
+    "rules": [
+      "Load @inkcre/ui-web/styles once in the application style entry unless the Sass entry is intentionally compiled instead.",
+      "Use the package root for components and public types, /utils for utilities, /locales for locale bundles, and /uno for presetInk.",
+      "Keep declared peer dependencies resolvable in the consumer installation graph.",
+      "Do not alias raw package source or dist internals in the registry-backed production contract."
+    ],
+    "router": [
+      "Adapt the consuming router to reactive currentPath and currentName values.",
+      "Provide the adapter through INK_ROUTER_KEY.",
+      "Treat useOptionalRouter returning null as a supported no-router state."
+    ],
+    "i18n": [
+      "Adapt the consuming i18n system to a t function and reactive locale.",
+      "Provide the adapter through INK_I18N_KEY.",
+      "Treat useOptionalI18n returning null as the package fallback state."
+    ]
+  },
+  "styling": {
+    "rules": [
+      "Prefer system and component tokens over hard-coded visual values.",
+      "Use exported Sass functions and mixins rather than importing package files by filesystem path.",
+      "Keep ref, sys, and comp token output generated from tokens/inkcre.tokens.json.",
+      "Use CSS custom properties and the package theme contract instead of duplicating token maps in application code.",
+      "Import presetInk from @inkcre/ui-web/uno when the consuming UnoCSS setup needs the package preset."
+    ],
+    "tokenLayers": [
+      "Reference tokens (ref) are primitive values such as color, space, typography, radius, elevation, breakpoint, and opacity.",
+      "System tokens (sys) map primitives to semantic light and dark theme roles.",
+      "Component tokens (comp) own component-specific semantic values."
+    ]
+  },
+  "commonMistakes": [
+    "Importing raw src/components or dist files instead of the package export map.",
+    "Assuming all controls use modelValue/update:modelValue; several components intentionally expose another value contract.",
+    "Using a visually similar component without matching its interaction semantics.",
+    "Treating InkForm as a complete validation framework rather than a layout/context owner.",
+    "Using InkPopup where InkDialog already provides the required confirmation structure.",
+    "Showing InkLoading for empty or failed content after the request has completed.",
+    "Hard-coding design values that already exist in the ref, sys, or comp token layers.",
+    "Loading every component reference when progressive disclosure only requires a few."
+  ]
+}

@@ -1,9 +1,9 @@
 # Execution 08B — Intent-Based Agent Skill Delivery
 
-Execution 08B is planned but has not been authorized. It follows the web DX
-slice after consumer and remote identity closure. Its next exact registry
-version improves agent guidance as a normal `InKCre/ui` release instead of
-changing the already-proven migration artifact.
+Execution 08B is implemented and locally verified. Sir authorized it on
+2026-07-28 together with the web DX slice after consumer and remote identity
+closure. Its release-PR refresh, exact registry publication, and
+post-publication probe are the next external gates.
 
 ## Problem Statement
 
@@ -118,6 +118,44 @@ reopened rather than silently adding a permanent mirror.
 - A reviewed Changeset records the delivery-model change and the exact
   published version upgrades the already-migrated consumer through the normal
   release path rather than serving as its identity-migration prerequisite.
+
+## Implemented Result
+
+- The retired five-folder `agent-skills/` tree is removed. The package now
+  publishes one canonical `skills/ui-web` skill and advertises
+  `tanstack-intent`.
+- `skill.seed.json` contains reviewed selection, avoidance, composition,
+  integration, styling, and failure-mode judgment. It is a maintainer input
+  and is excluded from the tarball.
+- The generator reads the public component manifest, reviewed seed,
+  TypeScript/Vue component facts, and story variants. It validates exact seed
+  coverage and composition references, then owns exactly 27 deterministic
+  files: one router, five shared references, and 21 component references.
+- Package-local commands generate, check, and validate the skill. The root
+  generated-output and canonical check paths delegate to those commands.
+- Package and migration documentation describe explicit Intent trust
+  allowlisting, discovery, loading, and the clean cut from `agent-skills/`.
+- A minor Changeset records the combined web-DX and skill delivery contract.
+
+## Local Proof
+
+- Pinned `@tanstack/intent@0.3.6` validates exactly one skill with no packaging
+  warning.
+- Two generation passes produce the same aggregate SHA-1
+  `e440b025445006c64e151b0c0f5adf51de3d24c7`.
+- A seed-only stale fixture fails on the component map and affected component
+  reference. A story-only stale fixture fails on the affected component
+  reference.
+- Both new-name and reproducible old-name tarball probes contain `skills/`,
+  exclude `agent-skills/` and `skill.seed.json`, validate all Markdown
+  references, and expose no repository source paths.
+- A disposable consumer allowlists the packed package, discovers exactly
+  `@inkcre/ui-web#ui-web`, and loads a real path inside the extracted tarball.
+- The working and frozen-install root checks pass Intent, generation,
+  package-contract, tests, build, and Histoire.
+- Sir authorized the bounded commit and release-PR merge on 2026-07-28.
+  Registry publication remains successful only after CI, the release workflow,
+  and the exact installed-package probe pass.
 
 ## Primary References
 

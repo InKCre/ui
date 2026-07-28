@@ -60,34 +60,20 @@ const jsonSchemaCompletion = autocompletion({
       try {
         const text = ctx.state.doc.toString();
 
-        const textDocument = TextDocument.create(
-          props.schemaUri,
-          "json",
-          0,
-          text
-        );
+        const textDocument = TextDocument.create(props.schemaUri, "json", 0, text);
 
         const jsonDocument = jsonService.parseJSONDocument(textDocument);
 
         const position = textDocument.positionAt(ctx.pos);
 
-        const completion = await jsonService.doComplete(
-          textDocument,
-          position,
-          jsonDocument
-        );
+        const completion = await jsonService.doComplete(textDocument, position, jsonDocument);
 
         return {
           from: ctx.pos,
           options: completion
             ? completion.items.map((item) => ({
                 label: item.label,
-                type:
-                  item.kind === 10
-                    ? "property"
-                    : item.kind === 12
-                    ? "enum"
-                    : "value",
+                type: item.kind === 10 ? "property" : item.kind === 12 ? "enum" : "value",
                 detail: item.detail,
                 info: item.documentation,
               }))
@@ -199,7 +185,7 @@ watch(
     if (editorView && editorView.state.doc.toString() !== newValue) {
       updateEditorValue(newValue);
     }
-  }
+  },
 );
 
 watch(
@@ -207,12 +193,10 @@ watch(
   (newEditable) => {
     if (editorView) {
       editorView.dispatch({
-        effects: editableCompartment.reconfigure(
-          EditorView.editable.of(newEditable)
-        ),
+        effects: editableCompartment.reconfigure(EditorView.editable.of(newEditable)),
       });
     }
-  }
+  },
 );
 
 watch(
@@ -221,7 +205,7 @@ watch(
     configureSchema();
     forceLintRefresh();
   },
-  { deep: true }
+  { deep: true },
 );
 
 const [DefineJsonEditor, ReuseJsonEditor] = createReusableTemplate();
@@ -232,20 +216,12 @@ const [DefineJsonEditor, ReuseJsonEditor] = createReusableTemplate();
     <div class="ink-json-editor" :style="rootStyles">
       <div
         ref="editorRef"
-        :class="[
-          'ink-json-editor__editor',
-          { 'ink-json-editor__editor--readonly': !editable },
-        ]"
+        :class="['ink-json-editor__editor', { 'ink-json-editor__editor--readonly': !editable }]"
       />
     </div>
   </DefineJsonEditor>
 
-  <InkField
-    v-if="useField"
-    :label="label"
-    :layout="fieldLayout"
-    :required="required"
-  >
+  <InkField v-if="useField" :label="label" :layout="fieldLayout" :required="required">
     <ReuseJsonEditor />
   </InkField>
 

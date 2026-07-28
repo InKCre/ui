@@ -35,7 +35,7 @@ watch(
       document.removeEventListener("keydown", handleEscape);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onUnmounted(() => {
@@ -46,12 +46,7 @@ onUnmounted(() => {
 <template>
   <Teleport to="body">
     <Transition name="ink-scrim-fade">
-      <div
-        v-if="open"
-        class="ink-scrim"
-        data-testid="ink-scrim"
-        @click="onScrimClick"
-      >
+      <div v-if="open" class="ink-scrim" data-testid="ink-scrim" @click="onScrimClick">
         <div class="ink-scrim__wrapper">
           <div class="ink-scrim__close-btn" @click.stop>
             <inkButton

@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import {
-  inkImageProps,
-  inkImageEmits,
-  type InkImageErrorPayload,
-} from "./inkImage";
+import { inkImageProps, inkImageEmits, type InkImageErrorPayload } from "./inkImage";
 import InkScrim from "../inkScrim/inkScrim.vue";
 import { useOptionalModel } from "../../composables/use-optional-model";
 
@@ -74,10 +70,7 @@ const handleImageError = (error: Event) => {
     >
       <div class="ink-image__expanded" data-testid="ink-image-expanded">
         <!-- Header -->
-        <div
-          class="ink-image__expanded-header"
-          v-if="$slots['expanded-header']"
-        >
+        <div class="ink-image__expanded-header" v-if="$slots['expanded-header']">
           <slot name="expanded-header"> </slot>
         </div>
 
@@ -93,10 +86,7 @@ const handleImageError = (error: Event) => {
         />
 
         <!-- Footer -->
-        <div
-          v-if="props.title || $slots['expanded-footer']"
-          class="ink-image__expanded-footer"
-        >
+        <div v-if="props.title || $slots['expanded-footer']" class="ink-image__expanded-footer">
           <slot name="expanded-footer">
             <div class="ink-image__expanded-title">
               {{ props.title }}

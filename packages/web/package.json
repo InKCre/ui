@@ -2,6 +2,13 @@
   "name": "@inkcre/ui-web",
   "version": "1.2.2",
   "description": "Design System for InKCre Web Projects",
+  "keywords": [
+    "design-system",
+    "inkcre",
+    "tanstack-intent",
+    "ui",
+    "vue"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/InKCre/ui.git",
@@ -11,7 +18,7 @@
   "files": [
     "dist/",
     "styles/",
-    "agent-skills/",
+    "skills",
     "MIGRATION.md"
   ],
   "type": "module",
@@ -74,9 +81,16 @@
     "build:subpath-types": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --declarationMap false --composite false -p tsconfig.exports.json",
     "build:finalize": "tsx ../../scripts/finalize-package.ts",
     "build:tokens": "tsx ../../scripts/build-tokens.ts",
-    "build:skills": "tsx ../../scripts/build-agent-skills.ts",
+    "build:skills": "pnpm run skill:generate:check",
     "clean": "rimraf dist",
     "preview": "vite preview",
+    "format": "oxfmt --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js vitest.config.ts",
+    "format:check": "oxfmt --check --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js vitest.config.ts",
+    "lint": "oxlint --config .oxlintrc.json src stories histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js vitest.config.ts",
+    "lint:fix": "pnpm run lint --fix",
+    "skill:generate": "tsx ../../scripts/build-agent-skills.ts",
+    "skill:generate:check": "tsx ../../scripts/build-agent-skills.ts --check",
+    "skill:validate": "intent validate",
     "story:dev": "histoire dev",
     "story:build": "histoire build",
     "story:preview": "histoire preview",
@@ -86,15 +100,24 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage"
   },
+  "dependencies": {
+    "@vue/shared": "3.5.25"
+  },
   "devDependencies": {
+    "@codemirror/autocomplete": "^6.20.0",
+    "@codemirror/commands": "^6.10.0",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lint": "^6.9.2",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.38.8",
     "@histoire/plugin-vue": "1.0.0-alpha.5",
     "@iconify-json/mdi": "^1.2.3",
+    "@tanstack/intent": "0.3.6",
     "@unocss/preset-icons": "^66.5.10",
     "@unocss/preset-wind3": "^66.5.10",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/coverage-v8": "^4.0.15",
     "@vitest/ui": "^4.0.15",
-    "@vue/shared": "3.5.25",
     "@vue/test-utils": "^2.4.6",
     "@vueuse/core": "^14.1.0",
     "cpr": "^3.0.1",
@@ -108,9 +131,12 @@
     "vite": "^7.2.7",
     "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.0.15",
+    "vscode-json-languageservice": "^5.6.4",
+    "vscode-languageserver-textdocument": "^1.0.12",
     "vue": "^3.4.0",
     "vue-i18n": "^11.2.7",
-    "vue-tsc": "^3.1.8"
+    "vue-router": "^4.0.0",
+    "vue-tsc": "3.3.8"
   },
   "peerDependencies": {
     "@codemirror/autocomplete": "^6.20.0",

@@ -14,5 +14,5 @@ export const inkInputProps = {
 
 // --- Emits ---
 export const inkInputEmits = {
-  "update:modelValue": (value: string) => true,
+  "update:modelValue": (_value: string) => true,
 } as const;

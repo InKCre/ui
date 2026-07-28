@@ -5,10 +5,7 @@ import { inkButtonProps, inkButtonEmits } from "./inkButton";
 const props = defineProps(inkButtonProps);
 const emit = defineEmits(inkButtonEmits);
 
-const injectedIsLoading = inject<ComputedRef<boolean> | boolean>(
-  "isLoading",
-  false
-);
+const injectedIsLoading = inject<ComputedRef<boolean> | boolean>("isLoading", false);
 
 const isLoading = computed(() => {
   if (typeof injectedIsLoading === "boolean") {

@@ -15,21 +15,12 @@
       <div style="margin: 20px 0">
         <h3>inkField</h3>
         <InkField label="Name" value="John Doe" layout="col" />
-        <InkField
-          label="Email"
-          value="john@example.com"
-          layout="inline"
-          :editable="true"
-        />
+        <InkField label="Email" value="john@example.com" layout="inline" :editable="true" />
       </div>
 
       <div style="margin: 20px 0">
         <h3>inkInput</h3>
-        <InkInput
-          v-model="inputValue"
-          label="Input Field"
-          placeholder="Enter text..."
-        />
+        <InkInput v-model="inputValue" label="Input Field" placeholder="Enter text..." />
         <p>Value: {{ inputValue }}</p>
       </div>
 
