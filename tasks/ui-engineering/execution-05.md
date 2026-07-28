@@ -19,7 +19,7 @@ Execution 05 was explicitly authorized by Sir on 2026-07-27. This record owns th
 - Published `@inkcre/ui-web@1.2.2` to the InKCre GitHub Packages npm registry after confirming that the exact version did not already exist.
 - GitHub reports one version, private visibility, and registry integrity `sha512-26u+VHciYNpPN9BHwwMoqqPWPN56JsNoa1n5ZkfY7aE5Rq/UwUuVgrWpY1tfzRBo9ec+Fvu1IT4lBj8xLhs9ug==`.
 - A disposable empty project installed the exact registry version with lifecycle scripts disabled and successfully imported the package root, version export, and Vue plugin.
-- Linked the package to the current `InKCre/design` source repository. Execution 08 will rename that repository to `InKCre/ui`; no premature remote rename was performed here.
+- Linked the package to the current `InKCre/design` source repository. Execution 07 will rename that repository to `InKCre/ui`; no premature remote rename was performed here.
 - Granted `InKCre/client-web` GitHub Actions access with the `Read` role. No Codespaces access or broader package visibility was added.
 - Kept `@inkcre/web-design@1.2.2` installable and undeclared as deprecated. Consumer manifests remain unchanged until Execution 06.
 
@@ -46,5 +46,6 @@ consumer rollback path.
 
 - `@inkcre/web-design` is not deprecated until Execution 06 completes.
 - `../client-web` manifest, lockfile, aliases, and runtime imports are unchanged until Execution 06.
-- The optional local source overlay remains Execution 07.
-- Remote repository rename and local checkout rename remain Execution 08 and require their own authorization.
+- Remote repository rename and local checkout rename remain Execution 07 and require their own authorization.
+- Web DX and Intent-based Agent Skill delivery remain the separate post-migration Executions 08A and 08B.
+- The optional local source overlay remains Execution 09.

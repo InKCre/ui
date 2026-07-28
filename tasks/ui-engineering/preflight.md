@@ -18,11 +18,12 @@ reproducible baseline
 -> story/behavior baseline
 -> new identity and exact-version publication
 -> registry-backed consumer migration
--> optional source loop
 -> remote rename and external integration smoke
+-> web DX and installed Agent Skill delivery
+-> optional source loop
 ```
 
-The source loop deliberately follows the registry migration. That makes it an optimization of a known-good package relationship instead of a way to conceal missing exports, declarations, or registry access.
+The source loop deliberately follows the registry migration and remote identity closure. That makes it an optimization of a known-good package relationship instead of a way to conceal missing exports, declarations, registry access, or an incomplete repository rename.
 
 ## Isolated Baseline
 
@@ -78,7 +79,7 @@ Migration proof must therefore check the three manifests and lockfile together w
 | Identity/publish | New name is unavailable, first publish gets wrong visibility, or old consumers lose rollback | Check identifiers just-in-time, publish as a new immutable package, install the exact version, retain the old final artifact, and document migration before consumers move. |
 | Consumer | Only one manifest changes, lockfile silently repairs, or legacy Vitest aliases mask the new package | Update all three manifests and the lock in one bounded slice, delete workarounds, run a fresh frozen registry install, and rollback by reverting that consumer slice. |
 | Source loop | Absolute sibling paths leak into Git; Vite blocks external files; Vue is duplicated; source success masks registry defects | Introduce it only after registry migration, keep the path process-scoped, validate exact entries, preserve Vite's workspace root, dedupe peers, and leave manifests/locks byte-identical. |
-| Remote rename | Figma sender still targets `design`; package association or docs point to the old remote; the active tool loses its cwd | Rename last, inventory the external owner first, rely on deterministic workflow proof, run live dispatch afterward, and defer local directory rename to a session boundary. |
+| Remote rename | Figma sender still targets `design`; package association or docs point to the old remote; the active tool loses its cwd | Rename immediately after consumer migration, inventory the external owner first, rely on deterministic workflow proof, run live dispatch afterward, and defer local directory rename to a session boundary. |
 
 ## Deliberately Rejected Complexity
 
@@ -99,7 +100,7 @@ Before Execution 05:
 1. confirm private versus public GitHub Package visibility;
 2. accept the recommended freeze/deprecate/no-wrapper old-package policy or request a compatibility package.
 
-Before Execution 08:
+Before Execution 07:
 
 1. confirm GitHub accepts the `InKCre/ui` rename;
 2. identify the external Figma dispatch owner and update mechanism;

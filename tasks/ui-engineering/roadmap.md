@@ -24,8 +24,10 @@ flowchart LR
   Decisions["Close visibility and compatibility"] --> Identity["05 local identity and publish"]
   Story --> Identity
   Identity --> Consumer["06 registry-backed client migration"]
-  Consumer --> Source["07 optional local source loop"]
-  Source --> Remote["08 remote rename and closure"]
+  Consumer --> Remote["07 remote rename and identity closure"]
+  Remote --> DX["08A web DX and native TypeScript"]
+  DX --> Skills["08B Intent-based skill delivery"]
+  Skills --> Source["09 optional local source loop"]
   RemoteInput["Confirm remote name and dispatch owner"] --> Remote
 ```
 
@@ -41,6 +43,8 @@ Reference: [`partner-up-dev/ui`](https://github.com/partner-up-dev/ui), default 
 - One root pnpm lockfile, explicit Node/pnpm pins, and frozen CI installation.
 - Package-local `verify` composition and explicit `files`/`exports` allowlists.
 - Generated component registry, version, global component types, and `--check` stale-generation gates.
+- Package-local `skills/ui-web`, reviewed semantic seed data, a custom
+  deterministic generator, and pinned TanStack Intent validation.
 - `npm pack` -> extracted fixture -> consumer `vue-tsc` probe for the actual published type surface.
 - Histoire story taxonomy, responsive/background presets, theme bridge, and mechanical story coverage.
 - Changesets release PR, package-local `MIGRATION.md`, and repository metadata with package directory.
@@ -53,6 +57,10 @@ Reference: [`partner-up-dev/ui`](https://github.com/partner-up-dev/ui), default 
 - Histoire coverage proves catalog presence, not behavior, accessibility, interaction, or screenshot stability; the reference has no Vitest, Playwright, or visual-regression suite.
 - Mutable action tags and beta Histoire versions require an explicit InKCre policy rather than blind copying.
 - Source-oriented UniApp exports are platform-specific and are not a model for the compiled web artifact.
+- PartnerUp's custom generator, rather than Intent itself, owns its component
+  extraction and intent/composition content. Its older Intent integration is a
+  reference architecture, not a dependency version or workflow to copy
+  verbatim.
 
 ## Execution 01 — Reproducible Engineering Baseline
 
@@ -216,11 +224,18 @@ Repository configuration owns registry routing. A developer's trusted user confi
 
 ## Execution 06 — Consumer Migration
 
-The registry path becomes green before any source alias is introduced.
+**Status:** implemented, locally verified, and committed in `../client-web` as
+`b08cade` on 2026-07-28; remote CI evidence is pending. See
+[`execution-06.md`](execution-06.md).
+
+The already-published `@inkcre/ui-web@1.2.2` registry path becomes green before
+the producer toolchain, skill delivery, or source loop changes.
 
 ### Planned work
 
-1. After the new package version is published, update all three consumer manifests, the lockfile, runtime/type/style imports, Sass injection, Vite/Vitest configuration, tests, and active documentation.
+1. Update all three consumer manifests to exact `@inkcre/ui-web@1.2.2`, plus
+   the lockfile, runtime/type/style imports, Sass injection, Vite/Vitest
+   configuration, tests, and active documentation.
 2. Remove the old invalid-exports aliases rather than renaming them.
 3. Run the web app, Twitter remote, extension utilities, and repository-wide client gates.
 4. Record the pre-migration manifest and lock revision. Rollback is a bounded revert to that exact old-package state; dual dependencies or a forwarding package are not required.
@@ -231,7 +246,98 @@ The registry path becomes green before any source alias is introduced.
 - All three manifests, the lockfile, and key Vite, Vitest, TypeScript, and Sass configuration are verified together.
 - No active consumer reference to the old package remains outside an approved historical record or migration guide.
 
-## Execution 07 — Opt-In Local UI Source Loop
+## Execution 07 — Remote Rename And Identity Closure
+
+**Status:** explicitly started by Sir on 2026-07-28; just-in-time remote and
+integration preflight is active.
+
+The repository rename now immediately follows consumer migration. At that
+point code, registry package, and all known consumers use the UI identity; the
+remote is the last migration-owned identity boundary. Later engineering
+enhancements should land as ordinary `InKCre/ui` work rather than prolonging
+the transition from `design`.
+
+### Planned work
+
+1. Confirm `InKCre/ui` repository-name availability immediately before mutation; current 404/search absence is encouraging but does not prove that GitHub will accept the rename.
+2. Rename the GitHub repository only after the Execution 06 registry-backed consumer gates pass.
+3. Update local remotes, package repository metadata, Figma dispatch, webhooks, workflows, badges, docs, and clone instructions.
+4. Verify release PR, package publication, GitHub Release, and a fresh clone through deterministic checks. Then run one live Figma dispatch as a supplementary post-rename smoke after the external sender/owner is identified.
+5. Deprecate or freeze the old package according to the approved policy; do not unpublish recoverable artifacts by default.
+6. Rename the local checkout directory only at a user/session boundary so an active development tool does not lose its workspace root.
+
+### Exit proof
+
+- Fresh clone -> frozen install -> root check -> package publish -> consumer install works through the UI identity.
+- The deterministic token-workflow fixture remains green; a live Figma dispatch reaches the renamed repository and produces a changeset-bearing pull request as supplementary integration evidence.
+- Rollback instructions and retained artifacts are tested and recorded.
+
+## Execution 08A — Web DX And Native TypeScript
+
+**Status:** planned and not authorized. See
+[`execution-08a.md`](execution-08a.md).
+
+This slice gives `packages/web` direct lint/format/fix ergonomics, closes its
+clean-checkout source-development dependency gaps, and adopts the native
+TypeScript 7 checker through an exact-pinned classic-API bridge after one-time
+stock/compiler parity proof.
+
+### Key boundaries
+
+- The leaf package owns web editing commands and focused Oxc configuration;
+  the root keeps CI orchestration.
+- TypeScript resolution remains workspace-wide so `tsc`, `vue-tsc`, Volar,
+  `tsx`, Vite declaration tooling, and subpath declaration emit do not load
+  incompatible compiler hosts.
+- Vue-aware Oxlint and Oxfmt are required; Oxlint's type-aware/type-check mode
+  is not. `vue-tsc` remains authoritative for Vue virtual files.
+- The bridge becomes canonical only after the complete root and packed-package
+  contracts pass; no permanent TS5/TS7 dual lane is retained.
+
+### Exit proof
+
+- A disposable frozen installation can develop, type-check, test, format,
+  lint, and build `packages/web` without stale workspace dependencies.
+- Component source, Vue SFCs, stories, tests, and styles are covered by the
+  package-local Oxc commands.
+- The exact native bridge is active throughout type/declaration generation and
+  passes macOS arm64 local plus Ubuntu glibc CI proof.
+- The cutover is a bounded dependency/config/lockfile revert.
+
+## Execution 08B — Intent-Based Agent Skill Delivery
+
+**Status:** planned and not authorized. See
+[`execution-08b.md`](execution-08b.md).
+
+This slice replaces the non-discoverable `agent-skills/` documentation
+categories with one installed-package `skills/ui-web` intent router, curated
+composition knowledge, progressively disclosed generated references, and a
+real TanStack Intent package contract.
+
+### Key boundaries
+
+- Intent owns path/schema validation, discovery, trust allowlisting, and
+  installed-version loading.
+- The InKCre generator owns component authority, Vue/TypeScript/story facts,
+  reviewed intent/composition seed data, reference generation, and
+  deterministic stale checks.
+- `agent-skills/` is removed rather than mirrored because repository/consumer
+  searches find no direct use of that path and the old path is not an Intent
+  discovery contract.
+- `intent stale` is informational until meaningful source/sync metadata is
+  proven; an empty result is not accepted as freshness evidence.
+
+### Exit proof
+
+- Pinned Intent validates the package without packaging warnings.
+- The packed artifact is discoverable and loadable as
+  `@inkcre/ui-web#ui-web` from a disposable explicitly allowlisted consumer.
+- Custom generation checks catch component, story/source, seed, and reference
+  drift.
+- A reviewed Changeset and exact registry publication upgrade the
+  already-migrated consumer through the normal release path.
+
+## Execution 09 — Opt-In Local UI Source Loop
 
 This is a fast development lane, never the release contract.
 
@@ -287,7 +393,9 @@ With the source overlay disabled:
 1. Build the UI package.
 2. Pack it into an explicit temporary directory.
 3. Install/extract it only inside a disposable consumer fixture and run Node, TypeScript, Sass, CSS, locale, utility, and UnoCSS probes.
-4. Stop at the disposable package consumer for producer-side pre-publish verification. A real registry install belongs to the later consumer migration after the target version exists.
+4. Stop at the disposable package consumer for producer-side pre-publish
+   verification. Registry upgrade proof belongs to the normal post-08B release
+   path, not this source overlay.
 
 If the source lane passes while the packed lane fails, release is blocked. This prevents aliases from hiding missing files, invalid exports, or declaration leaks.
 
@@ -298,23 +406,6 @@ If the source lane passes while the packed lane fails, release is blocked. This 
 - Source-mode startup prints one clear non-release banner containing the resolved package root but no credential or unrelated machine state.
 - The default check and CI never enable the overlay.
 
-## Execution 08 — Remote Rename And Release Closure
-
-### Planned work
-
-1. Confirm `InKCre/ui` repository-name availability immediately before mutation; current 404/search absence is encouraging but does not prove that GitHub will accept the rename.
-2. Rename the GitHub repository only after package and consumer gates pass.
-3. Update local remotes, package repository metadata, Figma dispatch, webhooks, workflows, badges, docs, and clone instructions.
-4. Verify release PR, package publication, GitHub Release, and a fresh clone through deterministic checks. Then run one live Figma dispatch as a supplementary post-rename smoke after the external sender/owner is identified.
-5. Deprecate or freeze the old package according to the approved policy; do not unpublish recoverable artifacts by default.
-6. Rename the local checkout directory only at a user/session boundary so an active development tool does not lose its workspace root.
-
-### Exit proof
-
-- Fresh clone -> frozen install -> root check -> package publish -> consumer install works through the UI identity.
-- The deterministic token-workflow fixture remains green; a live Figma dispatch reaches the renamed repository and produces a changeset-bearing pull request as supplementary integration evidence.
-- Rollback instructions and retained artifacts are tested and recorded.
-
 ## Review And Rollback Gates
 
 - Naming: repository, private workspace, directory, package, generated skill, dev route, and domain vocabulary are classified separately.
@@ -322,7 +413,13 @@ If the source lane passes while the packed lane fails, release is blocked. This 
 - Auth: routing and credential authority remain separate; logs contain no secrets.
 - Story: catalog coverage does not substitute for behavior or visual assertions.
 - Source loop: no local alias result is accepted as release proof.
-- Cross-repository: producer publication precedes consumer mutation.
+- Native tooling: one workspace TypeScript host feeds every compiler consumer;
+  Oxlint does not impersonate the Vue declaration checker.
+- Agent guidance: installed tarball discovery/load and custom semantic
+  generation are separate required proofs.
+- Cross-repository: the proven `1.2.2` producer publication precedes consumer
+  mutation; later DX and Skill releases do not redefine migration success.
 - Compatibility: use a documented exact-version and commit rollback; do not add a verification framework whose only purpose is to restate static searches and frozen-install results.
-- Remote: GitHub rename is last and never relied on as the only rollback mechanism.
+- Remote: GitHub rename follows the registry-backed consumer migration
+  immediately and is never relied on as the only rollback mechanism.
 - Rollback: published versions remain immutable; recover by dependency rollback, forward fix, or explicit deprecation rather than destructive unpublish.
