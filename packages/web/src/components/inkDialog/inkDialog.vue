@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, provide, readonly } from "vue";
-import {
-  inkDialogProps,
-  inkDialogEmits,
-  type DialogPosition,
-} from "./inkDialog";
+import { inkDialogProps, inkDialogEmits, type DialogPosition } from "./inkDialog";
 import InkButton from "../inkButton/inkButton.vue";
 import InkPopup from "../inkPopup/inkPopup.vue";
 import { useOptionalI18n } from "../../i18n";
@@ -34,7 +30,7 @@ watch(
   (val) => {
     updateCurrentValue(val);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const open = computed({
@@ -74,11 +70,7 @@ const handleConfirm = () => {
 </script>
 
 <template>
-  <InkPopup
-    v-model:open="open"
-    :position="props.position"
-    :close-on-scrim="props.closeOnScrim"
-  >
+  <InkPopup v-model:open="open" :position="props.position" :close-on-scrim="props.closeOnScrim">
     <div class="ink-dialog">
       <div v-if="$slots.header || title || subtitle" class="ink-dialog__header">
         <slot name="header">
@@ -88,24 +80,12 @@ const handleConfirm = () => {
       </div>
 
       <div class="ink-dialog__content">
-        <slot
-          :cancel="handleCancel"
-          :confirm="handleConfirm"
-          :isLoading="isLoading"
-        ></slot>
+        <slot :cancel="handleCancel" :confirm="handleConfirm" :isLoading="isLoading"></slot>
       </div>
 
-      <div
-        v-if="$slots.footer || showCancel || showConfirm"
-        class="ink-dialog__footer"
-      >
+      <div v-if="$slots.footer || showCancel || showConfirm" class="ink-dialog__footer">
         <slot name="footer">
-          <InkButton
-            v-if="showCancel"
-            :text="cCancelText"
-            theme="subtle"
-            @click="handleCancel"
-          />
+          <InkButton v-if="showCancel" :text="cCancelText" theme="subtle" @click="handleCancel" />
           <InkButton
             v-if="showConfirm"
             :text="cConfirmText"

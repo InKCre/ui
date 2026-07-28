@@ -19,14 +19,14 @@ const {
   {
     immediate: true,
     resetOnExecute: false,
-  }
+  },
 );
 
 watch(
   () => props.modelValue,
   async (newVal) => {
     await execute();
-  }
+  },
 );
 
 const switchClass = computed(() => [
@@ -35,13 +35,9 @@ const switchClass = computed(() => [
   { "ink-switch--on": currentValue.value },
 ]);
 
-const labelText = computed(() =>
-  currentValue.value ? props.onText : props.offText
-);
+const labelText = computed(() => (currentValue.value ? props.onText : props.offText));
 
-const isSwitching = computed(
-  () => props.isSwitching || isSwitchingInternal.value
-);
+const isSwitching = computed(() => props.isSwitching || isSwitchingInternal.value);
 
 const handleClick = () => {
   if (!isSwitching.value) {
@@ -53,9 +49,7 @@ const handleClick = () => {
 <template>
   <button :class="switchClass" @click="handleClick">
     <div class="ink-switch__handle">
-      <span v-if="props.showLabel && !isSwitching" class="ink-switch__label">{{
-        labelText
-      }}</span>
+      <span v-if="props.showLabel && !isSwitching" class="ink-switch__label">{{ labelText }}</span>
       <span v-if="isSwitching" class="i-mdi-loading animate-spin"></span>
     </div>
   </button>

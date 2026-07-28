@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, ref, watch, onMounted } from "vue";
 import { createReusableTemplate } from "@vueuse/core";
-import {
-  inkDropdownProps,
-  inkDropdownEmits,
-  type DropdownOption,
-} from "./inkDropdown";
+import { inkDropdownProps, inkDropdownEmits, type DropdownOption } from "./inkDropdown";
 import InkField from "../inkField/inkField.vue";
 import InkButton from "../inkButton/inkButton.vue";
 import { INK_FORM_CONTEXT_KEY } from "../inkForm/inkForm";
@@ -36,9 +32,7 @@ const optionsModel = useOptionalModel<DropdownOption[]>({
 
 // --- computed ---
 const displayValue = computed(() => {
-  const option = optionsModel.value.find(
-    (opt) => opt.value === props.modelValue
-  );
+  const option = optionsModel.value.find((opt) => opt.value === props.modelValue);
   return option ? option.label : props.placeholder;
 });
 
@@ -237,9 +231,7 @@ watch(searchText, (newVal) => {
 // Load lazy options immediately if modelValue is set
 onMounted(() => {
   const hasModelValue =
-    props.modelValue !== undefined &&
-    props.modelValue !== null &&
-    props.modelValue !== "";
+    props.modelValue !== undefined && props.modelValue !== null && props.modelValue !== "";
   const hasRefresher = props.refresher !== undefined;
   const hasNoOptions = optionsModel.value.length === 0;
 
@@ -282,10 +274,7 @@ const [DefineDropdown, ReuseDropdown] = createReusableTemplate();
         />
         <span v-else class="ink-dropdown__value">{{ displayValue }}</span>
 
-        <span
-          v-if="editable"
-          :class="['i-mdi-chevron-down', 'ink-dropdown__chevron']"
-        ></span>
+        <span v-if="editable" :class="['i-mdi-chevron-down', 'ink-dropdown__chevron']"></span>
       </div>
 
       <!-- Stepping Buttons -->
@@ -349,12 +338,7 @@ const [DefineDropdown, ReuseDropdown] = createReusableTemplate();
     </div>
   </DefineDropdown>
 
-  <InkField
-    v-if="useField"
-    :label="label"
-    :layout="fieldLayout"
-    :required="required"
-  >
+  <InkField v-if="useField" :label="label" :layout="fieldLayout" :required="required">
     <ReuseDropdown />
   </InkField>
 

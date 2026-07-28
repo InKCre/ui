@@ -13,7 +13,9 @@
     background-color: sys-var(color, surface, subtle);
     color: sys-var(color, text, base);
     cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease,
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
       opacity 0.2s ease;
     border-radius: sys-var(radius, none);
     @include apply-icon(md);
@@ -33,7 +35,9 @@
     background-color: transparent;
     color: sys-var(color, text, base);
     cursor: pointer;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
     border-radius: sys-var(radius, none);
     @include apply-font(label-lg);
 

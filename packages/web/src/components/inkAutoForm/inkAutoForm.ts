@@ -45,7 +45,7 @@ export const inkAutoFormProps = {
 
 // --- Emits ---
 export const inkAutoFormEmits = {
-  "update:formData": (value: Record<string, any>) => true,
+  "update:formData": (_value: Record<string, any>) => true,
 } as const;
 
 // --- Utilities ---
@@ -53,9 +53,7 @@ export const inkAutoFormEmits = {
 /**
  * Maps JSON Schema property to appropriate form control component
  */
-export function mapSchemaPropertyToComponent(
-  property: JSONSchemaProperty
-): FieldComponentMapping {
+export function mapSchemaPropertyToComponent(property: JSONSchemaProperty): FieldComponentMapping {
   const { type, enum: enumValues, format, maxLength } = property;
 
   // Boolean -> Switch
@@ -81,8 +79,7 @@ export function mapSchemaPropertyToComponent(
 
   // String with date/time format -> Picker
   if (type === "string" && format) {
-    const pickerType =
-      format === "date-time" ? "datetime" : format === "time" ? "time" : "date";
+    const pickerType = format === "date-time" ? "datetime" : format === "time" ? "time" : "date";
     return {
       component: "inkPicker",
       props: {
@@ -126,20 +123,13 @@ export function mapSchemaPropertyToComponent(
 export async function validateFormData(
   formData: Record<string, any>,
   schema: JSONSchema,
-  jsonService: any
+  jsonService: any,
 ): Promise<{ valid: boolean; errors: Record<string, string[]> }> {
   try {
     const jsonString = JSON.stringify(formData, null, 2);
-    const TextDocument = await import("vscode-json-languageservice").then(
-      (m) => m.TextDocument
-    );
+    const TextDocument = await import("vscode-json-languageservice").then((m) => m.TextDocument);
 
-    const doc = TextDocument.create(
-      "autoform://form-data.json",
-      "json",
-      0,
-      jsonString
-    );
+    const doc = TextDocument.create("autoform://form-data.json", "json", 0, jsonString);
     const jsonDocument = jsonService.parseJSONDocument(doc);
 
     // Configure schema

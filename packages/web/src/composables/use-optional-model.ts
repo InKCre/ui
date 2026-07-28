@@ -30,7 +30,7 @@ export function useOptionalModel<T>(options: {
       if (val !== undefined) {
         inner.value = val as T;
       }
-    }
+    },
   );
 
   return computed<T>({

@@ -51,9 +51,7 @@ const fields = computed(() => {
   const required = props.schema.required || [];
 
   for (const [key, property] of Object.entries(properties)) {
-    const mapping = mapSchemaPropertyToComponent(
-      property as JSONSchemaProperty
-    );
+    const mapping = mapSchemaPropertyToComponent(property as JSONSchemaProperty);
 
     result.push({
       key,
@@ -78,11 +76,7 @@ const updateFieldValue = (key: string, value: any) => {
 };
 
 const performValidation = async () => {
-  const result = await validateFormData(
-    internalFormData.value,
-    props.schema,
-    jsonService
-  );
+  const result = await validateFormData(internalFormData.value, props.schema, jsonService);
   validationErrors.value = result.errors;
 };
 
@@ -93,7 +87,7 @@ watch(
   (newData) => {
     internalFormData.value = { ...newData };
   },
-  { deep: true }
+  { deep: true },
 );
 
 watch(
@@ -115,7 +109,7 @@ watch(
       emit("update:formData", { ...newData });
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Validate on data change
@@ -124,7 +118,7 @@ watch(
   () => {
     performValidation();
   },
-  { deep: true }
+  { deep: true },
 );
 
 // --- lifecycle hooks ---
@@ -139,11 +133,7 @@ watch(
     </div>
 
     <template v-else>
-      <div
-        v-for="field in fields"
-        :key="field.key"
-        class="ink-auto-form__field"
-      >
+      <div v-for="field in fields" :key="field.key" class="ink-auto-form__field">
         <!-- String Input -->
         <InkInput
           v-if="field.component === 'inkInput'"
@@ -197,10 +187,7 @@ watch(
         />
 
         <!-- Validation Errors -->
-        <div
-          v-if="validationErrors[field.key]"
-          class="ink-auto-form__field-errors"
-        >
+        <div v-if="validationErrors[field.key]" class="ink-auto-form__field-errors">
           <span
             v-for="(error, idx) in validationErrors[field.key]"
             :key="idx"

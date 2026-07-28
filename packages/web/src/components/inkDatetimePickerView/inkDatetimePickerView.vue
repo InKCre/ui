@@ -86,12 +86,11 @@ const updateModelValue = () => {
     selectedMonth.value,
     selectedDay.value,
     selectedHour.value,
-    selectedMinute.value
+    selectedMinute.value,
   );
 
   const isWithinRange =
-    (!props.minDate || newDate >= props.minDate) &&
-    (!props.maxDate || newDate <= props.maxDate);
+    (!props.minDate || newDate >= props.minDate) && (!props.maxDate || newDate <= props.maxDate);
 
   if (isWithinRange) {
     emit("update:modelValue", newDate);
@@ -143,8 +142,8 @@ const onAmPmChange = (period: string) => {
         ? 12
         : currentHour12 + 12
       : currentHour12 === 12
-      ? 0
-      : currentHour12;
+        ? 0
+        : currentHour12;
     updateModelValue();
   }
 };
@@ -166,7 +165,7 @@ watch(
     selectedDay.value = newValue.getDate();
     selectedHour.value = newValue.getHours();
     selectedMinute.value = newValue.getMinutes();
-  }
+  },
 );
 </script>
 
@@ -182,8 +181,7 @@ watch(
             :class="[
               'ink-datetime-picker-view__option',
               {
-                'ink-datetime-picker-view__option--selected':
-                  year === selectedYear,
+                'ink-datetime-picker-view__option--selected': year === selectedYear,
               },
             ]"
             @click="onYearChange(year)"
@@ -202,8 +200,7 @@ watch(
             :class="[
               'ink-datetime-picker-view__option',
               {
-                'ink-datetime-picker-view__option--selected':
-                  month.value === selectedMonth,
+                'ink-datetime-picker-view__option--selected': month.value === selectedMonth,
               },
             ]"
             @click="onMonthChange(month.value)"
@@ -222,8 +219,7 @@ watch(
             :class="[
               'ink-datetime-picker-view__option',
               {
-                'ink-datetime-picker-view__option--selected':
-                  day === selectedDay,
+                'ink-datetime-picker-view__option--selected': day === selectedDay,
               },
             ]"
             @click="onDayChange(day)"
@@ -242,8 +238,7 @@ watch(
             :class="[
               'ink-datetime-picker-view__option',
               {
-                'ink-datetime-picker-view__option--selected':
-                  hour === displayHour,
+                'ink-datetime-picker-view__option--selected': hour === displayHour,
               },
             ]"
             @click="onHourChange(hour)"
@@ -262,8 +257,7 @@ watch(
             :class="[
               'ink-datetime-picker-view__option',
               {
-                'ink-datetime-picker-view__option--selected':
-                  minute === padZero(selectedMinute),
+                'ink-datetime-picker-view__option--selected': minute === padZero(selectedMinute),
               },
             ]"
             @click="onMinuteChange(minute)"
@@ -273,10 +267,7 @@ watch(
         </div>
       </div>
 
-      <div
-        v-if="showTime && hourFormat === '12'"
-        class="ink-datetime-picker-view__column"
-      >
+      <div v-if="showTime && hourFormat === '12'" class="ink-datetime-picker-view__column">
         <div class="ink-datetime-picker-view__label">Period</div>
         <div class="ink-datetime-picker-view__options">
           <div

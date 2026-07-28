@@ -8,8 +8,7 @@ export interface InkFormContext {
 }
 
 // -- Constants ---
-export const INK_FORM_CONTEXT_KEY: InjectionKey<InkFormContext> =
-  Symbol("ink-form");
+export const INK_FORM_CONTEXT_KEY: InjectionKey<InkFormContext> = Symbol("ink-form");
 
 // --- Props ---
 export const inkFormProps = {
@@ -26,5 +25,5 @@ export const formControlCommonProps = {
 
 // --- Emits ---
 export const inkFormEmits = {
-  submit: (e: Event) => true,
+  submit: (_event: Event) => true,
 } as const;

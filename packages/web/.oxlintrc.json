@@ -1,0 +1,17 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "oxc", "typescript", "unicorn", "vue", "vitest"],
+  "options": {
+    "denyWarnings": true,
+    "reportUnusedDisableDirectives": "error"
+  },
+  "overrides": [
+    {
+      "files": ["src/components/inkPicker/inkPicker.vue"],
+      "rules": {
+        "vue/valid-define-emits": "off",
+        "vue/valid-define-props": "off"
+      }
+    }
+  ]
+}

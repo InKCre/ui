@@ -3,34 +3,34 @@
 - **Objective**: establish a reproducible, agent-friendly engineering and development contract for the InKCre UI library, then migrate the repository and published package identity from `design` to `ui` without carrying existing package-contract defects into the new identity. Complete the registry-backed consumer migration and remote identity closure against the already-published artifact before making the web package a first-class Oxc/native-TypeScript development unit and replacing its nominal Agent Skill delivery with an installed-package TanStack Intent contract.
 - **Guardrails**: preserve current product behavior, Vue component APIs (`Ink*`), CSS classes (`.ink-*`), and token contracts (`--ref-*`, `--sys-*`, `--comp-*`) unless a separate breaking-change decision is explicitly approved; retain accurate domain terms such as “Design System” and “design tokens” instead of mechanically replacing every `design` string; keep `tokens/inkcre.tokens.json` authoritative and generated Sass, UnoCSS, component facts, and Agent Skill references derived; keep reviewed intent/composition guidance explicit rather than inferring product judgment from source syntax; treat the published tarball rather than a source alias as the consumer contract; preserve the frozen-install contract in `../client-web`; keep repository, package, consumer, and remote-governance changes in bounded slices; do not implement, commit, publish, rename a remote repository, or mutate `../client-web` until Sir explicitly starts the relevant slice.
 - **Verification**: prove one pinned runtime and one lockfile can reproduce installation; provide one green root check covering package-local formatting/linting, one workspace TypeScript host, Vue type/declaration checking, tests, build, generator consistency, Intent validation/load, and package-contract smoke tests; verify the packed target web package through its JavaScript, types, CSS, Sass, token, locales, utilities, UnoCSS, and installed skill surfaces; run the complete `../client-web` check and affected extension builds against the published package; confirm generated artifacts are deterministic; confirm release and token-update workflows produce the required changeset and package through a deterministic workflow fixture; verify active code, configuration, and consumer documentation no longer depend on the old identity except for an explicitly approved historical or compatibility surface; verify GitHub Packages and remote URLs after the repository rename, with a live Figma dispatch retained as a post-deployment smoke rather than the only gate.
-- **Current Truth**: Executions 01 and 02 are committed as `b1e0d6a` and `322dcf6`; Executions 03 through 05 are committed together as `5d05693`; the producer packet is committed as `1d4ab92`. Execution 06 is committed and pushed in `../client-web` as `b08cade`: all three known importers use exact `@inkcre/ui-web@1.2.2`, active old-name references and direct UI filesystem aliases are gone, and complete client checks pass before and after the producer rename. The GitHub repository is now `InKCre/ui` with the same repository ID, the local remote and private package association follow the new identity, fresh-clone and Release checks pass, and default Actions authority is read-only. Release PR #31 exposed two initial closure defects: generated `version.ts` was not updated by Changesets, and Cloudflare Pages used the removed `web-design` package filter/output path. Commit `a423ea0` fixed generated versioning and refreshed the PR with matching `1.2.3` manifest/version metadata; Cloudflare now builds with `pnpm story` and `packages/web/.histoire/dist`, and its previews pass. The refreshed workspace check is green, but the final changeset gate exposed that release PR deletions were read as existing files. The local follow-up recognizes generated version-only diffs and ignores deleted changeset paths; actual-release and negative fixtures pass. Live Figma integration remains an external handoff.
-- **Next Step**: commit and push Sir's authorized changeset-gate follow-up, and require the workspace check only after the refreshed PR is fully green. Make a separate explicit decision before merging/publishing. The local checkout directory rename remains deferred to a session boundary.
+- **Current Truth**: Executions 01–05 and the producer packet are committed in `b1e0d6a`, `322dcf6`, `5d05693`, and `1d4ab92`; Execution 06 is committed and pushed in `../client-web` as `b08cade`. The GitHub repository is `InKCre/ui`, the local remote and private package association follow it, and remote identity fixes are committed through `59ec82f`. Release PR #31 is open and clean with both the reproducible workspace and Cloudflare checks passing; it has not yet been merged or published. Executions 08A and 08B plus their minor Changeset are complete: `packages/web` has package-local Oxc workflows, the exact TypeScript native bridge is canonical, a valid full declaration tree replaces the incompatible bridge/API-Extractor rollup, and one deterministic `@inkcre/ui-web#ui-web` Intent skill replaces `agent-skills/`. Both the working checkout and a disposable frozen-install copy pass the complete root check. Sir authorized the bounded commit and PR #31 merge; Ubuntu CI, the refreshed exact registry version, and its installed-skill probe are the remaining release gates. Live Figma integration remains an external handoff.
+- **Next Step**: land the bounded 08A/08B commit, prove Ubuntu glibc CI, confirm the release PR refresh, then merge PR #31 and verify the exact published package through an installed-skill consumer probe. The local checkout directory rename remains deferred to a session boundary.
 
 ## Classification And Active Posture
 
 - Constraint: engineering, package, registry, workspace, CI, and cross-repository development boundaries must change while product behavior remains stable.
 - Reality: the producer package, first registry artifact, source association, known-consumer Actions read boundary, and local registry-backed consumer graph are green. The migration artifact is frozen at `@inkcre/ui-web@1.2.2`; newly requested Oxc/native-TypeScript and installed Agent Skill contracts follow remote identity closure rather than redefining it.
 - Artifact: this packet, the phased migration plan, package-contract fixture, story-coverage gate, web-DX and Intent task files, migration guide, and execution evidence.
-- Active posture: Migrate. The Execution 07 remote identity is applied and
-  proven; release/Cloudflare/governance integration closure is active.
+- Active posture: Harden. The migration and known-consumer graph are proven;
+  the producer-DX and installed-skill baseline awaits remote CI and normal
+  release closure.
 
 ## Evidence Snapshot
 
 - `package.json` now carries the private `@inkcre/ui` workspace identity and exposes the pinned toolchain and canonical root development/check commands.
-- `packages/web/package.json` names `@inkcre/ui-web@1.2.2`, publishes to GitHub Packages with restricted access, and exposes only built JavaScript, declarations, CSS, Sass, token, locale, utility, and UnoCSS surfaces.
-- `scripts/lib/ui-package.ts` resolves the renamed package once; token, package-metadata, and Agent Skill generators derive their outputs from repository and manifest authority instead of caller cwd.
+- `packages/web/package.json` names `@inkcre/ui-web@1.2.2`, publishes to GitHub Packages with restricted access, and exposes only built JavaScript, declarations, CSS, Sass, token, locale, utility, UnoCSS, migration, and `skills/` surfaces.
+- `scripts/lib/ui-package.ts` resolves the renamed package once; token, package-metadata, and Intent skill generators derive their outputs from repository and manifest authority instead of caller cwd.
 - `.github/workflows/ci.yml` runs the root frozen-install contract, generated-output gates, story coverage, tests, build, packed contract, and Histoire smoke with read-only contents permission. The token-update workflow validates input and creates a deterministic package changeset.
 - `.npmrc` contains only the `@inkcre` registry route. Local credentials belong to trusted user configuration, and CI publication credentials exist only on the release step.
-- The root does not claim publication metadata. `@inkcre/ui-web` owns its future `InKCre/ui` repository link, package directory, restricted access policy, and GitHub Packages registry; GitHub currently links the package to `InKCre/design` until Execution 07 renames the repository.
+- The root does not claim publication metadata. `@inkcre/ui-web` owns its `InKCre/ui` repository link, package directory, restricted access policy, and GitHub Packages registry; GitHub links the private package to `InKCre/ui`.
 - The package manifest lists 21 public components; a mechanical gate proves exactly 21 stories, 21 story documents, and 108 variants across six user-facing categories.
 - The revised suite passes 104 behavior-focused tests in 12 files. Ten public components without focused tests remain a visible behavior-test backlog.
-- Declaration diagnostics fail the build; rolled declarations contain no `.pnpm`, relative `node_modules`, or private source-path leaks.
-- Package metadata, tokens, and Agent Skills regenerate repeatably, and the root check reports stale generated files without requiring a clean Git worktree.
-- Oxlint `1.75.0` and Oxfmt `0.60.0` are currently root dependencies. The web package has neither package-local commands nor focused configuration, and the root formatter does not check `packages/web/src`.
-- TypeScript `7.0.2` is native but cannot directly satisfy `vue-tsc`'s classic programmatic API. The exact bridge candidate tested on macOS keeps a TypeScript 6.0.3 host and uses the TypeScript 7.0.2 checker.
-- A disposable bridge probe initially exposed undeclared web source-development peers and missing Sass/Uno ambient declarations. After supplying those prerequisites, root type checking, `vue-tsc`, Vite declarations, subpath declarations, and the complete web build passed.
-- Oxlint type-aware/type-check probing is not a Vue replacement: it rejected the removed `baseUrl` option and could not resolve Volar `.vue` virtual modules. Standard Vue-aware Oxlint plus authoritative `vue-tsc` is the planned boundary.
-- TanStack Intent `0.3.6` reports no `skills/` directory in the current package. It does not discover `agent-skills/`; the current package therefore ships documentation files but not a mechanically proven installed skill contract.
+- Declaration diagnostics fail the build. The bridge-backed full declaration tree normalizes Vue declaration names inside `dist`; the packed contract resolves every relative type import, rejects undeclared external type packages, and contains no workspace/private source-path leaks.
+- Package metadata, tokens, and the 27-file Intent skill regenerate repeatably. Two skill passes have aggregate SHA-1 `e440b025445006c64e151b0c0f5adf51de3d24c7`, and seed/story stale fixtures fail as intended.
+- Oxlint `1.75.0` and Oxfmt `0.60.0` are pinned at the root and exposed through focused package-local web commands. The root gate checks Vue/TypeScript source, tests, stories, styles, and configuration without Oxlint's incomplete Vue type-aware mode.
+- The exact workspace override uses `typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2`. Root `tsc`, `vue-tsc`, Vite declaration generation, and subpath declaration generation load one classic host backed by TypeScript 7; removing the override restores stock `typescript@5.9.3`.
+- A same-source stock compiler copy and the bridge build pass with the same declaration file set. A separate artifact-free copy passes frozen installation and the complete bridge-backed root check on macOS arm64.
+- TanStack Intent `0.3.6` validates one canonical `skills/ui-web` skill. Both packed identities are discoverable and loadable from an explicitly allowlisted disposable consumer; `agent-skills/` and the maintainer seed are excluded.
 - `partner-up-dev/ui` uses a package-local `skills/ui-web` surface and pinned Intent validation, but its custom generator and reviewed seed—not Intent—own component facts, composition guidance, caveats, and deterministic output.
 - `../client-web/apps/client-web/vitest.config.ts` no longer bypasses the UI exports map; its four old direct filesystem aliases were removed.
 - `../client-web` has three exact `@inkcre/ui-web@1.2.2` importers: the web app, extension development utilities, and the Twitter remote. The browser extension does not consume it.
@@ -93,21 +93,19 @@ flowchart LR
 - Execution 05 implementation evidence: [`execution-05.md`](execution-05.md)
 - Execution 06 implementation evidence: [`execution-06.md`](execution-06.md)
 - Execution 07 implementation evidence: [`execution-07.md`](execution-07.md)
-- Execution 08A implementation plan and preflight: [`execution-08a.md`](execution-08a.md)
-- Execution 08B implementation plan and preflight: [`execution-08b.md`](execution-08b.md)
+- Execution 08A implementation and local evidence: [`execution-08a.md`](execution-08a.md)
+- Execution 08B implementation and local evidence: [`execution-08b.md`](execution-08b.md)
 - External engineering reference: [`partner-up-dev/ui`](https://github.com/partner-up-dev/ui)
 
 ## Open Decisions
 
-There are no unresolved naming or architecture decisions inside the completed
-Execution 06 diff. Execution 07 still requires the Cloudflare correction,
-release/publish decision, required-check closure, and external Figma dispatch
-ownership confirmation. For Execution
-08A, the recommended compiler posture is one
-exact-pinned bridge-backed TypeScript host after a one-time stock parity check,
-not a permanent dual toolchain. For Execution 08B, the recommended skill
-posture is one clean `skills/ui-web` intent router with no `agent-skills/`
-mirror unless new direct consumer evidence appears before implementation.
+There are no unresolved naming or Execution 08 architecture decisions. The
+chosen compiler posture is one exact-pinned bridge-backed TypeScript host, and
+the chosen delivery posture is one clean `skills/ui-web` Intent router with no
+`agent-skills/` mirror. The 08A/08B commit and release-PR merge are authorized.
+Remaining operational gates are remote CI, exact publication and registry
+probing; remaining decisions are whether to install the proven workspace check
+as required and who owns the supplementary live Figma dispatch.
 
 The package remains private/restricted, and the old package is frozen for
 rollback, retained without a forwarding wrapper, and deprecated only after
@@ -172,3 +170,9 @@ SVC adoption is no longer on this task's critical path. The recommended disposit
 - 2026-07-28: commit `a423ea0` connected Changesets to deterministic package-metadata regeneration; the refreshed release PR carries matching `1.2.3` manifest and generated version values.
 - 2026-07-28: the refreshed PR passed its complete workspace check, then exposed an `ENOENT` in the final changeset gate because release PR deletions were treated as readable current files. A bounded deletion-aware follow-up passes the actual release diff and a negative missing-changeset fixture.
 - 2026-07-28: Sir explicitly authorized the bounded changeset-gate follow-up commit.
+- 2026-07-28: the changeset-gate follow-up was committed and pushed as `59ec82f`; release PR #31 now reports a clean merge state with both reproducible workspace and Cloudflare checks passing.
+- 2026-07-28: Sir explicitly started Executions 08A and 08B.
+- 2026-07-28: package-local Oxc workflows, the exact TypeScript native bridge, clean-checkout peer and ambient declarations, editor settings, and a bridge-compatible declaration tree were implemented. Stock and bridge builds expose the same declaration file topology.
+- 2026-07-28: the package moved from non-discoverable `agent-skills/` folders to one generated `skills/ui-web` Intent router backed by reviewed seed data, component/source facts, story facts, deterministic checks, and packed installed-package discovery/load proof.
+- 2026-07-28: both the working checkout and an artifact-free frozen-install copy pass the complete root check on macOS arm64. Ubuntu glibc CI and exact-version registry proof remain post-commit gates; no commit or publication was made in this implementation turn.
+- 2026-07-28: Sir explicitly authorized the combined 08A/08B commit, merge of the refreshed release PR #31, and post-release verification before starting Execution 09.

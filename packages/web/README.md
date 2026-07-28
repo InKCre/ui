@@ -14,12 +14,12 @@ pnpm add @inkcre/ui-web
 
 ```typescript
 // main.ts
-import { createApp } from 'vue'
-import InKCreUIWeb from '@inkcre/ui-web'  // optional
-import "@inkcre/ui-web/styles" // must
+import { createApp } from "vue";
+import InKCreUIWeb from "@inkcre/ui-web"; // optional
+import "@inkcre/ui-web/styles"; // required once
 
-const app = createApp(App)
-app.use(InKCreUIWeb)
+const app = createApp(App);
+app.use(InKCreUIWeb);
 ```
 
 ```scss
@@ -59,11 +59,15 @@ export default defineConfig({
 
 ### Use routing
 
-InkHeader and some other components can integrate with your router. See `agent-skills/router/SKILL.md` for setup instructions.
+InkHeader and other components can consume a router adapter. Load
+`@inkcre/ui-web#ui-web` through TanStack Intent and read
+`references/integration.md` for the package boundary.
 
 ### Use internationalization (i18n)
 
-The design system supports internationalization. See `agent-skills/i18n/SKILL.md` for setup instructions with vue-i18n.
+The design system supports internationalization through the same adapter
+boundary. The installed UI skill documents the provider contract and locale
+subpath.
 
 ## Features
 
@@ -77,6 +81,24 @@ The design system supports internationalization. See `agent-skills/i18n/SKILL.md
 
 ## Agent Skills
 
-The package includes [Agent Skills](https://agentskills.io) - standardized packages of domain expertise that AI agents can discover and load dynamically. Located in `agent-skills/`, component skills are automatically generated from source code during the build process.
+The package ships one progressively disclosed Agent Skill under
+`skills/ui-web`. Consumers explicitly trust the package through
+`package.json#intent.skills`, then discover and load it with the pinned
+[TanStack Intent](https://tanstack.com/intent) CLI:
 
-Skills work with Claude Code, GitHub Copilot, and other AI agents supporting the agentskills.io standard.
+```json
+{
+  "intent": {
+    "skills": ["@inkcre/ui-web"]
+  }
+}
+```
+
+```bash
+intent list
+intent load @inkcre/ui-web#ui-web
+```
+
+The generated component facts come from the public component manifest and
+source/story contracts. Selection and composition guidance is reviewed in
+`skill.seed.json`.

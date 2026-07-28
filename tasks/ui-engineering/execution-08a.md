@@ -1,9 +1,8 @@
 # Execution 08A — Web DX And Native TypeScript
 
-Execution 08A is planned but has not been authorized. It follows the
-registry-backed consumer migration and remote identity closure, so improving
-the producer toolchain cannot move or obscure the exact package boundary used
-to complete the `design` to `ui` migration.
+Execution 08A is implemented and locally verified. Sir authorized it on
+2026-07-28 after the registry-backed consumer migration and remote identity
+closure. Ubuntu glibc CI is the next external proof.
 
 ## Why This Slice Exists
 
@@ -82,6 +81,73 @@ non-TypeScript module declarations. After adding those explicit prerequisites:
 
 This proves feasibility on one platform, not permission to adopt the exact
 versions or proof of Linux CI parity.
+
+## Implemented Result
+
+- `packages/web` owns focused Oxfmt and Oxlint configuration plus
+  `format`, `format:check`, `lint`, and safe `lint:fix` commands. The checked
+  surface includes Vue/TypeScript source, tests, stories, styles, and package
+  configuration.
+- The warning baseline is clean with Vue and Vitest plugins enabled. Existing
+  false positives around the generic picker's runtime prop/event declarations
+  are narrowly disabled for that file; type-aware Oxlint remains outside the
+  required gate.
+- The workspace override pins
+  `typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2`. The manifest keeps
+  stock `typescript@5.9.3`, so removing the one override and restoring the
+  lockfile slice is the rollback.
+- `vue-tsc@3.3.8`, every directly imported development peer, Vite/style/Uno
+  ambient modules, and a dedicated declaration tsconfig close the
+  clean-install gaps.
+- The official Oxc extension replaces Prettier in workspace recommendations.
+  Project settings select Oxc formatting/fixes and the workspace TypeScript
+  SDK without a machine-specific path.
+- Histoire ignores the library-only `vite:dts` plugin through its supported
+  `viteIgnorePlugins` option, so story builds no longer regenerate package
+  declarations or print declaration-output noise.
+
+## Declaration Compatibility Decision
+
+The bridge-backed emitter gives Vue arbitrary-extension declarations an
+intermediate `*.vue.d.vue.ts` name. `vite-plugin-dts` also forced its internal
+output root to the package directory. Its API Extractor rollup appeared to
+succeed but retained imports to removed `.vue` declaration files, producing an
+invalid packed type graph.
+
+The implemented boundary is deliberately smaller and observable:
+
+1. emit the complete declaration tree instead of the invalid rollup;
+2. keep all declaration output inside `dist`;
+3. normalize only `*.vue.d.vue.ts` to the conventional `*.vue.d.ts`;
+4. fail package validation when a relative declaration import does not resolve
+   inside the tarball or an external declaration package is undeclared.
+
+`@vue/shared` is now a direct package dependency because generated public
+types import its `IfAny` helper. The packed consumer retains its established
+`skipLibCheck` posture: both stock TypeScript and the bridge expose unrelated
+Vue `GlobalComponents` and third-party `unconfig` library errors when all
+dependency declarations are rechecked. The explicit declaration topology and
+dependency checks cover the publication regression without expanding this
+slice into third-party declaration repair.
+
+## Local Proof
+
+- A same-source disposable stock-TypeScript `5.9.3` checkout and the
+  bridge-backed checkout both pass root/package type checking and the complete
+  web build. They emit the same declaration file set; reviewed differences are
+  representational ordering, quote style, and equivalent generic function
+  spelling.
+- Root `tsc`, package `vue-tsc`, Vite declaration generation, and subpath
+  declaration generation all print the bridge activation banner. The host
+  reports `6.0.3`; the pinned bridge embeds `tsgo 7.0.2`.
+- The working checkout passes the complete root check: 12 test files / 104
+  tests, both packed package identities, and 21 Histoire stories / 108
+  variants.
+- A disposable copy with no dependency or build artifacts passes
+  `pnpm install --frozen-lockfile` and the same complete root check on macOS
+  arm64 with Node `22.22.3` and pnpm `11.17.0`.
+- Ubuntu glibc proof follows the bounded commit in CI. Alpine/musl is
+  intentionally unsupported by the bridge.
 
 ## Exit Proof
 

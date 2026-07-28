@@ -51,12 +51,7 @@ const [DefineTextarea, ReuseTextarea] = createReusableTemplate();
     </div>
   </DefineTextarea>
 
-  <InkField
-    v-if="useField"
-    :label="label"
-    :layout="fieldLayout"
-    :required="required"
-  >
+  <InkField v-if="useField" :label="label" :layout="fieldLayout" :required="required">
     <ReuseTextarea />
   </InkField>
 

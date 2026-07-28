@@ -9,9 +9,7 @@ const defaultProps = {
 
 const mountedWrappers: VueWrapper[] = [];
 
-const mountImage = (
-  options: Parameters<typeof mount<typeof InkImage>>[1] = {}
-) => {
+const mountImage = (options: Parameters<typeof mount<typeof InkImage>>[1] = {}) => {
   const wrapper = mount(InkImage, {
     ...options,
     props: {
@@ -63,9 +61,7 @@ describe("InkImage", () => {
       });
 
       expect(wrapper.get(".custom-thumbnail").text()).toBe("Custom");
-      expect(
-        wrapper.find("[data-testid='ink-image-img']").exists()
-      ).toBe(false);
+      expect(wrapper.find("[data-testid='ink-image-img']").exists()).toBe(false);
     });
 
     it("shows the expanded title and custom header", async () => {
@@ -82,9 +78,7 @@ describe("InkImage", () => {
 
       expect(wrapper.get("[data-testid='ink-scrim']").exists()).toBe(true);
       expect(wrapper.get(".custom-header").text()).toBe("Header");
-      expect(wrapper.get(".ink-image__expanded-title").text()).toBe(
-        "Test Image Title"
-      );
+      expect(wrapper.get(".ink-image__expanded-title").text()).toBe("Test Image Title");
     });
   });
 

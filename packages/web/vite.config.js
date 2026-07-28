@@ -2,12 +2,31 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
 import UnoCSS from "unocss/vite";
-import { resolve } from "path";
+import { isAbsolute, relative, resolve, sep } from "path";
 import packageJson from "./package.json" with { type: "json" };
 
 const peerDependencies = Object.keys(packageJson.peerDependencies);
+const declarationRoot = resolve(__dirname, "dist");
 const isPeerDependency = (id) =>
   peerDependencies.some((dependency) => id === dependency || id.startsWith(`${dependency}/`));
+
+const normalizeDeclarationOutput = (filePath, content) => {
+  const isInsideDist = filePath.startsWith(`${declarationRoot}${sep}`);
+  const outputPath = isInsideDist
+    ? relative(declarationRoot, filePath)
+    : relative(__dirname, filePath);
+  if (outputPath.startsWith("..") || isAbsolute(outputPath)) {
+    throw new Error(`Declaration output escaped the web package: ${filePath}`);
+  }
+
+  const normalizedPath = outputPath.replace(/\.d\.vue\.ts$/, ".d.ts");
+  if (isInsideDist && normalizedPath === outputPath) return;
+
+  return {
+    filePath: resolve(declarationRoot, normalizedPath),
+    content,
+  };
+};
 
 const failOnDiagnostics = (diagnostics) => {
   if (diagnostics.length > 0) {
@@ -20,12 +39,13 @@ export default defineConfig({
     vue(),
     UnoCSS(),
     dts({
-      rollupTypes: true,
+      tsconfigPath: resolve(__dirname, "tsconfig.build.json"),
+      rollupTypes: false,
       pathsToAliases: false,
-      bundledPackages: ["@vue/shared"],
       skipDiagnostics: false,
       logDiagnostics: true,
       afterDiagnostic: failOnDiagnostics,
+      beforeWriteFile: normalizeDeclarationOutput,
     }),
   ],
 

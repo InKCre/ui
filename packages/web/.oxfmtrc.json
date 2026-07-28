@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "src/components.d.ts",
+    "src/public-components.ts",
+    "src/version.ts",
+    "styles/tokens/**",
+    "styles/uno/preset-ink.ts"
+  ]
+}

@@ -276,7 +276,8 @@ the transition from `design`.
 
 ## Execution 08A — Web DX And Native TypeScript
 
-**Status:** planned and not authorized. See
+**Status:** implemented and locally verified on 2026-07-28; Ubuntu glibc CI is
+the next external proof. See
 [`execution-08a.md`](execution-08a.md).
 
 This slice gives `packages/web` direct lint/format/fix ergonomics, closes its
@@ -308,7 +309,8 @@ stock/compiler parity proof.
 
 ## Execution 08B — Intent-Based Agent Skill Delivery
 
-**Status:** planned and not authorized. See
+**Status:** implemented and locally verified on 2026-07-28; release-PR refresh,
+exact registry publication, and post-publication probe are the next gates. See
 [`execution-08b.md`](execution-08b.md).
 
 This slice replaces the non-discoverable `agent-skills/` documentation

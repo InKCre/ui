@@ -53,19 +53,14 @@ const closePopup = () => {
   showPopup.value = false;
 };
 
-const [DefinePicker, ReusePicker] =
-  createReusableTemplate<Record<string, never>>();
+const [DefinePicker, ReusePicker] = createReusableTemplate<Record<string, never>>();
 </script>
 
 <template>
   <DefinePicker>
     <div
       v-if="displayValueAs === 'box'"
-      :class="[
-        'ink-picker',
-        'ink-picker--box',
-        { editable, 'ink-picker--active': showPopup },
-      ]"
+      :class="['ink-picker', 'ink-picker--box', { editable, 'ink-picker--active': showPopup }]"
       @click="onPickClick"
     >
       <span class="ink-picker__value">{{ displayValue }}</span>
@@ -74,24 +69,14 @@ const [DefinePicker, ReusePicker] =
 
     <span
       v-else-if="displayValueAs === 'inline-text'"
-      :class="[
-        'ink-picker',
-        'ink-picker__value',
-        'ink-picker--inline-text',
-        { editable },
-      ]"
+      :class="['ink-picker', 'ink-picker__value', 'ink-picker--inline-text', { editable }]"
       @click="onPickClick"
     >
       {{ displayValue }}
     </span>
   </DefinePicker>
 
-  <InkField
-    v-if="useField"
-    :label="label"
-    :layout="fieldLayout"
-    :required="required"
-  >
+  <InkField v-if="useField" :label="label" :layout="fieldLayout" :required="required">
     <ReusePicker />
   </InkField>
 
@@ -101,11 +86,7 @@ const [DefinePicker, ReusePicker] =
 
   <!-- TODO wrap with popup -->
   <InkPopup v-model:open="showPopup" position="center">
-    <slot
-      v-if="!props.type"
-      :closePopup="closePopup"
-      :modelValue="modelValue"
-    />
+    <slot v-if="!props.type" :closePopup="closePopup" :modelValue="modelValue" />
     <template v-else>
       <InkDatetimePickerView
         v-if="['date', 'time', 'datetime', 'weekday'].includes(type)"

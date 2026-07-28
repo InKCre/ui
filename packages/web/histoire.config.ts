@@ -182,6 +182,7 @@ export const codeToHtml = () => Promise.resolve('');
 
 export default defineConfig({
   plugins: [HstVue()],
+  viteIgnorePlugins: ["vite:dts"],
   setupFile: "./stories/histoire.setup.ts",
   storyMatch: ["stories/**/*.story.vue"],
   storyIgnored: ["**/node_modules/**", "**/dist/**", "**/.histoire/**"],
@@ -224,7 +225,7 @@ export default defineConfig({
   // Note: Using process.env.NODE_ENV here is correct as Histoire sets it based on command
   markdown:
     process.env.NODE_ENV === "production"
-      ? (env) => {
+      ? (_env) => {
           // Build mode: Use markdown-it without Shiki
           const md = new MarkdownIt({
             html: true,

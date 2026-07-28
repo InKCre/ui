@@ -1,8 +1,4 @@
-import {
-  makeStringProp,
-  makeNumberProp,
-  makeObjectProp,
-} from "../../utils/vue-props";
+import { makeStringProp, makeNumberProp, makeObjectProp } from "../../utils/vue-props";
 import { formControlCommonProps } from "../inkForm/inkForm";
 
 // --- Props ---
@@ -23,5 +19,5 @@ export const inkJsonEditorProps = {
 
 // --- Emits ---
 export const inkJsonEditorEmits = {
-  "update:modelValue": (value: string) => true,
+  "update:modelValue": (_value: string) => true,
 } as const;

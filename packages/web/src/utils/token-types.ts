@@ -1,1 +1,1 @@
-export type SizeItem = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type SizeItem = "xs" | "sm" | "md" | "lg" | "xl";

@@ -31,7 +31,7 @@ export const inkImageEmits = {
   /** Triggered when expanded view is closed */
   close: () => true,
   /** Triggered when image fails to load */
-  error: (payload: InkImageErrorPayload) => true,
+  error: (_payload: InkImageErrorPayload) => true,
   /** Triggered when expanded state changes */
-  "update:expanded": (value: boolean) => true,
+  "update:expanded": (_value: boolean) => true,
 } as const;

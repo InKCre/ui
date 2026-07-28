@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { provide, computed } from "vue";
-import {
-  inkFormProps,
-  inkFormEmits,
-  INK_FORM_CONTEXT_KEY,
-  type InkFormContext,
-} from "./inkForm";
+import { inkFormProps, inkFormEmits, INK_FORM_CONTEXT_KEY, type InkFormContext } from "./inkForm";
 
 const props = defineProps(inkFormProps);
 const emit = defineEmits(inkFormEmits);

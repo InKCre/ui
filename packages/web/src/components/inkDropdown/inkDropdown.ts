@@ -22,9 +22,7 @@ export const inkDropdownProps = {
     type: Function as PropType<() => Promise<DropdownOption[]>>,
   },
   modelValue: {
-    type: [String, Number] as PropType<
-      DropdownOption["value"] | undefined | null
-    >,
+    type: [String, Number] as PropType<DropdownOption["value"] | undefined | null>,
     default: "",
   },
   placeholder: makeStringProp("Select an option"),
@@ -34,7 +32,7 @@ export const inkDropdownProps = {
 
 // --- Emits ---
 export const inkDropdownEmits = {
-  "update:modelValue": (value: DropdownOption["value"]) => true,
-  change: (value: DropdownOption["value"]) => true,
-  "update:options": (options: DropdownOption[]) => true,
+  "update:modelValue": (_value: DropdownOption["value"]) => true,
+  change: (_value: DropdownOption["value"]) => true,
+  "update:options": (_options: DropdownOption[]) => true,
 } as const;

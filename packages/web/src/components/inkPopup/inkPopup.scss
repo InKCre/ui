@@ -63,7 +63,9 @@
 
 .ink-popup-slide-enter-active,
 .ink-popup-slide-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .ink-popup-slide-enter-from,

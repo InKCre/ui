@@ -19,12 +19,12 @@ export const inkPickerProps = <T>() =>
       type: Function as PropType<(value: T) => string>,
     },
     showPopup: makeBooleanProp(false),
-  } as const);
+  }) as const;
 
 // --- Emits ---
 export const inkPickerEmits = <T>() =>
   ({
     pick: () => true,
-    "update:modelValue": (value: T) => true,
-    "update:showPopup": (value: boolean) => true,
-  } as const);
+    "update:modelValue": (_value: T) => true,
+    "update:showPopup": (_value: boolean) => true,
+  }) as const;

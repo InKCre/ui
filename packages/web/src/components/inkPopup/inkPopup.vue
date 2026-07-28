@@ -47,11 +47,7 @@ const onScrimClick = () => {
     </Transition>
 
     <Transition name="ink-popup-slide">
-      <div
-        v-if="open"
-        :class="['ink-popup', positionClasses]"
-        :style="positionStyles"
-      >
+      <div v-if="open" :class="['ink-popup', positionClasses]" :style="positionStyles">
         <slot></slot>
       </div>
     </Transition>

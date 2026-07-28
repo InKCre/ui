@@ -24,6 +24,27 @@ peer for `InkJsonEditor`; consumers do not import it directly, but their
 package manager must resolve it in the installation graph. Execution 06 must
 verify this through the committed consumer lockfile and frozen installation.
 
+## Installed Agent Skill
+
+The non-discoverable `agent-skills/` documentation path is replaced by one
+TanStack Intent skill at `skills/ui-web`. No compatibility mirror is shipped:
+known consumers did not use the old path, and preserving it would double the
+generated stale-output surface without creating an Intent contract.
+
+Consumers that want agent guidance explicitly allowlist the trusted package:
+
+```json
+{
+  "intent": {
+    "skills": ["@inkcre/ui-web"]
+  }
+}
+```
+
+Then load the installed skill with
+`intent load @inkcre/ui-web#ui-web`. This changes packaged documentation only;
+it does not add a runtime JavaScript export.
+
 ## Compatibility and rollback
 
 - `@inkcre/web-design@1.2.2` is the immutable rollback artifact. It will not be

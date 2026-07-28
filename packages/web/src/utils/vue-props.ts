@@ -62,14 +62,12 @@ export function useOptionalVModel<T>(options: {
   const { props, emit, modelName, defaultValue } = options;
 
   const inner = ref<T>(
-    props[modelName] !== undefined
-      ? (props[modelName] as T)
-      : (defaultValue as T)
+    props[modelName] !== undefined ? (props[modelName] as T) : (defaultValue as T),
   );
 
   watch(
     () => props[modelName],
-    (val) => (inner.value = val)
+    (val) => (inner.value = val),
   );
 
   return computed<T>({
@@ -89,6 +87,4 @@ export function useOptionalVModel<T>(options: {
  * Used to create mutually exclusive types
  * e.g. a type that can be either A or B, but not both
  */
-export type XOR<A, B> =
-  | (A & { [K in keyof B]?: never })
-  | (B & { [K in keyof A]?: never });
+export type XOR<A, B> = (A & { [K in keyof B]?: never }) | (B & { [K in keyof A]?: never });
