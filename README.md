@@ -58,6 +58,34 @@ Generate derived files with `pnpm generate`. The public component manifest
 drives the runtime registry, global component types, package version, Story
 coverage, and generated Agent Skills.
 
+## Joint development with client-web
+
+The consuming Vite/Vitest/TypeScript pipeline owns source consumption. Keep
+this workspace installed and generated, then opt in from a sibling
+`client-web` checkout:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm generate
+pnpm --dir ../client-web dev:ui --ui-source ../ui/packages/web
+```
+
+Replace `../ui` with this checkout's actual location while the local directory
+is still named `design` or is stored elsewhere.
+
+The command validates this package root and maps only its public specifiers for
+the current development process. It does not use `pnpm link`, persist an
+absolute path, or modify either manifest or lockfile. Token JSON changes still
+require `pnpm generate`.
+
+Run the consumer source-graph check with
+`pnpm --dir ../client-web type-check:ui --ui-source ../ui/packages/web`.
+Normal client development, builds, checks, and CI remain pinned to the
+published registry artifact. The consumer's
+[`apps/client-web/docs/development.md`](https://github.com/InKCre/client-web/blob/main/apps/client-web/docs/development.md#joint-dev-with-inkcreui-web)
+owns the full startup, remotes, cleanup, troubleshooting, and release-fidelity
+contract.
+
 ## GitHub Packages authentication
 
 The committed `.npmrc` routes only the `@inkcre` scope to GitHub Packages. It

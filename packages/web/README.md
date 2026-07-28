@@ -79,6 +79,26 @@ subpath.
 - Provider-agnostic internationalization support
 - Agent Skills for AI-assisted development
 
+## Local consumer source loop
+
+`client-web` can opt into this package's source without changing its
+registry-backed dependency:
+
+```bash
+pnpm --dir ../client-web dev:ui --ui-source ../ui/packages/web
+pnpm --dir ../client-web type-check:ui --ui-source ../ui/packages/web
+```
+
+Replace `../ui` with the actual source checkout location when needed.
+
+The consumer validates the package identity and public entries, uses exact
+Vite/Vitest/TypeScript mappings, and keeps Vue and other peer runtimes
+consumer-owned. This lane is development-only: it rejects production builds
+and never replaces packed or published-package verification. Generate tokens
+before expecting token changes to reach Sass HMR. See the
+[consumer development guide](https://github.com/InKCre/client-web/blob/main/apps/client-web/docs/development.md#joint-dev-with-inkcreui-web)
+for prerequisites, remote development, cleanup, and rollback.
+
 ## Agent Skills
 
 The package ships one progressively disclosed Agent Skill under

@@ -276,8 +276,8 @@ the transition from `design`.
 
 ## Execution 08A — Web DX And Native TypeScript
 
-**Status:** implemented and locally verified on 2026-07-28; Ubuntu glibc CI is
-the next external proof. See
+**Status:** completed and released on 2026-07-28. Ubuntu glibc CI passed and
+the contract is published in `@inkcre/ui-web@1.3.0`. See
 [`execution-08a.md`](execution-08a.md).
 
 This slice gives `packages/web` direct lint/format/fix ergonomics, closes its
@@ -309,8 +309,8 @@ stock/compiler parity proof.
 
 ## Execution 08B — Intent-Based Agent Skill Delivery
 
-**Status:** implemented and locally verified on 2026-07-28; release-PR refresh,
-exact registry publication, and post-publication probe are the next gates. See
+**Status:** completed and released on 2026-07-28. Exact
+`@inkcre/ui-web@1.3.0` publication and installed-skill loading passed. See
 [`execution-08b.md`](execution-08b.md).
 
 This slice replaces the non-discoverable `agent-skills/` documentation
@@ -342,6 +342,10 @@ real TanStack Intent package contract.
   already-migrated consumer through the normal release path.
 
 ## Execution 09 — Opt-In Local UI Source Loop
+
+**Status:** implemented and locally verified across the producer and
+`../client-web` on 2026-07-28. The bounded changes are committed locally and
+remain unpushed. See [`execution-09.md`](execution-09.md).
 
 This is a fast development lane, never the release contract.
 

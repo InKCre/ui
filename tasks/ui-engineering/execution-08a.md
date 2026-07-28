@@ -1,8 +1,9 @@
 # Execution 08A — Web DX And Native TypeScript
 
-Execution 08A is implemented and locally verified. Sir authorized it on
-2026-07-28 after the registry-backed consumer migration and remote identity
-closure. Ubuntu glibc CI is the next external proof.
+Execution 08A is complete and published in `@inkcre/ui-web@1.3.0`. Sir
+authorized it on 2026-07-28 after the registry-backed consumer migration and
+remote identity closure. The bounded change was committed as `f9a65a3`, and
+Ubuntu glibc CI passed before release.
 
 ## Why This Slice Exists
 
