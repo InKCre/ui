@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Reproducible workspace check
+    name: ui-web checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
