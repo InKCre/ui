@@ -1,0 +1,69 @@
+name: Histoire preview cleanup
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - closed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-web-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: ui-web preview cleanup
+    if: >-
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.base.repo.full_name == github.repository &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      deployments: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: preview
+      url: https://pr-${{ github.event.pull_request.number }}.design-dd4.pages.dev
+    steps:
+      - name: Checkout the trusted cleanup controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+
+      - name: Install the pinned pnpm release
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.17.0
+
+      - name: Set up Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.22.3
+          cache: pnpm
+
+      - name: Install the trusted delivery toolchain
+        run: pnpm install --frozen-lockfile
+
+      - name: Replace the preview alias with a closed marker
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
+        run: >-
+          pnpm exec wrangler pages deploy .github/pages-preview-closed
+          --project-name="${{ vars.CLOUDFLARE_PAGES_PROJECT }}"
+          --branch="$PREVIEW_BRANCH"
+          --commit-hash="${{ github.workflow_sha }}"
+          --commit-dirty=false
+
+      - name: Verify the closed preview marker
+        env:
+          INKCRE_PAGES_MODE: closed
+          INKCRE_PAGES_URL: https://pr-${{ github.event.pull_request.number }}.design-dd4.pages.dev
+        run: node scripts/verify-pages-deployment.mjs
