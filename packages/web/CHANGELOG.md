@@ -1,5 +1,11 @@
 # @inkcre/ui-web
 
+## 1.3.1
+
+### Patch Changes
+
+- 5c9e3d0: Document the consumer-owned local source loop and make the source entry compatible with strict consumer type graphs.
+
 ## 1.3.0
 
 ### Minor Changes
