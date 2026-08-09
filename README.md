@@ -58,6 +58,22 @@ Generate derived files with `pnpm generate`. The public component manifest
 drives the runtime registry, global component types, package version, Story
 coverage, and generated Agent Skills.
 
+## Histoire delivery
+
+`UI checks` builds Histoire as part of the repository contract. Successful
+same-repository pull requests publish that checked output to the stable
+`pr-N.design-dd4.pages.dev` preview alias. Closing the pull request replaces
+the alias with a noindex marker; Cloudflare retains older immutable deployment
+URLs as platform history.
+
+A protected `main` push builds Histoire again as a focused release, transfers
+the exact same-run artifact to the deployment job, and publishes it to
+[design.inkcre.dev](https://design.inkcre.dev). Package publication and Histoire
+delivery are independent outputs of `main`: one may be retried without
+republishing the other. `wrangler.toml` owns the Pages project name, output
+directory, and compatibility date. Delivery jobs run through GitHub environments;
+the Cloudflare credential remains a selected organization Actions secret.
+
 ## Joint development with client-web
 
 The consuming Vite/Vitest/TypeScript pipeline owns source consumption. Keep

@@ -1,0 +1,160 @@
+name: Histoire preview
+
+on:
+  workflow_run:
+    workflows:
+      - UI checks
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+
+jobs:
+  identity:
+    name: Resolve trusted preview identity
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.identity.outputs.branch }}
+      head_sha: ${{ steps.identity.outputs.head_sha }}
+      pull_number: ${{ steps.identity.outputs.pull_number }}
+      run_id: ${{ steps.identity.outputs.run_id }}
+    steps:
+      - name: Resolve the exact internal pull request
+        id: identity
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const runId = context.payload.workflow_run.id
+            const { data: run } = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId,
+            })
+            if (run.name !== 'UI checks' || run.path !== '.github/workflows/ci.yml') {
+              core.setFailed('Preview artifact must come from the trusted UI checks workflow.')
+              return
+            }
+            if (run.conclusion !== 'success' || run.event !== 'pull_request') {
+              core.setFailed('Preview delivery requires a successful pull-request check run.')
+              return
+            }
+            if (run.head_repository?.full_name !== `${context.repo.owner}/${context.repo.repo}`) {
+              core.setFailed('Fork pull requests are not eligible for preview delivery.')
+              return
+            }
+
+            const pulls = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: run.head_sha,
+            })
+            const pull = pulls.data.find((candidate) =>
+              candidate.state === 'open' &&
+              candidate.base.ref === 'main' &&
+              candidate.head.sha === run.head_sha &&
+              candidate.head.repo?.full_name === `${context.repo.owner}/${context.repo.repo}`
+            )
+            if (!pull) {
+              core.setFailed('Run is not the exact head of an eligible internal pull request.')
+              return
+            }
+
+            core.setOutput('branch', `pr-${pull.number}`)
+            core.setOutput('head_sha', run.head_sha)
+            core.setOutput('pull_number', String(pull.number))
+            core.setOutput('run_id', String(runId))
+
+  deploy:
+    name: ui-web preview
+    needs: identity
+    concurrency:
+      group: ui-web-preview-${{ needs.identity.outputs.pull_number }}
+      cancel-in-progress: true
+    permissions:
+      actions: read
+      contents: read
+      deployments: write
+      pull-requests: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: preview
+      url: https://${{ needs.identity.outputs.branch }}.design-dd4.pages.dev
+    steps:
+      - name: Checkout the trusted preview controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: controller
+          persist-credentials: false
+
+      - name: Install the pinned pnpm release
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.17.0
+
+      - name: Set up Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.22.3
+          cache: pnpm
+          cache-dependency-path: controller/pnpm-lock.yaml
+
+      - name: Install the trusted delivery toolchain
+        run: pnpm --dir controller install --frozen-lockfile
+
+      - name: Download the exact checked artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ui-web-histoire
+          path: .pages-preview/dist
+          run-id: ${{ needs.identity.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Reverify pull-request identity before delivery
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PREVIEW_HEAD_SHA: ${{ needs.identity.outputs.head_sha }}
+          PULL_NUMBER: ${{ needs.identity.outputs.pull_number }}
+        with:
+          script: |
+            const { data: pull } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: Number(process.env.PULL_NUMBER),
+            })
+            if (
+              pull.state !== 'open' ||
+              pull.base.ref !== 'main' ||
+              pull.head.sha !== process.env.PREVIEW_HEAD_SHA ||
+              pull.head.repo?.full_name !== `${context.repo.owner}/${context.repo.repo}`
+            ) {
+              core.setFailed('Pull-request identity changed after artifact selection.')
+            }
+
+      - name: Deploy the checked Histoire artifact
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PREVIEW_BRANCH: ${{ needs.identity.outputs.branch }}
+          PREVIEW_HEAD_SHA: ${{ needs.identity.outputs.head_sha }}
+        run: >-
+          pnpm --dir controller exec wrangler pages deploy
+          "$GITHUB_WORKSPACE/.pages-preview/dist"
+          --project-name="${{ vars.CLOUDFLARE_PAGES_PROJECT }}"
+          --branch="$PREVIEW_BRANCH"
+          --commit-hash="$PREVIEW_HEAD_SHA"
+          --commit-dirty=false
+
+      - name: Smoke-test the stable pull-request preview
+        env:
+          INKCRE_PAGES_MODE: preview
+          INKCRE_PAGES_URL: https://${{ needs.identity.outputs.branch }}.design-dd4.pages.dev
+        run: node controller/scripts/verify-pages-deployment.mjs
