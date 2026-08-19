@@ -5,7 +5,7 @@ A flexible popup component with support for multiple positions, scrim overlay, a
 ## Features
 
 - **Flexible Positioning**: Support for predefined positions (`center`, `left`, `right`, `top`, `bottom`) or custom coordinates
-- **Scrim Control**: Overlay that can close the popup on click
+- **Scrim Control**: Optional overlay that can close the popup on click
 - **V-Model Support**: Easy open/close state management
 - **Transitions**: Smooth fade and slide animations
 - **Teleport**: Renders at the document root to avoid z-index stacking issues
@@ -55,6 +55,17 @@ const isOpen = ref(false);
 </InkPopup>
 ```
 
+### Modeless Popup
+
+Use `scrim="false"` when the popup is a modeless outlet and the surrounding navigation host
+must remain pointer-accessible. `closeOnScrim` has no effect while the scrim is absent.
+
+```vue
+<InkPopup v-model:open="isOpen" :scrim="false" position="right">
+  <div>Modeless content</div>
+</InkPopup>
+```
+
 ## Props
 
 | Prop           | Type            | Default    | Description                                                                                                        |
@@ -62,6 +73,7 @@ const isOpen = ref(false);
 | `open`         | `boolean`       | `false`    | Controls popup visibility (supports v-model)                                                                       |
 | `position`     | `PopupPosition` | `'center'` | Position of the popup: `'center'`, `'left'`, `'right'`, `'top'`, `'bottom'`, or array `[top, right, bottom, left]` |
 | `closeOnScrim` | `boolean`       | `true`     | Whether clicking the scrim closes the popup                                                                        |
+| `scrim`        | `boolean`       | `true`     | Whether the popup renders a page-covering scrim                                                                    |
 
 ## Types
 

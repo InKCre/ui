@@ -43,7 +43,12 @@ const onScrimClick = () => {
 <template>
   <Teleport to="body">
     <Transition name="ink-popup-fade">
-      <div v-if="open" class="ink-popup-overlay" @click="onScrimClick"></div>
+      <div
+        v-if="open && props.scrim"
+        class="ink-popup-overlay"
+        data-testid="ink-popup-scrim"
+        @click="onScrimClick"
+      ></div>
     </Transition>
 
     <Transition name="ink-popup-slide">
