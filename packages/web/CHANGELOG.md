@@ -1,5 +1,11 @@
 # @inkcre/ui-web
 
+## 1.4.0
+
+### Minor Changes
+
+- 5b9072d: Add modeless InkPopup rendering through the backward-compatible `scrim` prop.
+
 ## 1.3.1
 
 ### Patch Changes
