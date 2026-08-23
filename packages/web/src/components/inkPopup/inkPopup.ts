@@ -17,6 +17,7 @@ export const inkPopupProps = {
     default: "center",
   },
   closeOnScrim: makeBooleanProp(true),
+  scrim: makeBooleanProp(true),
 } as const;
 
 // --- Emits ---

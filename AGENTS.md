@@ -19,4 +19,6 @@ This repository owns the InKCre design system and UI libraries.
 
 - Package manager is PNPM
 - Use changeset to summarize your changes (run `pnpm changeset` after you made changes.)
-- Run tests and build to verify your changes if possible.
+- Follow the organization-wide [Verification and Test Policy](https://github.com/InKCre/.github/blob/main/TESTING.md).
+  This repository prefers type-check, lint, generated-contract checks, story builds, and real
+  consuming-page review; it currently admits no automated unit/component suite.

@@ -25,11 +25,11 @@
 ## Public API Facts
 
 - Import: `import { InkPopup } from "@inkcre/ui-web";`
-- Props: `closeOnScrim`, `position`
+- Props: `closeOnScrim`, `position`, `scrim`
 - Events: `scrim-click`
 - Slots: `default`
 - Public types: None
-- Story variants: `Default Popup`
+- Story variants: `Default Popup`, `Modeless Popup`
 
 ## API Caveats
 
