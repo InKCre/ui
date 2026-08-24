@@ -17,6 +17,9 @@ This repository owns the InKCre design system and UI libraries.
 
 ## Development Workflows
 
+- Follow the organization-wide [Git and GitHub Governance](https://github.com/InKCre/.github/blob/main/GOVERNANCE.md)
+  and [contribution workflow](https://github.com/InKCre/.github/blob/main/CONTRIBUTING.md) for branches, pull requests,
+  release authority, and delivery boundaries; repository-local documents own exact commands.
 - Package manager is PNPM
 - Use changeset to summarize your changes (run `pnpm changeset` after you made changes.)
 - Follow the organization-wide [Verification and Test Policy](https://github.com/InKCre/.github/blob/main/TESTING.md).
