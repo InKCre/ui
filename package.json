@@ -14,7 +14,6 @@
     "check:stories": "tsx scripts/check-story-coverage.ts",
     "check:package": "tsx scripts/check-package-contract.ts && tsx scripts/check-package-contract.ts @inkcre/web-design",
     "check:token-workflow": "tsx scripts/prepare-token-update.ts fixture",
-    "changeset:check": "tsx scripts/check-changeset.ts",
     "tokens:update": "tsx scripts/prepare-token-update.ts apply",
     "type-check": "pnpm type-check:root && pnpm --filter @inkcre/ui-web type-check",
     "type-check:root": "tsc --noEmit",
