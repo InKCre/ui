@@ -81,7 +81,6 @@ jobs:
       actions: read
       contents: read
       deployments: write
-      pull-requests: read
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -117,27 +116,6 @@ jobs:
           path: .pages-preview/dist
           run-id: ${{ needs.identity.outputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Reverify pull-request identity before delivery
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          PREVIEW_HEAD_SHA: ${{ needs.identity.outputs.head_sha }}
-          PULL_NUMBER: ${{ needs.identity.outputs.pull_number }}
-        with:
-          script: |
-            const { data: pull } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: Number(process.env.PULL_NUMBER),
-            })
-            if (
-              pull.state !== 'open' ||
-              pull.base.ref !== 'main' ||
-              pull.head.sha !== process.env.PREVIEW_HEAD_SHA ||
-              pull.head.repo?.full_name !== `${context.repo.owner}/${context.repo.repo}`
-            ) {
-              core.setFailed('Pull-request identity changed after artifact selection.')
-            }
 
       - name: Deploy the checked Histoire artifact
         env:

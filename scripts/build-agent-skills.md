@@ -1,146 +1,30 @@
-# build-agent-skills.ts
+# UI Web Agent Skill
 
-Generates Agent Skills for the `@inkcre/ui-web` package following the [agentskills.io](https://agentskills.io) specification.
+`build-agent-skills.ts` generates the single TanStack Intent skill shipped by
+`@inkcre/ui-web` at `packages/web/skills/ui-web/`.
 
-## Overview
+## Owners
 
-This script creates properly formatted Agent Skills for component documentation. Skills are organized folders containing `SKILL.md` files with YAML frontmatter and markdown content.
+- `packages/web/skill.seed.json` owns reviewed component intent, selection,
+  composition, integration, styling, and mistake guidance.
+- Component source, the public component manifest, and Histoire stories own
+  mechanically derived API and variant facts.
+- `scripts/build-agent-skills.ts` combines those sources into the generated
+  skill and references. Generated files must not be edited directly.
+- `scripts/check-package-contract.ts` proves the packed package exposes the
+  skill at the discoverable `skills/ui-web` path and excludes the retired
+  `agent-skills/` path and maintainer seed.
 
-## What are Agent Skills?
-
-Agent Skills are a standardized format for packaging domain-specific expertise that AI agents can discover and load dynamically. Each skill contains:
-
-- **YAML frontmatter**: Metadata including `name` and `description`
-- **Markdown content**: Instructions, examples, and reference material
-- **Optional directories**: Scripts, references, and assets
-
-Learn more at [agentskills.io](https://agentskills.io/specification).
-
-## Generated Skills
-
-The script automatically generates the **components** skill in `agent-skills/components/`:
-
-### components
-
-Main skill for using the component library with individual component reference files:
-
-- Main `SKILL.md` with overview and setup
-- `references/` directory with one markdown file per component
-- Each component file includes props, events, types, and usage examples
-- Components are loaded on-demand by referencing their individual files
-
-## Manual Skills
-
-The following skills are maintained manually in `agent-skills/`:
-
-### router
-
-Router integration patterns with Vue Router adapter setup.
-
-### i18n
-
-Internationalization setup with vue-i18n integration.
-
-### styling
-
-Design token system with SCSS utilities and theming examples.
-
-### best-practices
-
-Development guidelines including naming conventions and accessibility.
-
-## Usage
-
-From the repository root:
+## Commands
 
 ```bash
 pnpm build-skills
+pnpm check:skills
 ```
 
-From the web UI package:
+Use `pnpm build-skills` after changing a source owner. `pnpm check:skills`
+rejects stale generated output and validates the result with TanStack Intent.
 
-```bash
-cd packages/web
-pnpm build:skills
-```
-
-## Output Structure
-
-```
-packages/web/agent-skills/
-├── components/
-│   ├── SKILL.md                    # Main components skill
-│   └── references/                 # Individual component files
-│       ├── inkButton.md
-│       ├── inkInput.md
-│       └── ...
-├── router/
-│   └── SKILL.md                    # Manual
-├── i18n/
-│   └── SKILL.md                    # Manual
-├── styling/
-│   └── SKILL.md                    # Manual
-└── best-practices/
-    └── SKILL.md                    # Manual
-```
-
-Each `SKILL.md` follows the agentskills.io specification:
-
-```markdown
----
-name: skill-name
-description: What this skill does and when to use it
----
-
-# Skill Content
-
-Instructions and examples...
-```
-
-## Integration
-
-Skills are:
-
-- Generated during the build process (components only)
-- Shipped with the npm package (via `agent-skills/` in `files` array)
-- Automatically discovered by compatible AI agents
-- Loaded on-demand when relevant to user's task
-
-## Agent Compatibility
-
-These skills work with:
-
-- Claude Code (Anthropic)
-- GitHub Copilot (VS Code, CLI)
-- OpenAI Codex
-- Cursor
-- Any agent supporting the agentskills.io standard
-
-## How Agents Use Skills
-
-1. **Discovery**: Agent scans `agent-skills/` directory
-2. **Metadata Loading**: Reads YAML frontmatter (name, description)
-3. **Tool Registration**: Exposes skills as callable functions
-4. **Activation**: User's query triggers relevant skill
-5. **Content Loading**: Main SKILL.md and referenced files loaded on-demand
-6. **Execution**: Agent follows skill instructions
-
-## Progressive Disclosure
-
-The components skill uses progressive disclosure:
-
-- Main `SKILL.md` provides overview and component list
-- Individual component files in `references/` are loaded only when needed
-- This keeps context window small while providing access to all details
-
-## Maintenance
-
-The script automatically:
-
-- Extracts component info from TypeScript files
-- Cleans Histoire-specific syntax from documentation
-- Generates valid YAML frontmatter
-- Creates compliant directory structure
-- Validates skill names (lowercase, hyphens only)
-
-Manual skills should be updated directly in `agent-skills/` directory.
+This product skill belongs to the published UI package. Organization-wide
+Agent workflow skills and repository instructions have different consumers
+and do not belong in this package.
