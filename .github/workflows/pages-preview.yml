@@ -24,7 +24,6 @@ jobs:
       branch: ${{ steps.identity.outputs.branch }}
       head_sha: ${{ steps.identity.outputs.head_sha }}
       pull_number: ${{ steps.identity.outputs.pull_number }}
-      run_id: ${{ steps.identity.outputs.run_id }}
     steps:
       - name: Resolve the exact internal pull request
         id: identity
@@ -38,7 +37,7 @@ jobs:
               run_id: runId,
             })
             if (run.name !== 'UI checks' || run.path !== '.github/workflows/ci.yml') {
-              core.setFailed('Preview artifact must come from the trusted UI checks workflow.')
+              core.setFailed('Preview must be orchestrated by the trusted UI checks workflow.')
               return
             }
             if (run.conclusion !== 'success' || run.event !== 'pull_request') {
@@ -69,7 +68,6 @@ jobs:
             core.setOutput('branch', `pr-${pull.number}`)
             core.setOutput('head_sha', run.head_sha)
             core.setOutput('pull_number', String(pull.number))
-            core.setOutput('run_id', String(runId))
 
   deploy:
     name: ui-web preview
@@ -78,7 +76,6 @@ jobs:
       group: ui-web-preview-${{ needs.identity.outputs.pull_number }}
       cancel-in-progress: true
     permissions:
-      actions: read
       contents: read
       deployments: write
     runs-on: ubuntu-latest
@@ -94,6 +91,13 @@ jobs:
           path: controller
           persist-credentials: false
 
+      - name: Checkout the exact pull-request head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.identity.outputs.head_sha }}
+          path: candidate
+          persist-credentials: false
+
       - name: Install the pinned pnpm release
         uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
         with:
@@ -104,20 +108,19 @@ jobs:
         with:
           node-version: 22.22.3
           cache: pnpm
-          cache-dependency-path: controller/pnpm-lock.yaml
+          cache-dependency-path: |
+            candidate/pnpm-lock.yaml
+            controller/pnpm-lock.yaml
 
-      - name: Install the trusted delivery toolchain
-        run: pnpm --dir controller install --frozen-lockfile
+      - name: Install the candidate and trusted delivery toolchains
+        run: |
+          pnpm --dir candidate install --frozen-lockfile
+          pnpm --dir controller install --frozen-lockfile
 
-      - name: Download the exact checked artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: ui-web-histoire
-          path: .pages-preview/dist
-          run-id: ${{ needs.identity.outputs.run_id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the exact-head Histoire preview
+        run: pnpm --dir candidate story
 
-      - name: Deploy the checked Histoire artifact
+      - name: Deploy the exact-head Histoire preview
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -125,7 +128,7 @@ jobs:
           PREVIEW_HEAD_SHA: ${{ needs.identity.outputs.head_sha }}
         run: >-
           pnpm --dir controller exec wrangler pages deploy
-          "$GITHUB_WORKSPACE/.pages-preview/dist"
+          "$GITHUB_WORKSPACE/candidate/packages/web/.histoire/dist"
           --project-name="${{ vars.CLOUDFLARE_PAGES_PROJECT }}"
           --branch="$PREVIEW_BRANCH"
           --commit-hash="$PREVIEW_HEAD_SHA"

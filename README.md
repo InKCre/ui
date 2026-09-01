@@ -60,11 +60,12 @@ coverage, and generated Agent Skills.
 
 ## Histoire delivery
 
-`UI checks` builds Histoire as part of the repository contract. Successful
-same-repository pull requests publish that checked output to the stable
-`pr-N.design-dd4.pages.dev` preview alias. Closing the pull request replaces
-the alias with a noindex marker; Cloudflare retains older immutable deployment
-URLs as platform history.
+`UI checks` validates Histoire as part of the repository contract. After a
+successful same-repository run, the trusted Preview workflow checks out that
+exact pull-request head, builds Histoire itself, and publishes it to the stable
+`pr-N.design-dd4.pages.dev` preview alias. Closing the pull request replaces the
+alias with a noindex marker; Cloudflare retains older immutable deployment URLs
+as platform history.
 
 A protected `main` push builds Histoire again as a focused release, transfers
 the exact same-run artifact to the deployment job, and publishes it to
