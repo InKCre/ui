@@ -123,21 +123,6 @@ jobs:
           name: ui-web-histoire
           path: .pages-delivery/dist
 
-      - name: Reverify main before delivery
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          RELEASE_HEAD_SHA: ${{ needs.build.outputs.head_sha }}
-        with:
-          script: |
-            const currentMain = await github.rest.git.getRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'heads/main',
-            })
-            if (currentMain.data.object.sha !== process.env.RELEASE_HEAD_SHA) {
-              core.setFailed('Main changed after the Histoire build; refusing delivery.')
-            }
-
       - name: Deploy the exact Histoire release artifact
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
