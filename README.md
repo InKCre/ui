@@ -41,6 +41,19 @@ Do not install from an individual package directory. The root
 Dependency lifecycle scripts are denied by default; the small reviewed
 allowlist lives in `pnpm-workspace.yaml`.
 
+## Shared product docs
+
+Shared InKCre product truth and cross-unit contracts are mounted read-only at
+`docs/_shared` from `InKCre/docs`. Initialize the pinned reference after cloning:
+
+```bash
+git submodule update --init --recursive docs/_shared
+```
+
+Do not edit the mounted files from this repository. The repo-root
+`.agents/skills/edit-svc-shared-docs` wrapper points coding Agents to the
+canonical Hub-first edit and isolated ref-bump workflow.
+
 ## Development commands
 
 ```bash

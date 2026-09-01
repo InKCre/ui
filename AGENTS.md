@@ -36,6 +36,9 @@ Reason in English. Communicate with humans in Chinese.
 - Follow the organization-wide [Git and GitHub Governance](https://github.com/InKCre/.github/blob/main/GOVERNANCE.md)
   and [contribution workflow](https://github.com/InKCre/.github/blob/main/CONTRIBUTING.md) for branches, pull requests,
   release authority, and delivery boundaries; repository-local documents own exact commands.
+- Never edit `docs/_shared/**` from this Spoke. Use
+  `.agents/skills/edit-svc-shared-docs/` to change the Hub source first and bump
+  the local shared reference separately.
 - Runtime: Node.js 22.22.3; package manager: pnpm 11.17.0.
 - Install with `pnpm install --frozen-lockfile`; run the full contract with
   `pnpm check`.
