@@ -7,6 +7,8 @@ renderer is published as `@inkcre/ui-web`.
 
 Designers publish tokens from Figma. Keep `tokens/inkcre.tokens.json` as the
 authoritative source and edit generated files only through the generators.
+当前输入格式与维护入口见 [Token 指南](tokens/tokens.md)，生成命令与输出见
+[Token 生成说明](scripts/build-tokens.md)。
 
 `scripts/build-tokens.ts` transforms the token source into:
 
@@ -59,9 +61,8 @@ canonical Hub-first edit and isolated ref-bump workflow.
 ```bash
 pnpm dev          # Run the web package development server
 pnpm story:dev    # Run the interactive component catalog
-pnpm test         # Run the unit suite once
 pnpm type-check   # Check root scripts and Vue source
-pnpm generate     # Rebuild tokens and Agent Skills
+pnpm generate     # Rebuild tokens, package metadata, and Agent Skills
 pnpm build        # Build the publishable package
 pnpm story        # Build the component catalog
 pnpm check        # Run the complete local/CI baseline
@@ -70,6 +71,18 @@ pnpm check        # Run the complete local/CI baseline
 Generate derived files with `pnpm generate`. The public component manifest
 drives the runtime registry, global component types, package version, Story
 coverage, and generated Agent Skills.
+
+本仓库目前没有自动化单元／组件测试套件，也没有 `pnpm test` 命令。
+日常修改运行相关检查；完整本地／CI 基线使用 `pnpm check`。涉及交互或视觉行为时，
+还需核对受影响的 Story 或真实消费页面；构建和覆盖检查不证明这些行为正确。
+检查选择遵循 [组织验证政策](https://github.com/InKCre/.github/blob/main/TESTING.md)。
+
+## 文档入口
+
+- [文档导航](docs/index.md)：维护与消费文档的入口。
+- [仓库约定](AGENTS.md)与[Web 包约定](packages/web/AGENTS.md)：代码和生成物的维护责任。
+- [包使用说明](packages/web/README.md)：安装、公开入口和随包 Skill。
+- [UI 基础能力工作包](tasks/ui-foundations/packet.md)：当前任务的分组、状态和验证证据。
 
 ## Histoire delivery
 
@@ -112,7 +125,7 @@ Run the consumer source-graph check with
 `pnpm --dir ../client-web type-check:ui --ui-source ../ui/packages/web`.
 Normal client development, builds, checks, and CI remain pinned to the
 published registry artifact. The consumer's
-[`apps/client-web/docs/development.md`](https://github.com/InKCre/client-web/blob/main/apps/client-web/docs/development.md#joint-dev-with-inkcreui-web)
+[`docs/40-deployment/development-runtime.md`](https://github.com/InKCre/client-web/blob/main/docs/40-deployment/development-runtime.md#joint-development-lanes)
 owns the full startup, remotes, cleanup, troubleshooting, and release-fidelity
 contract.
 

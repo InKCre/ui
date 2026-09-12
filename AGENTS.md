@@ -8,7 +8,7 @@ Reason in English. Communicate with humans in Chinese.
 
 - `packages/web/`: `@inkcre/ui-web`, its public components, styles, stories,
   generated consumer skill, and package-local instructions.
-- `tokens/inkcre.tokens.json`: W3C DTCG design-token source.
+- `tokens/inkcre.tokens.json`: 当前 Figma Token 导出源，使用 `type/value`；格式与维护入口见 [Token 指南](tokens/tokens.md)。
 - `scripts/`: deterministic token, package-metadata, Agent Skill, contract, and
   release preparation commands.
 - `docs/index.md`: durable documentation navigation.
@@ -29,7 +29,7 @@ Reason in English. Communicate with humans in Chinese.
 
 ## Coding Guidelines
 
-- [Coding for Human](/.github/instructions/coding-for-human.instructions.md)
+- [Coding for Human](.github/instructions/coding-for-human.instructions.md)
 
 ## Development Workflow
 
@@ -51,6 +51,8 @@ Reason in English. Communicate with humans in Chinese.
   consuming-page review; it currently admits no automated unit/component suite.
 - Require explicit Human authorization before commit, push, publication, or
   external repository/settings mutation.
+
+当前任务的范围、决策与验证记录保存在 [UI 基础能力工作包](tasks/ui-foundations/packet.md)。继续本任务时先读取工作包和当前组；它不替代上述长期知识入口，也不将尚未启动的组视为实现授权。
 
 <!-- svc:begin -->
 ## SVC
