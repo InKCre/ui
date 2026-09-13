@@ -18,6 +18,8 @@ UI 当前分支为 `feat/ui-foundations-components`，基线 `origin/main` 为 `
 
 ## 当前状态
 
-- UI：准备提交 L3 及证据，随后创建覆盖全部基础整治的 PR。
-- 消费者：独立分支和 worktree 已建立，开始基于最新 main 调查。
-- extension registry 独立 UI 与 Figma 发送端的缺口仍保留，不阻塞已明确的 client-web／extensions 迁移。
+- UI 功能 [PR #43](https://github.com/InKCre/ui/pull/43) 已合入为 `2b553ab`；Changesets 版本 [PR #44](https://github.com/InKCre/ui/pull/44) 已合入为 `9e80e89`。
+- [Release run 34739131474](https://github.com/InKCre/ui/actions/runs/34739131474) 成功，2026-09-13 04:59 UTC 发布 [@inkcre/ui-web@2.0.0](https://github.com/InKCre/ui/releases/tag/%40inkcre/ui-web%402.0.0)。registry metadata 与消费者 lockfile 的 integrity 一致：`sha512-YWaSG3dTQ+yGCWbcDDHb6RTeSVMmBcV+QDjjpYupSzqTc4H7MSUEcjSWgl2vf/yjO5LJQatlnJl0qoDk68lJqg==`。
+- GitHub Actions 自动创建版本 PR 的权限被仓库设置拒绝；沿用其已生成的版本分支手工建立 #44，全部检查通过后合入，未更改权限或绕过保护。
+- 消费者四个包（包括 ext-dev-utils）均已安装正式 2.0.0，迁移代码位于 [client-web PR #104](https://github.com/InKCre/client-web/pull/104)，本地完整 check、源码联调类型检查、Intent load 和实际 Chromium 扩展 popup E2E 已通过。真实数据库 E2E 因机器 SSH provider 不可用，继续由该 PR 的隔离 CI 验证；具体结果只在消费者工作包维护。
+- extension registry 独立 UI 与 Figma 发送端的位置缺口继续保留。
