@@ -13,3 +13,5 @@ pnpm exec node tasks/ui-foundations/header-evidence/verify.mjs /absolute/path/to
 ```
 
 脚本复用既有 Playwright，不新增组件套件。必须对包含本修复的产物执行；registry UI 2.0.0 及当前消费者 PR #104 仍含原缺陷，不能将本地探针或生产者 preview 视为下游已修复。消费者需安装正式修复版本后复验。
+
+最终源码 `d6125cf` 的 [CI](https://github.com/InKCre/ui/actions/runs/34766090160) 与 [preview 交付](https://github.com/InKCre/ui/actions/runs/34766172549) 成功。上述四组检查在实际远端重复通过，24px 图形、填色、焦点和菜单事件正常，pageerror 为零；见 [远端结果与部署身份](verification.json)。截图已更新为该部署的实际结果并人工复核。
