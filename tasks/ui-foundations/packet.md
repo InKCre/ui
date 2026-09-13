@@ -348,3 +348,15 @@ I3 已完成本轮来源工作流与关联消费修正。列表保留可比较�
 UI PR #46 和消费者 PR #104 均已提交并推送。生产者设计知识、I1、I2 与展示运行时修复保留独立提交；消费者 I1、I3 与数据库冷启动修复亦独立归档。生产者 `9128425` 的 CI 与 preview 全部成功，实际远端复验通过且 pageerror 为零，见 [preview 证据](preview-evidence/README.md)。消费者最终文档提交 `0f2ed00` 的 CI 与 preview 全部成功；I3 实际远端 Host／Registry／Mail／Twitter 全旅程及本机 SSH 五个真实数据库旅程通过。
 
 本轮没有合并 PR、生产部署或发布新包／扩展。消费者继续使用正式 UI 2.0.0；新配色发布后的真实安装复验、client-webext 独立主题以及总图中未执行组仍保留原边界，不以本轮通过宣称全部消费者迁移完成。
+
+## PR #104 图标缺失诊断
+
+用户要求确认菜单／侧栏切换图标是否因 UI Uno safelist 丢失。本轮限定调查与浏览器隔离探针，没有修改组件、消费者源码或依赖。真实 preview 的 Menu 按钮具有 24×24 尺寸，`.i-mdi-menu` 规则与 SVG mask 均已生成；更具体的 `button.ink-header__menu-icon` 将背景覆盖成透明，使 mask 没有可见填色。在当前 DOM 仅把背景恢复为 currentColor，菜单图形立即可见，点击仍正常打开侧栏。根因归属 UI 的 `inkHeader.scss`，不是 safelist。
+
+正式 registry 2.0.0 与生产者当前构建均包含九个组件内置图标选择器。沿既有真实 Host／Mail／Twitter／来源旅程核对当前可见图标，菜单是唯一具有 mask 却填色透明的项；关闭、刷新、下拉／展开箭头与加载图标在已覆盖状态下正常。不能据此宣称所有可能图标和状态都已覆盖。此前浏览器验收检查交互与 pageerror，未验证菜单的实际绘制，这一缺口需要在修复时补上。
+
+建议在 UI Header 内分离 button 与装饰图标 span，沿用 InkButton 的结构：按钮负责透明背景、焦点和命中区域，子元素负责 mask 与 currentColor；保留 aria-label、menu-click 和按钮尺寸。不要在消费者添加重复 safelist 或永久覆盖。发布修复包后更新消费者并验证；当前 PR #104 仍安装 2.0.0，仅修改 UI PR 不会让它自动得到修复。
+
+用户已授权修复、提交和推送。实现从按钮自身承载 mask 改为子 span 绘制图标，按钮保留透明背景、24×24 最小命中区域及独立焦点轮廓。拥有 Header Vue／SCSS、现有 Basic Story／说明、生成 Skill、patch Changeset 和任务证据；保留 props、事件、right-icon 槽、Token 及消费者依赖。通过完整 check、正式构建的浅深／窄宽浏览器检查验证图标填色、键盘焦点与逐次事件，不添加消费者 safelist 或覆盖。
+
+Header 修复已通过完整 `pnpm check` 和正式 Story 产物的浅深／375px／1280px 检查，图标填色、未被 mask 裁剪的按钮焦点及三种输入的事件次数均正确，pageerror 为零。已补 patch Changeset；详见 [Header 验收](header-evidence/README.md)。本轮不发布新包、不改消费者依赖，随后推送 UI PR #46 进行远端复验。
