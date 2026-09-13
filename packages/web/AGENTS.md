@@ -6,6 +6,8 @@
 
 运行时组件使用 Vue 3、TypeScript、Sass 和 UnoCSS。UnoCSS 同时用于图标与部分布局工具类，配置在 [uno.config.ts](uno.config.ts)。库通过 `InkRouter`、`InkI18n` 及对应注入键接入消费者的路由与国际化；Histoire 中的 vue-router／vue-i18n 配置不代表消费者必须采用相同实现。
 
+涉及设计、组件与 Token 时读取仓库根级 [设计指南](../../DESIGN.md)。本目录 DESIGN.md 是同源随包副本，由 Skill 生成命令同步；不要手改副本。
+
 ## 维护入口
 
 | 内容                                   | 入口与责任                                                                                      |

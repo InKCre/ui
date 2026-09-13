@@ -25,11 +25,38 @@
 ## Public API Facts
 
 - Import: `import { InkField } from "@inkcre/ui-web";`
-- Props: `editable`, `error`, `errorId`, `for`, `label`, `layout`, `required`, `value`
-- Events: `value-click`
-- Slots: `default`, `label-right`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `for` | `undefined \| string` | 否 | `undefined` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `errorId` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `"Label"` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `"col"` |
+| `value` | `undefined \| string` | 否 | `""` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+
+### Events
+
+- `value-click`: `[]`
+
+### Slots
+
+- `label-right`: `{}`
+- `default`: `{}`
+
 - Public types: None
 - Story variants: `Column`, `Inline`, `Row`, `Optional`, `Required`, `Very Long Label`, `Very Long Value`, `Empty Value`
+
 
 ## API Caveats
 

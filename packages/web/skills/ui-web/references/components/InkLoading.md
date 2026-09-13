@@ -25,11 +25,31 @@
 ## Public API Facts
 
 - Import: `import { InkLoading } from "@inkcre/ui-web";`
-- Props: `density`, `size`
-- Events: None
-- Slots: None
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `size` | `undefined \| "md" \| "sm" \| "xs"` | 否 | `"md"` |
+| `density` | `undefined \| "md" \| "sm"` | 否 | `"md"` |
+
+### Events
+
+- None.
+
+### Slots
+
+- None.
+
 - Public types: None
 - Story variants: `Basic`
+
 
 ## API Caveats
 

@@ -40,7 +40,7 @@ Figma 导入也改变：仅更新已知路径的值，显式提供 releaseType�
 - InkPicker 的内置日期选择只在 Confirm 更新 Date，取消不再提交。初始化可用 null；JSON 日期字符串应由消费者转换，InkAutoForm 已提供其内部字符串边界。
 - Popup/Scrim 使用原生 dialog。提供 aria-label 或 aria-labelledby；不要依赖旧遮罩 DOM 选择器。scrim=false 保留非模态行为，默认模式由浏览器提供背景隔离、嵌套与焦点管理。
 - useOptionalVModel 与内部 optional model 统一：传入非 undefined 的模型由父级控制，父级拒绝更新时显示不会擅自改变。传常量 false 不等于省略模型。
-- Vue 支持范围收紧为 ^3.5.0，对应稳定唯一 ID 的 useId。浏览器需支持原生 dialog；不自动加载 polyfill。
+- Vue 支持范围收紧为 ^3.5.25，兼顾稳定唯一 ID 的 useId 与实际生成声明。浏览器需支持原生 dialog；不自动加载 polyfill。
 
 ```vue
 <script setup lang="ts">
@@ -98,3 +98,13 @@ function save() {
 回退时恢复消费者升级前的依赖、锁文件、导入和相关适配，再验证完整消费流程。历史身份迁移使用 `@inkcre/web-design@1.2.2` 作为回退版本；当前应用若已采用较新的组件能力，应使用自身升级前的版本，而不是直接回退到历史迁移提交。
 
 旧包的可安装性、权限和废弃状态应在需要回退时查询 registry，本页不承诺其当前远端状态。包注册表认证入口见[安装说明](README.md#安装)。
+
+## L3 文档与依赖交付
+
+设计规则从随包 DESIGN.md 读取；Agent Skill 继续位于 `skills/ui-web`。模型、类型、默认值、事件载荷和插槽参数现在由源码生成，完整配方来自可检查的 Story 源文件。消费者显式配置可信包或直接读取 Markdown。
+
+Vue 继续由宿主提供，UnoCSS 仍为使用 `/uno` 时才需要的可选 peer。CodeMirror、JSON 语言服务、VueUse 和 dayjs 改由 UI 包声明运行时依赖；消费者自身代码仍使用这些库时保留直接依赖，仅为旧 UI peer 安装且没有其他调用的声明可以移除。vue-router 不再是 UI 的 peer，适配器继续接受公开 InkRouter 接口。公开子路径和组件交互不因这次依赖责任调整而改变。
+
+独立安装且关闭 skipLibCheck 的检查发现，Vue 3.5.0 无法读取由 Vue 3.5.25 生成的组件声明。当前最低支持版本因此校准为 3.5.25，消费者升级前同时更新 Vue。useId 可用只能说明运行时下限，不能证明生成声明兼容整个 3.5 系列。
+
+源码联调原先若把所有旧 peer 都映射到消费者 node_modules，需要改为仅共享 Vue 等真实 peer，让 JSON 服务等内部依赖从 UI 包解析。当前 JSON 语言服务固定 5.6.4；5.7.2 已观察到诊断消息类型与 schema 错误码变化，不能直接替换。Uno preset 直接返回标准 preset 对象，构建时通过 satisfies Preset 校验，发布其实际返回类型；不再把聚合入口的 CLI／配置加载器类型作为公开声明的必要依赖。

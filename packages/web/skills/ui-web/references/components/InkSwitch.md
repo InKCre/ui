@@ -25,11 +25,37 @@
 ## Public API Facts
 
 - Import: `import { InkSwitch } from "@inkcre/ui-web";`
-- Props: `disabled`, `isSwitching`, `modelValue`, `offText`, `onText`, `showLabel`, `size`
-- Events: `error`, `update:modelValue`
-- Slots: None
+
+### Models
+
+- `v-model` → `update:modelValue` `[_value: boolean]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `modelValue` | `undefined \| boolean \| Promise<boolean>` | 否 | `false` |
+| `size` | `undefined \| "lg" \| "md" \| "sm" \| "xs"` | 否 | `"md"` |
+| `showLabel` | `undefined \| boolean` | 否 | `true` |
+| `offText` | `undefined \| string` | 否 | `"OFF"` |
+| `onText` | `undefined \| string` | 否 | `"ON"` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `isSwitching` | `undefined \| boolean` | 否 | `false` |
+
+### Events
+
+- `error`: `[_error: unknown]`
+- `update:modelValue`: `[_value: boolean]`
+
+### Slots
+
+- None.
+
 - Public types: None
 - Story variants: `Extra Small`, `Small`, `Medium`, `Large`, `Off`, `On`, `长状态文案保持轨道尺寸`
+
 
 ## API Caveats
 

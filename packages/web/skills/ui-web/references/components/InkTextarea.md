@@ -25,11 +25,42 @@
 ## Public API Facts
 
 - Import: `import { InkTextarea } from "@inkcre/ui-web";`
-- Props: `disabled`, `editable`, `error`, `id`, `label`, `layout`, `mono`, `name`, `placeholder`, `prop`, `required`, `rows`, `value`
-- Events: `update:value`
-- Slots: None
+
+### Models
+
+- `v-model:value` → `update:value` `[_value: string]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `id` | `undefined \| string` | 否 | `undefined` |
+| `name` | `undefined \| string` | 否 | `undefined` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `prop` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `undefined` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `undefined` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+| `value` | `undefined \| string` | 否 | `""` |
+| `mono` | `undefined \| boolean` | 否 | `false` |
+| `placeholder` | `undefined \| string` | 否 | `""` |
+| `rows` | `undefined \| number` | 否 | `5` |
+
+### Events
+
+- `update:value`: `[_value: string]`
+
+### Slots
+
+- None.
+
 - Public types: None
 - Story variants: `Default`, `Optional`, `Required`, `Customize Rows`, `代码显式使用等宽字体`
+
 
 ## API Caveats
 

@@ -16,7 +16,7 @@ matches a product task.
 ## Workflow
 
 1. Identify the product intent and interaction state.
-2. Read `references/component-map.md` to shortlist components.
+2. Read [DESIGN.md](../../DESIGN.md) for design decisions, defaults, and extension boundaries; then read `references/component-map.md` to shortlist components.
 3. For multi-component work, read `references/composition-recipes.md`.
 4. Load only the selected files under `references/components/`.
 5. Check integration, styling, and common-mistake references only when relevant.
@@ -64,6 +64,7 @@ app.use(InKCreUiWeb);
 
 ## References
 
+- [DESIGN.md](../../DESIGN.md): shared design decisions for consumers and maintainers.
 - `references/component-map.md`: intent-to-component routing.
 - `references/composition-recipes.md`: reviewed multi-component workflows.
 - `references/integration.md`: installation, router, and i18n boundaries.

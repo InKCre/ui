@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import SettingsForm from "../recipes/SettingsForm.vue";
+import HostIntegration from "../recipes/HostIntegration.vue";
+import JsonConfiguration from "../recipes/JsonConfiguration.vue";
+const failSave = ref(false);
+async function saveExample() {
+  await new Promise((done) => setTimeout(done, 500));
+  if (failSave.value) throw new Error("保存失败");
+}
 import InkForm from "../../src/components/inkForm/inkForm.vue";
 import InkButton from "../../src/components/inkButton/inkButton.vue";
 import InkTextarea from "../../src/components/inkTextarea/inkTextarea.vue";
@@ -19,6 +27,21 @@ const formData = ref({
 
 <template>
   <Story title="Forms/Form/[Semantic] Layouts" :layout="{ type: 'single', iframe: false }">
+    <Variant title="完整设置表单与保存失败">
+      <label><input v-model="failSave" type="checkbox" />保存失败</label>
+      <SettingsForm :save="saveExample" />
+    </Variant>
+    <Variant title="宿主路由语言和主题适配">
+      <HostIntegration
+        current-path="/settings"
+        current-name="设置"
+        locale="zh-CN"
+        :translate="(key) => key"
+      />
+    </Variant>
+    <Variant title="JSON 草稿与验证后保存">
+      <JsonConfiguration :save="saveExample" />
+    </Variant>
     <Variant title="Column Layout">
       <InkForm layout="col">
         <InkInput v-model="formData.name" label="Name" placeholder="Enter name" />

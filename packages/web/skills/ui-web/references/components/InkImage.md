@@ -25,11 +25,39 @@
 ## Public API Facts
 
 - Import: `import { InkImage } from "@inkcre/ui-web";`
-- Props: `alt`, `expanded`, `lazy`, `src`, `title`
-- Events: `close`, `error`, `expand`, `update:expanded`
-- Slots: `expanded-footer`, `expanded-header`, `thumbnail`
+
+### Models
+
+- `v-model:expanded` → `update:expanded` `[_value: boolean]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `src` | `undefined \| string` | 否 | `undefined` |
+| `alt` | `undefined \| string` | 否 | `undefined` |
+| `title` | `undefined \| string` | 否 | `""` |
+| `lazy` | `undefined \| boolean` | 否 | `true` |
+| `expanded` | `undefined \| boolean` | 否 | `undefined` |
+
+### Events
+
+- `close`: `[]`
+- `error`: `[_payload: InkImageErrorPayload]`
+- `expand`: `[]`
+- `update:expanded`: `[_value: boolean]`
+
+### Slots
+
+- `thumbnail`: `{}`
+- `expanded-header`: `{}`
+- `expanded-footer`: `{}`
+
 - Public types: None
 - Story variants: `Basic Usage`, `With Title`, `Custom Size (Style + Class)`, `Custom Thumbnail Slot`, `Eager Loading (lazy: false)`, `With Expanded Footer`, `With Custom Header`
+
 
 ## API Caveats
 

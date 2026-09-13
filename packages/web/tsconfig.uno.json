@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "declarationMap": false,
+    "noEmit": false,
+    "rootDir": "styles",
+    "outDir": "dist"
+  },
+  "include": ["styles/uno/preset-ink.ts"]
+}

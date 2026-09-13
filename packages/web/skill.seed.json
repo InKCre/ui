@@ -101,7 +101,7 @@
       ],
       "avoidWhen": [
         "Only a low-level positioned surface is needed; use InkPopup.",
-        "A compact second-click guard is enough; use InkDoubleCheck."
+        "A compact confirmation popup attached to one trigger is enough; use InkDoubleCheck."
       ],
       "composeWith": ["InkButton", "InkForm", "InkLoading", "InkPopup"],
       "apiCaveats": [
@@ -472,7 +472,7 @@
         "Do not wrap controls in duplicate InkField labels when they already consume InkForm context.",
         "示例的文本和颜色工具类需要 presetInk；应用入口加载样式。未使用 Uno 时可用同名 Sass 角色和系统变量。"
       ],
-      "example": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { InkForm, InkInput, InkButton } from \"@inkcre/ui-web\";\n// 宿主提供实际持久化函数，失败时 reject。\nconst props = defineProps<{ save: (name: string) => Promise<void> }>();\nconst name = ref(\"\"), error = ref(\"\"), result = ref(\"\"), pending = ref(false);\nasync function submit() {\n  if (pending.value) return;\n  error.value = name.value.trim() ? \"\" : \"请输入名称。\";\n  result.value = \"\";\n  if (error.value) return;\n  pending.value = true;\n  try { await props.save(name.value.trim()); result.value = \"设置已保存。\"; }\n  catch { error.value = \"保存失败，请稍后重试。\"; }\n  finally { pending.value = false; }\n}\n</script>\n<template>\n  <h1 class=\"font-title-lg\">工作空间设置</h1>\n  <p class=\"font-body-md\">修改团队看到的工作空间名称。</p>\n  <InkForm layout=\"col\" @submit=\"submit\">\n    <InkInput v-model=\"name\" label=\"名称\" name=\"workspace\" :error=\"error\" required />\n    <InkButton theme=\"primary\" native-type=\"submit\" text=\"保存设置\" :is-loading=\"pending\" />\n    <p v-if=\"result\" role=\"status\" class=\"font-body-sm bg-surface-subtle text-feedback-success p-md\">{{ result }}</p>\n  </InkForm>\n</template>"
+      "exampleFile": "SettingsForm.vue"
     },
     {
       "name": "Schema Configuration",
@@ -545,15 +545,40 @@
         "Use image loading and error events to align surrounding feedback.",
         "Use InkPlaceholder only when the surrounding media region needs recovery guidance."
       ]
+    },
+    {
+      "name": "Host Integration",
+      "intent": "通过公开适配器接入宿主路由与语言，并使用根级主题选择。",
+      "components": ["InkHeader", "InkDialog", "InkButton"],
+      "steps": [
+        "把宿主路由与翻译函数传入此边界组件。",
+        "通过注入键提供响应式值，子组件读取该上下文。",
+        "应用入口加载样式；主题选择写入 html，由应用负责持久化偏好。"
+      ],
+      "exampleFile": "HostIntegration.vue",
+      "caveats": [
+        "适配器不要求安装 vue-router 或 vue-i18n；示例父组件应把实际当前路由、locale 和翻译函数绑定到 props。"
+      ]
+    },
+    {
+      "name": "Raw JSON Configuration",
+      "intent": "保留原始 JSON 草稿，校验通过后解析并保存。",
+      "components": ["InkForm", "InkJsonEditor", "InkButton"],
+      "steps": [
+        "把原始文字绑定到 v-model，另外保存 validation 状态。",
+        "只有当前草稿验证通过时才允许解析和持久化。",
+        "明确显示保存结果，失败后保留草稿。"
+      ],
+      "exampleFile": "JsonConfiguration.vue"
     }
   ],
   "integration": {
     "rules": [
       "Load @inkcre/ui-web/styles once in the application style entry unless the Sass entry is intentionally compiled instead.",
       "Use the package root for components and public types, /utils for utilities, /locales for locale bundles, and /uno for presetInk.",
-      "Keep declared peer dependencies resolvable in the consumer installation graph.",
       "Do not alias raw package source or dist internals in the registry-backed production contract.",
-      "运行时需要 Vue >=3.5（useId）和支持原生 dialog 的浏览器。"
+      "运行时需要 Vue ^3.5.25（公开声明按此版本生成）和支持原生 dialog 的浏览器。",
+      "Vue 是共享运行时 peer；CodeMirror、JSON 语言服务、VueUse 与 dayjs 由包自行声明安装。UnoCSS 只在使用 /uno 时需要。"
     ],
     "router": [
       "Adapt the consuming router to reactive currentPath and currentName values.",
@@ -569,12 +594,9 @@
   "styling": {
     "rules": [
       "应用加载一次 @inkcre/ui-web/styles；Sass 使用公开 /styles/functions、/styles/mixins 和 /tokens/ref|sys|comp。",
-      "先使用组件默认值。页面可用普通 CSS 决定列数、16px／32px 留白；组件负责内部间距、换行和可增长的最小高度。",
-      "默认选 title-lg 页面标题、title-sm 区块标题、body-md 正文、body-sm 说明／错误、label-lg 控件、label-md 短元信息。body-lg 用于强调正文，headline-lg 用于醒目页面标题。",
+      "设计角色的选择、配色关系、状态与布局责任见包内 DESIGN.md；CSS/Sass/Uno 调用与覆盖细节见 styles/README.md。",
       "apply-font(body-md) 输出四个度量、系统 UI 字体和 none 装饰；代码加 $mono: true，下划线加 $underlined: true。apply-font(title, lg) 无效，应使用 title-lg。",
       "Uno 将 presetInk 放在 presetWind3 后；font-body-md、font-label-lg font-mono underline、p-md 使用同一公开角色。none 不能消除祖先绘制的下划线。",
-      "普通表面配 text.base/subtle；primary/danger 表面分别配 text.on-primary/on-danger；反馈默认 surface.subtle + feedback.error/success/warning/info，并写明状态。",
-      "必要边界用 border.base，装饰分隔用 border.subtle，焦点用 border.strong。不要将 on-primary 用在普通表面，也不要创造 success.surface 等缺失路径。",
       "html[data-theme=\"light|dark\"] 优先于系统；省略 data-theme 或设 system 时跟随系统。主题覆盖 CSS 放在库之后并匹配选择器。",
       "根级 sys 颜色、typo.family.sans/mono、font 角色四属性、space/radius 在 CSS/Sass 变量和 Uno 对应规则之间传播。Sass maps 与 Uno 尺寸／图标／断点／阴影是构建值；任意 ref 变化不保证带动 sys/comp。",
       "Popup/Scrim Teleport 到 body，只保证根级覆盖，局部 wrapper 的主题或字体不能自动跟随。库不设置 html 字号，不下载字体。",

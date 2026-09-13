@@ -32,6 +32,6 @@ export interface JsonEditorValidation {
   messages: string[];
 }
 
-// This enum is re-exported by the CJS peer in a way Node ESM cannot statically import.
+// This enum is re-exported by the CJS dependency in a way Node ESM cannot statically import.
 // The member type checks the protocol value without depending on that runtime re-export.
 export const SCHEMA_RESOLVE_ERROR: ErrorCode.SchemaResolveError = 0x300;

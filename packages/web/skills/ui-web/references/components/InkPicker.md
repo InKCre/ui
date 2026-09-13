@@ -25,11 +25,48 @@
 ## Public API Facts
 
 - Import: `import { InkPicker } from "@inkcre/ui-web";`
-- Props: `disabled`, `displayValueAs`, `editable`, `error`, `formatter`, `id`, `label`, `layout`, `maxDate`, `minDate`, `modelValue`, `name`, `prop`, `required`, `showPopup`, `type`
-- Events: `pick`, `update:modelValue`, `update:showPopup`
-- Slots: `default`
+
+### Models
+
+- `v-model` → `update:modelValue` `[_value: T]`
+- `v-model:showPopup` → `update:showPopup` `[_value: boolean]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `id` | `undefined \| string` | 否 | `undefined` |
+| `name` | `undefined \| string` | 否 | `undefined` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `prop` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `undefined` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `undefined` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+| `modelValue` | `undefined \| [{ readonly type: PropType<T>; }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : { readonly type: PropType<T>; }` | 否 | `undefined` |
+| `minDate` | `Date \| undefined` | 否 | `undefined` |
+| `maxDate` | `Date \| undefined` | 否 | `undefined` |
+| `type` | `undefined \| "date" \| "datetime" \| "time"` | 否 | `undefined` |
+| `displayValueAs` | `undefined \| "box" \| "inline-text"` | 否 | `"inline-text"` |
+| `formatter` | `((value: T) => string) \| undefined` | 否 | `undefined` |
+| `showPopup` | `undefined \| boolean` | 否 | `undefined` |
+
+### Events
+
+- `pick`: `[]`
+- `update:modelValue`: `[_value: T]`
+- `update:showPopup`: `[_value: boolean]`
+
+### Slots
+
+- `default`: `{ closePopup: () => void; modelValue: ([{ readonly type: PropType<T>; }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : { readonly type: PropType<T>; }) | undefined; }`
+
 - Public types: None
 - Story variants: `Date Picker`, `Required Field`
+
 
 ## API Caveats
 

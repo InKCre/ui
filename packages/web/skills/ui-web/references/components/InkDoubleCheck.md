@@ -23,11 +23,33 @@
 ## Public API Facts
 
 - Import: `import { InkDoubleCheck } from "@inkcre/ui-web";`
-- Props: `cancelText`, `confirmText`, `message`, `title`
-- Events: `confirm`
-- Slots: `default`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `title` | `undefined \| string` | 否 | `"Confirm Action"` |
+| `message` | `undefined \| string` | 否 | `"Are you sure you want to proceed?"` |
+| `confirmText` | `undefined \| string` | 否 | `"Confirm"` |
+| `cancelText` | `undefined \| string` | 否 | `"Cancel"` |
+
+### Events
+
+- `confirm`: `[]`
+
+### Slots
+
+- `default`: `{}`
+
 - Public types: None
 - Story variants: `Delete Confirmation`
+
 
 ## API Caveats
 

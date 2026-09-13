@@ -2,6 +2,7 @@
 
 ## Navigation
 
+- [共同设计指南](../DESIGN.md)
 - [Repository overview](../README.md)
 - [Web package usage and development](../packages/web/README.md)
 - [Package migration contract](../packages/web/MIGRATION.md)

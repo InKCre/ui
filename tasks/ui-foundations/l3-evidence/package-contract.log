@@ -1,0 +1,154 @@
+package: @inkcre/ui-web@1.4.0
+Tarball Contents
+DESIGN.md
+dist/App.vue.d.ts
+dist/components.d.ts
+dist/components/inkAutoForm/inkAutoForm.d.ts
+dist/components/inkAutoForm/inkAutoForm.vue.d.ts
+dist/components/inkButton/inkButton.d.ts
+dist/components/inkButton/inkButton.vue.d.ts
+dist/components/inkDatetimePickerView/inkDatetimePickerView.d.ts
+dist/components/inkDatetimePickerView/inkDatetimePickerView.vue.d.ts
+dist/components/inkDialog/inkDialog.d.ts
+dist/components/inkDialog/inkDialog.vue.d.ts
+dist/components/inkDoubleCheck/inkDoubleCheck.d.ts
+dist/components/inkDoubleCheck/inkDoubleCheck.vue.d.ts
+dist/components/inkDropdown/inkDropdown.d.ts
+dist/components/inkDropdown/inkDropdown.vue.d.ts
+dist/components/inkField/inkField.d.ts
+dist/components/inkField/inkField.vue.d.ts
+dist/components/inkForm/inkForm.d.ts
+dist/components/inkForm/inkForm.vue.d.ts
+dist/components/inkHeader/inkHeader.d.ts
+dist/components/inkHeader/inkHeader.vue.d.ts
+dist/components/inkImage/inkImage.d.ts
+dist/components/inkImage/inkImage.vue.d.ts
+dist/components/inkInput/inkInput.d.ts
+dist/components/inkInput/inkInput.vue.d.ts
+dist/components/inkJsonEditor/inkJsonEditor.d.ts
+dist/components/inkJsonEditor/inkJsonEditor.vue.d.ts
+dist/components/inkJsonEditor/jsonSchemaService.d.ts
+dist/components/inkLoading/inkLoading.d.ts
+dist/components/inkLoading/inkLoading.vue.d.ts
+dist/components/inkPagination/inkPagination.d.ts
+dist/components/inkPagination/inkPagination.vue.d.ts
+dist/components/inkPicker/inkPicker.d.ts
+dist/components/inkPicker/inkPicker.vue.d.ts
+dist/components/inkPlaceholder/inkPlaceholder.d.ts
+dist/components/inkPlaceholder/inkPlaceholder.vue.d.ts
+dist/components/inkPopup/inkPopup.d.ts
+dist/components/inkPopup/inkPopup.vue.d.ts
+dist/components/inkScrim/inkScrim.d.ts
+dist/components/inkScrim/inkScrim.vue.d.ts
+dist/components/inkSwitch/inkSwitch.d.ts
+dist/components/inkSwitch/inkSwitch.vue.d.ts
+dist/components/inkTextarea/inkTextarea.d.ts
+dist/components/inkTextarea/inkTextarea.vue.d.ts
+dist/components/inkTooltip/inkTooltip.d.ts
+dist/components/inkTooltip/inkTooltip.vue.d.ts
+dist/composables/use-async-boolean.d.ts
+dist/composables/use-field-control.d.ts
+dist/composables/use-native-dialog.d.ts
+dist/composables/use-optional-model.d.ts
+dist/i18n.d.ts
+dist/index.css
+dist/index.d.ts
+dist/index.js
+dist/locales/en.d.ts
+dist/locales/index.d.ts
+dist/locales/index.js
+dist/locales/zh-CN.d.ts
+dist/main.d.ts
+dist/public-components.d.ts
+dist/router.d.ts
+dist/uno/preset-ink.d.ts
+dist/uno/preset-ink.js
+dist/utils/index.d.ts
+dist/utils/index.js
+dist/utils/json.d.ts
+dist/utils/token-types.d.ts
+dist/utils/vue-props.d.ts
+dist/version.d.ts
+MIGRATION.md
+package.json
+README.md
+skills/ui-web/references/common-mistakes.md
+skills/ui-web/references/component-map.md
+skills/ui-web/references/components/InkAutoForm.md
+skills/ui-web/references/components/InkButton.md
+skills/ui-web/references/components/InkDatetimePickerView.md
+skills/ui-web/references/components/InkDialog.md
+skills/ui-web/references/components/InkDoubleCheck.md
+skills/ui-web/references/components/InkDropdown.md
+skills/ui-web/references/components/InkField.md
+skills/ui-web/references/components/InkForm.md
+skills/ui-web/references/components/InkHeader.md
+skills/ui-web/references/components/InkImage.md
+skills/ui-web/references/components/InkInput.md
+skills/ui-web/references/components/InkJsonEditor.md
+skills/ui-web/references/components/InkLoading.md
+skills/ui-web/references/components/InkPagination.md
+skills/ui-web/references/components/InkPicker.md
+skills/ui-web/references/components/InkPlaceholder.md
+skills/ui-web/references/components/InkPopup.md
+skills/ui-web/references/components/InkScrim.md
+skills/ui-web/references/components/InkSwitch.md
+skills/ui-web/references/components/InkTextarea.md
+skills/ui-web/references/components/InkTooltip.md
+skills/ui-web/references/composition-recipes.md
+skills/ui-web/references/integration.md
+skills/ui-web/references/styling-and-themes.md
+skills/ui-web/SKILL.md
+styles/_functions.scss
+styles/_mixins.scss
+styles/index.scss
+styles/README.md
+styles/tokens/_comp.scss
+styles/tokens/_ref.scss
+styles/tokens/_sys.scss
+styles/uno/preset-ink.ts
+Tarball Details
+/var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-ui-contract-z8yzyA/source-pack/inkcre-ui-web-1.4.0.tgz
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +80
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 130, reused 79, downloaded 1, added 80, done
+
+dependencies:
++ @inkcre/ui-web 1.4.0
++ vue 3.5.25 (3.5.42 is available)
+
+devDependencies:
++ @tanstack/intent 0.3.6 (0.4.0 is available)
++ @vitejs/plugin-vue 6.0.3 (6.0.8 is available)
++ typescript 5.9.3 (7.0.2 is available)
++ vite 7.2.7 (8.3.0 is available)
++ vue-tsc 3.3.8 (3.3.11 is available)
+
+Done in 582ms using pnpm v11.17.0
+vite v7.2.7 building client environment for production...
+transforming...
+✓ 69 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.17 kB │ gzip:   0.14 kB
+dist/assets/index-CP0G0Xqt.css   48.10 kB │ gzip:   6.92 kB
+dist/assets/index-CScn03y7.js   575.20 kB │ gzip: 187.16 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 789ms
+✓ Lockfile passes supply-chain policies (verified 5s ago)
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +86 -3
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+Progress: resolved 213, reused 163, downloaded 0, added 86, done
+
+dependencies:
++ unocss 66.5.10 (66.10.2 is available)
+
+Done in 625ms using pnpm v11.17.0
+Independent minimal install, recipes, and packed contract passed for @inkcre/ui-web@1.4.0.
+Consumer retained at /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-ui-contract-z8yzyA

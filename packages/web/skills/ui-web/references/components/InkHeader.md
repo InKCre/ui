@@ -25,11 +25,33 @@
 ## Public API Facts
 
 - Import: `import { InkHeader } from "@inkcre/ui-web";`
-- Props: `logoSrc`, `pageTitle`, `title`
-- Events: `menu-click`, `title-click`
-- Slots: `right-icon`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `title` | `undefined \| string` | 否 | `"InKCre"` |
+| `pageTitle` | `undefined \| string` | 否 | `undefined` |
+| `logoSrc` | `undefined \| string` | 否 | `""` |
+
+### Events
+
+- `menu-click`: `[]`
+- `title-click`: `[]`
+
+### Slots
+
+- `right-icon`: `{}`
+
 - Public types: None
 - Story variants: `Basic`, `With Logo`, `Without Logo`, `Auto Page Title`
+
 
 ## API Caveats
 

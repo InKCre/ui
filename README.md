@@ -5,8 +5,8 @@ renderer is published as `@inkcre/ui-web`.
 
 ## Single Source of Truth
 
-Designers publish tokens from Figma. Keep `tokens/inkcre.tokens.json` as the
-authoritative source and edit generated files only through the generators.
+设计判断由 [DESIGN.md](DESIGN.md) 维护。`tokens/inkcre.tokens.json` 是 Token 规范源，
+Figma 仅提议已有路径的值更新；生成物通过生成器更新。
 当前输入格式与维护入口见 [Token 指南](tokens/tokens.md)，生成命令与输出见
 [Token 生成说明](scripts/build-tokens.md)。
 
@@ -79,6 +79,7 @@ coverage, and generated Agent Skills.
 
 ## 文档入口
 
+- [设计决策指南](DESIGN.md)：消费者与维护者共享的默认选择、变化条件和扩展边界。
 - [文档导航](docs/index.md)：维护与消费文档的入口。
 - [仓库约定](AGENTS.md)与[Web 包约定](packages/web/AGENTS.md)：代码和生成物的维护责任。
 - [包使用说明](packages/web/README.md)：安装、公开入口和随包 Skill。

@@ -25,11 +25,40 @@
 ## Public API Facts
 
 - Import: `import { InkButton } from "@inkcre/ui-web";`
-- Props: `disabled`, `icon`, `iconPlacement`, `isLoading`, `nativeType`, `size`, `text`, `theme`, `type`
-- Events: `click`
-- Slots: `default`, `prefix-icon`, `suffix-icon`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `nativeType` | `undefined \| "button" \| "reset" \| "submit"` | 否 | `"button"` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `text` | `undefined \| string` | 否 | `undefined` |
+| `icon` | `undefined \| string` | 否 | `undefined` |
+| `iconPlacement` | `undefined \| "prefix" \| "suffix"` | 否 | `"prefix"` |
+| `type` | `undefined \| "default" \| "square"` | 否 | `"default"` |
+| `theme` | `undefined \| "danger" \| "primary" \| "subtle"` | 否 | `"subtle"` |
+| `size` | `undefined \| "md" \| "sm"` | 否 | `"md"` |
+| `isLoading` | `undefined \| boolean` | 否 | `false` |
+
+### Events
+
+- `click`: `[_event: MouseEvent]`
+
+### Slots
+
+- `prefix-icon`: `{}`
+- `default`: `{}`
+- `suffix-icon`: `{}`
+
 - Public types: None
 - Story variants: `Subtle`, `Primary`, `Danger`, `Medium (Default)`, `Small`, `Loading State - Subtle`, `Loading State - Primary`, `Loading State - Danger`, `Very Long Text`, `Short Text`, `Icon Prefix`, `Icon Suffix`, `Icon Only (Square)`, `Explicit form submission`
+
 
 ## API Caveats
 

@@ -2,23 +2,11 @@
 
 先使用组件及其默认布局，再为页面文字和空间选择角色。应用入口加载一次 `@inkcre/ui-web/styles`；自编译 Sass 入口时不要再重复加载预构建 CSS。样式包含组件内部图标和工具类，不包含 preflight，也不设置 html 字号或下载字体。组件安装见[包 README](../README.md)，旧版本升级见[迁移说明](../MIGRATION.md)。
 
-## 默认选择
+## 从设计选择到 Web 调用
 
-| 内容                         | 角色或组合                                                         |
-| ---------------------------- | ------------------------------------------------------------------ |
-| 常规页面标题／区块标题       | title-lg／title-sm                                                 |
-| 普通正文／说明、错误         | body-md／body-sm                                                   |
-| 控件值、标签／短元信息       | label-lg／label-md                                                 |
-| 强调正文／醒目页面标题       | body-lg／headline-lg                                               |
-| 代码                         | 合适的文本角色，加 mono                                            |
-| 普通文字／弱化文字           | text.base／text.subtle，放在 surface.base 或 surface.subtle        |
-| 主动作／危险动作             | surface.primary + text.on-primary／surface.danger + text.on-danger |
-| 反馈                         | surface.subtle + feedback.error/success/warning/info，并写明状态   |
-| 必要控件边界／装饰分隔／焦点 | border.base／border.subtle／border.strong                          |
+文字角色、配色组合、状态和布局责任见 [设计指南](../DESIGN.md)。本指南负责把这些决定映射到 CSS、Sass 和 UnoCSS，以及说明覆盖在哪里生效。
 
-字体角色包含字号、比例行高、字重和字距；默认系统 UI 字体、无下划线。根字号 16px 时，label-lg/body-sm 为 14/20，label-md 为 12/16，body-md 为 16/24，body-lg 为 18/24，title-sm 为 22/28，title-lg 为 28/36，headline-lg 为 36/48。字号使用 rem，默认字重 400、字距 0；不要把固定像素高度套在可增长的文字控件上。
-
-InkForm 建议 `layout="col"`，Input/Textarea/Dropdown/Picker 自己提供 label 和 error。仅自定义字段使用 InkField；不要重复包裹内置标签。字段内部默认 4px、字段间 16px，宿主负责页面列数与留白。Button 默认 subtle，主提交动作明确写 `theme="primary" native-type="submit"`；pending 保留文字和加载图标。
+常见正文使用 body-md，说明使用 body-sm，页面标题使用 title-lg。普通表单从 InkForm 的 `layout="col"` 开始；主提交动作明确写 `theme="primary" native-type="submit"`。完整可检查的表单、JSON 保存和适配器示例见 [组合配方](../skills/ui-web/references/composition-recipes.md)。
 
 ## CSS、Sass 与 UnoCSS
 
@@ -99,4 +87,4 @@ html[data-theme="dark"] {
 | Sass maps、Uno 尺寸／图标／断点／阴影 | 构建值；改变源后重新生成、构建                                |
 | 任意 ref 变量                         | 不保证带动已经解析的 sys 或 comp，优先覆盖明确的系统角色      |
 
-Popup/Scrim Teleport 到 body，保证的是根级覆盖；局部 wrapper 的字体或主题覆盖不会自动跟随弹层。组件内部必要计算留在组件中，普通页面 CSS 可自行定义布局。页面可以按容器选择 16px 或 32px 留白，但没有共享的自动密度算法。改字体、配色或空间后须复核长中英文、窄容器、200% 字体与缩放，以及焦点、错误、pending 和选中状态。
+Popup/Scrim Teleport 到 body，保证的是根级覆盖；局部 wrapper 的字体或主题覆盖不会自动跟随弹层。组件内部必要计算留在组件中，普通页面 CSS 可自行定义布局。页面可以按容器选择 16px 或 32px 留白，但没有共享的自动密度算法。改字体、配色或空间后，根据影响复核长中英文、窄容器，以及焦点、错误、pending 和选中状态。

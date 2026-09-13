@@ -25,11 +25,30 @@
 ## Public API Facts
 
 - Import: `import { InkForm } from "@inkcre/ui-web";`
-- Props: `layout`
-- Events: `submit`
-- Slots: `default`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `"col"` |
+
+### Events
+
+- `submit`: `[_event: Event]`
+
+### Slots
+
+- `default`: `{}`
+
 - Public types: None
-- Story variants: `Column Layout`, `Inline Layout`, `Reactive layout`, `长标签、错误与窄容器`
+- Story variants: `完整设置表单与保存失败`, `宿主路由语言和主题适配`, `JSON 草稿与验证后保存`, `Column Layout`, `Inline Layout`, `Reactive layout`, `长标签、错误与窄容器`
+
 
 ## API Caveats
 

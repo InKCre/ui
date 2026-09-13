@@ -19,7 +19,8 @@
     "dist/",
     "styles/",
     "skills",
-    "MIGRATION.md"
+    "MIGRATION.md",
+    "DESIGN.md"
   ],
   "type": "module",
   "sideEffects": [
@@ -78,14 +79,14 @@
     "build": "pnpm run clean && pnpm run type-check && pnpm run build:js && pnpm run build:subpaths && pnpm run build:subpath-types && pnpm run build:finalize && pnpm run build:skills",
     "build:js": "vite build",
     "build:subpaths": "vite build --config vite.subpaths.config.js",
-    "build:subpath-types": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --declarationMap false --composite false -p tsconfig.exports.json",
+    "build:subpath-types": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --declarationMap false --composite false -p tsconfig.exports.json && vue-tsc --declaration --emitDeclarationOnly -p tsconfig.uno.json",
     "build:finalize": "tsx ../../scripts/finalize-package.ts",
     "build:tokens": "tsx ../../scripts/build-tokens.ts",
     "build:skills": "pnpm run skill:generate:check",
     "clean": "rimraf dist",
     "preview": "vite preview",
-    "format": "oxfmt --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
-    "format:check": "oxfmt --check --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
+    "format": "oxfmt --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json DESIGN.md skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json tsconfig.uno.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
+    "format:check": "oxfmt --check --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json DESIGN.md skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json tsconfig.uno.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
     "lint": "oxlint --config .oxlintrc.json src stories histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
     "lint:fix": "pnpm run lint --fix",
     "skill:generate": "tsx ../../scripts/build-agent-skills.ts",
@@ -97,24 +98,26 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.check.json"
   },
   "dependencies": {
-    "@vue/shared": "3.5.25"
-  },
-  "devDependencies": {
     "@codemirror/autocomplete": "^6.20.0",
     "@codemirror/commands": "^6.10.0",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/lint": "^6.9.2",
     "@codemirror/state": "^6.5.2",
     "@codemirror/view": "^6.38.8",
+    "@vue/shared": "3.5.25",
+    "@vueuse/core": "^14.0.0",
+    "dayjs": "^1.11.0",
+    "vscode-json-languageservice": "5.6.4",
+    "vscode-languageserver-textdocument": "^1.0.12"
+  },
+  "devDependencies": {
     "@histoire/plugin-vue": "1.0.0-alpha.5",
     "@iconify-json/mdi": "^1.2.3",
     "@tanstack/intent": "0.3.6",
     "@unocss/preset-icons": "^66.5.10",
     "@unocss/preset-wind3": "^66.5.10",
     "@vitejs/plugin-vue": "^6.0.3",
-    "@vueuse/core": "^14.1.0",
     "cpr": "^3.0.1",
-    "dayjs": "^1.11.19",
     "histoire": "1.0.0-alpha.5",
     "rimraf": "^6.0.1",
     "rollup-plugin-visualizer": "^6.0.5",
@@ -122,33 +125,17 @@
     "unocss": "^66.5.10",
     "vite": "^7.2.7",
     "vite-plugin-dts": "^4.5.4",
-    "vscode-json-languageservice": "^5.6.4",
-    "vscode-languageserver-textdocument": "^1.0.12",
-    "vue": "^3.5.0",
+    "vue": "3.5.25",
     "vue-i18n": "^11.2.7",
     "vue-router": "^4.0.0",
     "vue-tsc": "3.3.8"
   },
   "peerDependencies": {
-    "@codemirror/autocomplete": "^6.20.0",
-    "@codemirror/commands": "^6.10.0",
-    "@codemirror/lang-json": "^6.0.2",
-    "@codemirror/lint": "^6.9.2",
-    "@codemirror/state": "^6.5.2",
-    "@codemirror/view": "^6.38.8",
-    "@vueuse/core": "^14.0.0",
-    "dayjs": "^1.11.0",
     "unocss": "^66.5.0",
-    "vscode-json-languageservice": "^5.6.4",
-    "vscode-languageserver-textdocument": "^1.0.12",
-    "vue": "^3.5.0",
-    "vue-router": "^4.0.0"
+    "vue": "^3.5.25"
   },
   "peerDependenciesMeta": {
     "unocss": {
-      "optional": true
-    },
-    "vue-router": {
       "optional": true
     }
   },

@@ -1,6 +1,9 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
+import { createChecker, type ComponentMeta } from "vue-component-meta";
+import { propDefault, propType, typeDeclarations } from "./lib/component-api.js";
 import {
+  repositoryRoot,
   readComponentManifest,
   readPackageManifest,
   resolveWebPackageRoot,
@@ -28,6 +31,7 @@ interface ComponentSeed {
 }
 
 interface RecipeSeed {
+  exampleFile?: string;
   example?: string;
   name: string;
   intent: string;
@@ -67,9 +71,8 @@ interface ComponentModel extends PublicComponent {
   apiCaveats: string[];
   commonMistakes: string[];
   publicTypes: string[];
-  props: string[];
-  events: string[];
-  slots: string[];
+  api: ComponentMeta;
+  typeDefinitions: string[];
   storyVariants: string[];
 }
 
@@ -90,157 +93,6 @@ function readText(path: string): string {
 
 function readTextIfPresent(path: string): string {
   return existsSync(path) ? readText(path) : "";
-}
-
-function findClosingBrace(source: string, openingBrace: number): number {
-  let depth = 0;
-  let quote = "";
-  let escaped = false;
-  let lineComment = false;
-  let blockComment = false;
-
-  for (let index = openingBrace; index < source.length; index += 1) {
-    const character = source[index];
-    const nextCharacter = source[index + 1];
-
-    if (lineComment) {
-      if (character === "\n") lineComment = false;
-      continue;
-    }
-    if (blockComment) {
-      if (character === "*" && nextCharacter === "/") {
-        blockComment = false;
-        index += 1;
-      }
-      continue;
-    }
-    if (quote) {
-      if (escaped) {
-        escaped = false;
-      } else if (character === "\\") {
-        escaped = true;
-      } else if (character === quote) {
-        quote = "";
-      }
-      continue;
-    }
-    if (character === "/" && nextCharacter === "/") {
-      lineComment = true;
-      index += 1;
-      continue;
-    }
-    if (character === "/" && nextCharacter === "*") {
-      blockComment = true;
-      index += 1;
-      continue;
-    }
-    if (character === "'" || character === '"' || character === "`") {
-      quote = character;
-      continue;
-    }
-    if (character === "{") depth += 1;
-    if (character === "}") {
-      depth -= 1;
-      if (depth === 0) return index;
-    }
-  }
-
-  return -1;
-}
-
-function extractExportedObject(source: string, name: string): string {
-  const declaration = new RegExp(`export\\s+const\\s+${name}\\b`).exec(source);
-  if (!declaration) return "";
-
-  const openingBrace = source.indexOf("{", declaration.index);
-  if (openingBrace < 0) return "";
-
-  const closingBrace = findClosingBrace(source, openingBrace);
-  return closingBrace < 0 ? "" : source.slice(openingBrace + 1, closingBrace);
-}
-
-function countStructuralBraces(line: string): number {
-  let depthChange = 0;
-  let quote = "";
-  let escaped = false;
-
-  for (let index = 0; index < line.length; index += 1) {
-    const character = line[index];
-    const nextCharacter = line[index + 1];
-
-    if (quote) {
-      if (escaped) {
-        escaped = false;
-      } else if (character === "\\") {
-        escaped = true;
-      } else if (character === quote) {
-        quote = "";
-      }
-      continue;
-    }
-    if (character === "/" && nextCharacter === "/") break;
-    if (character === "'" || character === '"' || character === "`") {
-      quote = character;
-      continue;
-    }
-    if (character === "{") depthChange += 1;
-    if (character === "}") depthChange -= 1;
-  }
-
-  return depthChange;
-}
-
-function parseObjectEntries(body: string): Array<{ key?: string; spread?: string }> {
-  const entries: Array<{ key?: string; spread?: string }> = [];
-  let depth = 0;
-
-  for (const line of body.split("\n")) {
-    const trimmed = line.trim();
-    if (depth === 0 && trimmed && !trimmed.startsWith("//")) {
-      const spread = /^\.\.\.([A-Za-z_$][\w$]*)/.exec(trimmed);
-      const property = /^(?:"([^"]+)"|'([^']+)'|([A-Za-z_$][\w$-]*))\s*:/.exec(trimmed);
-
-      if (spread) entries.push({ spread: spread[1] });
-      if (property) entries.push({ key: property[1] ?? property[2] ?? property[3] });
-    }
-    depth += countStructuralBraces(line);
-  }
-
-  return entries;
-}
-
-function resolveObjectKeys(
-  objectName: string,
-  exportedObjects: Map<string, string>,
-  resolving = new Set<string>(),
-): string[] {
-  if (resolving.has(objectName)) {
-    throw new Error(`Circular exported-object spread detected at ${objectName}`);
-  }
-
-  const body = exportedObjects.get(objectName);
-  if (!body) return [];
-
-  const nextResolving = new Set(resolving).add(objectName);
-  const keys = parseObjectEntries(body).flatMap((entry) => {
-    if (entry.key) return [entry.key];
-    return entry.spread ? resolveObjectKeys(entry.spread, exportedObjects, nextResolving) : [];
-  });
-
-  return [...new Set(keys)].sort();
-}
-
-function extractSlots(source: string): string[] {
-  const slots = new Set<string>();
-  for (const match of source.matchAll(/<slot\b([^>]*)>/g)) {
-    const name = /\bname=["']([^"']+)["']/.exec(match[1])?.[1] ?? "default";
-    slots.add(name);
-  }
-  return [...slots].sort((left, right) => {
-    if (left === "default") return -1;
-    if (right === "default") return 1;
-    return left.localeCompare(right);
-  });
 }
 
 function extractStoryVariants(source: string): string[] {
@@ -292,6 +144,9 @@ function validateSeed(seed: SkillSeed, publicComponents: PublicComponent[]): voi
   }
 
   for (const recipe of seed.recipes) {
+    if (recipe.exampleFile && !/^[A-Z][A-Za-z0-9]*\.vue$/.test(recipe.exampleFile)) {
+      throw new Error(`Invalid recipe source: ${recipe.exampleFile}`);
+    }
     for (const component of recipe.components) {
       if (!publicNames.has(component)) {
         throw new Error(`Recipe "${recipe.name}" references non-public ${component}`);
@@ -305,32 +160,37 @@ function buildModel(): SkillModel {
   const seed = JSON.parse(readText(seedPath)) as SkillSeed;
   validateSeed(seed, publicComponents);
 
-  const exportedObjects = new Map<string, string>();
-
-  for (const component of publicComponents) {
-    const source = readText(resolve(componentsRoot, component.source, `${component.source}.ts`));
-    for (const match of source.matchAll(/export\s+const\s+([A-Za-z_$][\w$]*)\b/g)) {
-      const objectBody = extractExportedObject(source, match[1]);
-      if (objectBody) exportedObjects.set(match[1], objectBody);
-    }
-  }
+  const checker = createChecker(resolve(packageRoot, "tsconfig.check.json"), { schema: true });
 
   const components = publicComponents
     .map((component): ComponentModel => {
-      const vueSource = readText(
-        resolve(componentsRoot, component.source, `${component.source}.vue`),
-      );
       const storySource = readTextIfPresent(
         resolve(storiesRoot, component.category, `${component.source}.story.vue`),
       );
       const componentSeed = seed.components[component.name];
+      const api = checker.getComponentMeta(
+        resolve(componentsRoot, component.source, `${component.source}.vue`),
+      );
+      if (!api.type || !api.props.some((prop) => !prop.global)) {
+        throw new Error(`No public component metadata for ${component.name}`);
+      }
+      const definitions = new Map(
+        readdirSync(resolve(componentsRoot, component.source))
+          .filter((file) => file.endsWith(".ts"))
+          .flatMap((file) => [
+            ...typeDeclarations(readText(resolve(componentsRoot, component.source, file)), file),
+          ]),
+      );
 
       return {
         ...component,
         ...componentSeed,
-        props: resolveObjectKeys(`${component.source}Props`, exportedObjects),
-        events: resolveObjectKeys(`${component.source}Emits`, exportedObjects),
-        slots: extractSlots(vueSource),
+        api,
+        typeDefinitions: (componentSeed.publicTypes ?? []).map((name) => {
+          const definition = definitions.get(name);
+          if (!definition) throw new Error(`Missing public type ${component.name}.${name}`);
+          return definition;
+        }),
         storyVariants: extractStoryVariants(storySource),
         publicTypes: componentSeed.publicTypes ?? [],
         apiCaveats: componentSeed.apiCaveats ?? [],
@@ -344,7 +204,12 @@ function buildModel(): SkillModel {
     packageVersion: packageManifest.version,
     skill: seed.skill,
     components,
-    recipes: seed.recipes,
+    recipes: seed.recipes.map((recipe) => ({
+      ...recipe,
+      example: recipe.exampleFile
+        ? readText(resolve(storiesRoot, "recipes", recipe.exampleFile))
+        : undefined,
+    })),
     integration: seed.integration,
     styling: seed.styling,
     commonMistakes: seed.commonMistakes,
@@ -382,7 +247,7 @@ matches a product task.
 ## Workflow
 
 1. Identify the product intent and interaction state.
-2. Read \`references/component-map.md\` to shortlist components.
+2. Read [DESIGN.md](../../DESIGN.md) for design decisions, defaults, and extension boundaries; then read \`references/component-map.md\` to shortlist components.
 3. For multi-component work, read \`references/composition-recipes.md\`.
 4. Load only the selected files under \`references/components/\`.
 5. Check integration, styling, and common-mistake references only when relevant.
@@ -415,6 +280,7 @@ ${bullets(model.skill.rules)}
 
 ## References
 
+- [DESIGN.md](../../DESIGN.md): shared design decisions for consumers and maintainers.
 - \`references/component-map.md\`: intent-to-component routing.
 - \`references/composition-recipes.md\`: reviewed multi-component workflows.
 - \`references/integration.md\`: installation, router, and i18n boundaries.
@@ -493,7 +359,7 @@ function renderIntegration(model: SkillModel): string {
 ## Package Boundary
 
 \`\`\`sh
-pnpm add ${model.packageName}
+pnpm add ${model.packageName} vue@^3.5.25
 \`\`\`
 
 Import runtime components and the plugin from \`${model.packageName}\`. Import
@@ -564,6 +430,36 @@ ${componentMistakes}
 `;
 }
 
+function renderApi(api: ComponentMeta): string {
+  const code = (value: string) => `\`${value.replaceAll("\n", " ")}\``;
+  const cell = (value: string) => code(value).replaceAll("|", "\\|");
+  const props = api.props.filter((prop) => !prop.global);
+  const models = api.events.filter(
+    (event) =>
+      event.name.startsWith("update:") && props.some((prop) => prop.name === event.name.slice(7)),
+  );
+  return `### Models
+
+${bullets(models.map((event) => `${code(event.name === "update:modelValue" ? "v-model" : `v-model:${event.name.slice(7)}`)} → ${code(event.name)} ${code(event.type)}`))}
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+${props.map((prop) => `| ${cell(prop.name)} | ${cell(propType(prop))} | ${prop.required ? "是" : "否"} | ${cell(propDefault(prop))} |`).join("\n")}
+
+### Events
+
+${bullets(api.events.map((event) => `${code(event.name)}: ${code(event.type)}`))}
+
+### Slots
+
+${bullets(api.slots.map((slot) => `${code(slot.name)}: ${code(slot.type)}`))}
+`;
+}
+
 function renderComponent(component: ComponentModel, packageName: string): string {
   return `${GENERATED_HEADER}
 
@@ -588,12 +484,12 @@ ${inlineCode(component.composeWith)}
 ## Public API Facts
 
 - Import: \`import { ${component.name} } from "${packageName}";\`
-- Props: ${inlineCode(component.props)}
-- Events: ${inlineCode(component.events)}
-- Slots: ${inlineCode(component.slots)}
+
+${renderApi(component.api)}
 - Public types: ${inlineCode(component.publicTypes)}
 - Story variants: ${inlineCode(component.storyVariants)}
 
+${component.typeDefinitions.length ? "### Public type definitions\n\n```ts\n" + component.typeDefinitions.join("\n\n") + "\n```\n" : ""}
 ## API Caveats
 
 ${bullets(component.apiCaveats)}
@@ -676,6 +572,14 @@ function writeOutputs(outputs: Map<string, string>): void {
 try {
   const model = buildModel();
   const outputs = buildOutputs(model);
+  const designSource = readText(resolve(repositoryRoot, "DESIGN.md"));
+  const designTarget = resolve(packageRoot, "DESIGN.md");
+  if (checkMode) {
+    if (readTextIfPresent(designTarget) !== designSource)
+      throw new Error("Packaged DESIGN.md is stale");
+  } else {
+    writeFileSync(designTarget, designSource, "utf8");
+  }
 
   if (checkMode) {
     checkOutputs(outputs);

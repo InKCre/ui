@@ -25,11 +25,35 @@
 ## Public API Facts
 
 - Import: `import { InkDatetimePickerView } from "@inkcre/ui-web";`
-- Props: `hourFormat`, `locale`, `maxDate`, `minDate`, `mode`, `modelValue`
-- Events: `update:modelValue`
-- Slots: None
+
+### Models
+
+- `v-model` → `update:modelValue` `[value: Date]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `modelValue` | `Date \| undefined` | 否 | `new Date()` |
+| `locale` | `undefined \| string` | 否 | `undefined` |
+| `mode` | `undefined \| "date" \| "datetime" \| "time" \| "weekday" \| "weekday-date" \| "weekday-datetime"` | 否 | `"datetime"` |
+| `minDate` | `Date \| undefined` | 否 | `undefined` |
+| `maxDate` | `Date \| undefined` | 否 | `undefined` |
+| `hourFormat` | `undefined \| "12" \| "24"` | 否 | `"24"` |
+
+### Events
+
+- `update:modelValue`: `[value: Date]`
+
+### Slots
+
+- None.
+
 - Public types: None
 - Story variants: `Basic`
+
 
 ## API Caveats
 

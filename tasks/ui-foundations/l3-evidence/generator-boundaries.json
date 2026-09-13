@@ -1,0 +1,16 @@
+[
+  {
+    "probe": "stale-design-copy",
+    "exit": 1,
+    "evidence": [
+      "Packaged DESIGN.md is stale"
+    ]
+  },
+  {
+    "probe": "unknown-prop-helper",
+    "exit": 1,
+    "evidence": [
+      "Document the unsupported prop factory before publishing: unsupportedStringProp"
+    ]
+  }
+]

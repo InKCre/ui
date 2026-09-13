@@ -16,6 +16,8 @@ Reason in English. Communicate with humans in Chinese.
 
 ## Knowledge Owners
 
+UI 设计、组件、Token 或视觉审视工作先读取 [DESIGN.md](DESIGN.md)，再按任务读取具体实现与指南。纯构建和非 UI 工作不需要加载全部设计上下文。DESIGN.md 拥有共同设计判断，具体值与 API 仍由下面的源头负责。
+
 - Repository and package entry points: `README.md` and `packages/web/README.md`.
 - Public package API: package exports, component manifest, TypeScript source,
   generated declarations, and styles.

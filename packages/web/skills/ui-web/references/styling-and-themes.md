@@ -16,12 +16,9 @@ use only the exported functions, mixins, and token subpaths.
 ## Rules
 
 - 应用加载一次 @inkcre/ui-web/styles；Sass 使用公开 /styles/functions、/styles/mixins 和 /tokens/ref|sys|comp。
-- 先使用组件默认值。页面可用普通 CSS 决定列数、16px／32px 留白；组件负责内部间距、换行和可增长的最小高度。
-- 默认选 title-lg 页面标题、title-sm 区块标题、body-md 正文、body-sm 说明／错误、label-lg 控件、label-md 短元信息。body-lg 用于强调正文，headline-lg 用于醒目页面标题。
+- 设计角色的选择、配色关系、状态与布局责任见包内 DESIGN.md；CSS/Sass/Uno 调用与覆盖细节见 styles/README.md。
 - apply-font(body-md) 输出四个度量、系统 UI 字体和 none 装饰；代码加 $mono: true，下划线加 $underlined: true。apply-font(title, lg) 无效，应使用 title-lg。
 - Uno 将 presetInk 放在 presetWind3 后；font-body-md、font-label-lg font-mono underline、p-md 使用同一公开角色。none 不能消除祖先绘制的下划线。
-- 普通表面配 text.base/subtle；primary/danger 表面分别配 text.on-primary/on-danger；反馈默认 surface.subtle + feedback.error/success/warning/info，并写明状态。
-- 必要边界用 border.base，装饰分隔用 border.subtle，焦点用 border.strong。不要将 on-primary 用在普通表面，也不要创造 success.surface 等缺失路径。
 - html[data-theme="light|dark"] 优先于系统；省略 data-theme 或设 system 时跟随系统。主题覆盖 CSS 放在库之后并匹配选择器。
 - 根级 sys 颜色、typo.family.sans/mono、font 角色四属性、space/radius 在 CSS/Sass 变量和 Uno 对应规则之间传播。Sass maps 与 Uno 尺寸／图标／断点／阴影是构建值；任意 ref 变化不保证带动 sys/comp。
 - Popup/Scrim Teleport 到 body，只保证根级覆盖，局部 wrapper 的主题或字体不能自动跟随。库不设置 html 字号，不下载字体。

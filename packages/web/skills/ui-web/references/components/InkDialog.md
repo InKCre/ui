@@ -16,7 +16,7 @@
 ## Avoid When
 
 - Only a low-level positioned surface is needed; use InkPopup.
-- A compact second-click guard is enough; use InkDoubleCheck.
+- A compact confirmation popup attached to one trigger is enough; use InkDoubleCheck.
 
 ## Compose With
 
@@ -25,11 +25,44 @@
 ## Public API Facts
 
 - Import: `import { InkDialog } from "@inkcre/ui-web";`
-- Props: `cancelText`, `closeOnScrim`, `confirmText`, `isLoading`, `modelValue`, `position`, `showCancel`, `showConfirm`, `subtitle`, `title`
-- Events: `cancel`, `confirm`, `error`, `update:modelValue`
-- Slots: `default`, `footer`, `header`
+
+### Models
+
+- `v-model` → `update:modelValue` `[value: boolean]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `modelValue` | `undefined \| boolean \| Promise<boolean>` | 否 | `false` |
+| `position` | `DialogPosition \| undefined` | 否 | `"center"` |
+| `isLoading` | `undefined \| boolean` | 否 | `false` |
+| `closeOnScrim` | `undefined \| boolean` | 否 | `true` |
+| `title` | `undefined \| string` | 否 | `""` |
+| `subtitle` | `undefined \| string` | 否 | `""` |
+| `cancelText` | `undefined \| string` | 否 | `""` |
+| `confirmText` | `undefined \| string` | 否 | `""` |
+| `showCancel` | `undefined \| boolean` | 否 | `true` |
+| `showConfirm` | `undefined \| boolean` | 否 | `true` |
+
+### Events
+
+- `cancel`: `[]`
+- `confirm`: `[]`
+- `error`: `[_error: unknown]`
+- `update:modelValue`: `[value: boolean]`
+
+### Slots
+
+- `header`: `{}`
+- `default`: `{ cancel: () => void; confirm: () => void; isLoading: boolean; }`
+- `footer`: `{}`
+
 - Public types: None
 - Story variants: `Basic`, `with Custom Slots`, `Async`, `Without Cancel`
+
 
 ## API Caveats
 

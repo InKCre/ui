@@ -22,27 +22,70 @@ import { ref } from "vue";
 import { InkForm, InkInput, InkButton } from "@inkcre/ui-web";
 // 宿主提供实际持久化函数，失败时 reject。
 const props = defineProps<{ save: (name: string) => Promise<void> }>();
-const name = ref(""), error = ref(""), result = ref(""), pending = ref(false);
+const name = ref(""),
+  error = ref(""),
+  result = ref(""),
+  pending = ref(false);
 async function submit() {
   if (pending.value) return;
   error.value = name.value.trim() ? "" : "请输入名称。";
   result.value = "";
   if (error.value) return;
   pending.value = true;
-  try { await props.save(name.value.trim()); result.value = "设置已保存。"; }
-  catch { error.value = "保存失败，请稍后重试。"; }
-  finally { pending.value = false; }
+  try {
+    await props.save(name.value.trim());
+    result.value = "设置已保存。";
+  } catch {
+    error.value = "保存失败，请稍后重试。";
+  } finally {
+    pending.value = false;
+  }
 }
 </script>
 <template>
-  <h1 class="font-title-lg">工作空间设置</h1>
-  <p class="font-body-md">修改团队看到的工作空间名称。</p>
-  <InkForm layout="col" @submit="submit">
-    <InkInput v-model="name" label="名称" name="workspace" :error="error" required />
-    <InkButton theme="primary" native-type="submit" text="保存设置" :is-loading="pending" />
-    <p v-if="result" role="status" class="font-body-sm bg-surface-subtle text-feedback-success p-md">{{ result }}</p>
-  </InkForm>
+  <section class="settings-form">
+    <h1 class="title">工作空间设置</h1>
+    <p class="copy">修改团队看到的工作空间名称。</p>
+    <InkForm layout="col" @submit="submit">
+      <InkInput
+        v-model="name"
+        label="名称"
+        name="workspace"
+        :error="error"
+        :disabled="pending"
+        required
+      />
+      <InkButton theme="primary" native-type="submit" text="保存设置" :is-loading="pending" />
+      <p v-if="result" role="status" class="feedback">{{ result }}</p>
+    </InkForm>
+  </section>
 </template>
+<style scoped>
+.settings-form {
+  font-family: var(--sys-typo-family-sans);
+  color: var(--sys-color-text-base);
+}
+.title {
+  font-size: var(--sys-font-title-lg-font-size);
+  line-height: var(--sys-font-title-lg-line-height);
+  font-weight: var(--sys-font-title-lg-font-weight);
+  letter-spacing: var(--sys-font-title-lg-letter-spacing);
+}
+.copy {
+  font-size: var(--sys-font-body-md-font-size);
+  line-height: var(--sys-font-body-md-line-height);
+  font-weight: var(--sys-font-body-md-font-weight);
+  letter-spacing: var(--sys-font-body-md-letter-spacing);
+}
+.feedback {
+  font-size: var(--sys-font-body-sm-font-size);
+  line-height: var(--sys-font-body-sm-line-height);
+  font-weight: var(--sys-font-body-sm-font-weight);
+  letter-spacing: var(--sys-font-body-sm-letter-spacing);
+  color: var(--sys-color-feedback-success);
+}
+</style>
+
 ```
 
 **Caveats**
@@ -126,3 +169,141 @@ async function submit() {
 2. Enable expansion only when a useful larger asset or view exists.
 3. Use image loading and error events to align surrounding feedback.
 4. Use InkPlaceholder only when the surrounding media region needs recovery guidance.
+
+
+
+## Host Integration
+
+**Intent:** 通过公开适配器接入宿主路由与语言，并使用根级主题选择。
+
+**Components:** `InkHeader`, `InkDialog`, `InkButton`
+
+1. 把宿主路由与翻译函数传入此边界组件。
+2. 通过注入键提供响应式值，子组件读取该上下文。
+3. 应用入口加载样式；主题选择写入 html，由应用负责持久化偏好。
+
+```vue
+<script setup lang="ts">
+import { computed, provide, ref } from "vue";
+import {
+  INK_ROUTER_KEY,
+  INK_I18N_KEY,
+  InkHeader,
+  InkDialog,
+  InkButton,
+  type InkRouter,
+  type InkI18n,
+} from "@inkcre/ui-web";
+
+const props = defineProps<{
+  currentPath: string;
+  currentName: string | null;
+  locale: string;
+  translate: (key: string) => string;
+}>();
+provide<InkRouter>(INK_ROUTER_KEY, {
+  currentPath: computed(() => props.currentPath),
+  currentName: computed(() => props.currentName),
+});
+provide<InkI18n>(INK_I18N_KEY, {
+  t: (key) => props.translate(key),
+  locale: computed(() => props.locale),
+});
+const open = ref(false);
+function setTheme(event: Event) {
+  const value = (event.target as HTMLSelectElement).value;
+  document.documentElement.dataset.theme = value;
+}
+</script>
+
+<template>
+  <InkHeader />
+  <label>
+    主题
+    <select aria-label="主题" @change="setTheme">
+      <option value="system">跟随系统</option>
+      <option value="light">浅色</option>
+      <option value="dark">深色</option>
+    </select>
+  </label>
+  <InkButton text="查看设置说明" @click="open = true" />
+  <InkDialog v-model="open" title="设置说明" :show-cancel="false" @confirm="open = false">
+    当前页面：{{ currentName }}。弹层使用根级主题，按钮文案通过语言适配器读取。
+  </InkDialog>
+</template>
+
+```
+
+**Caveats**
+
+- 适配器不要求安装 vue-router 或 vue-i18n；示例父组件应把实际当前路由、locale 和翻译函数绑定到 props。
+
+## Raw JSON Configuration
+
+**Intent:** 保留原始 JSON 草稿，校验通过后解析并保存。
+
+**Components:** `InkForm`, `InkJsonEditor`, `InkButton`
+
+1. 把原始文字绑定到 v-model，另外保存 validation 状态。
+2. 只有当前草稿验证通过时才允许解析和持久化。
+3. 明确显示保存结果，失败后保留草稿。
+
+```vue
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { InkForm, InkJsonEditor, InkButton, type JsonEditorValidation } from "@inkcre/ui-web";
+
+const props = defineProps<{ save: (value: unknown) => Promise<void> }>();
+const draft = ref('{"name":"工作空间"}');
+const validation = ref<JsonEditorValidation | null>(null);
+const pending = ref(false);
+const message = ref("");
+const schema = { type: "object", properties: { name: { type: "string" } }, required: ["name"] };
+const canSave = computed(
+  () => validation.value?.status === "valid" && validation.value.text === draft.value,
+);
+
+watch(
+  draft,
+  () => {
+    validation.value = null;
+    message.value = "";
+  },
+  { flush: "sync" },
+);
+async function submit() {
+  if (pending.value || !canSave.value) return;
+  pending.value = true;
+  try {
+    await props.save(JSON.parse(draft.value));
+    message.value = "配置已保存。";
+  } catch {
+    message.value = "保存失败，请检查配置并重试。";
+  } finally {
+    pending.value = false;
+  }
+}
+</script>
+
+<template>
+  <InkForm @submit="submit">
+    <InkJsonEditor
+      v-model="draft"
+      label="配置 JSON"
+      :schema="schema"
+      :disabled="pending"
+      @validation="validation = $event"
+      @error="message = '校验暂不可用，请稍后重试。'"
+    />
+    <InkButton
+      text="保存配置"
+      theme="primary"
+      native-type="submit"
+      :is-loading="pending"
+      :disabled="!canSave"
+    />
+    <p v-if="message" role="status">{{ message }}</p>
+  </InkForm>
+</template>
+
+```
