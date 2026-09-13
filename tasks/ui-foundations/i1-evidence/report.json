@@ -1,0 +1,54 @@
+{
+  "browser": "149.0.7827.55",
+  "cases": [
+    {
+      "theme": "light",
+      "width": 320,
+      "widths": [116.4375, 90, 116.4375, 90, 116.4375, 100, 120, 120],
+      "font": {
+        "control": "system-ui, -apple-system, sans-serif",
+        "body": "system-ui, -apple-system, sans-serif",
+        "host": "\"SF Mono\", Monaco, \"Roboto Mono\", monospace"
+      },
+      "error": "Expected an object schema with flat properties",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "widths": [116.4375, 90, 116.4375, 90, 116.4375, 100, 120, 120],
+      "font": {
+        "control": "system-ui, -apple-system, sans-serif",
+        "body": "system-ui, -apple-system, sans-serif",
+        "host": "\"SF Mono\", Monaco, \"Roboto Mono\", monospace"
+      },
+      "error": "Expected an object schema with flat properties",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "widths": [116.4375, 90, 116.4375, 90, 116.4375, 100, 120, 120],
+      "font": {
+        "control": "system-ui, -apple-system, sans-serif",
+        "body": "system-ui, -apple-system, sans-serif",
+        "host": "\"SF Mono\", Monaco, \"Roboto Mono\", monospace"
+      },
+      "error": "Expected an object schema with flat properties",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "widths": [116.4375, 90, 116.4375, 90, 116.4375, 100, 120, 120],
+      "font": {
+        "control": "system-ui, -apple-system, sans-serif",
+        "body": "system-ui, -apple-system, sans-serif",
+        "host": "\"SF Mono\", Monaco, \"Roboto Mono\", monospace"
+      },
+      "error": "Expected an object schema with flat properties",
+      "overflow": 0
+    }
+  ],
+  "errors": []
+}

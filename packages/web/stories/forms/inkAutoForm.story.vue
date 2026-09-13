@@ -315,18 +315,21 @@ const retainedSchema: JSONSchema = {
         @validation="retainedValidation = $event"
       />
       <p>校验：{{ retainedValidation?.status }}</p>
-      <pre>{{ retainedData }}</pre>
+      <pre class="story-debug">{{ retainedData }}</pre>
     </Variant>
   </Story>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use "@inkcre/ui-web/styles/mixins" as *;
+@use "@inkcre/ui-web/styles/functions" as *;
+
 .story-debug {
-  margin-top: 1rem;
-  padding: 0.5rem;
-  background: #f5f5f5;
-  border-radius: 4px;
-  font-size: 0.875rem;
+  @include apply-font(body-sm, mono);
+  margin-top: sys-var(space, md);
+  padding: sys-var(space, sm);
+  background: sys-var(color, surface, subtle);
+  color: sys-var(color, text, base);
   max-height: 200px;
   overflow: auto;
 }
