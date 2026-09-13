@@ -338,3 +338,7 @@ I3 已完成本轮来源工作流与关联消费修正。列表保留可比较�
 ## PR preview 交付
 
 用户授权提交、推送与创建 PR，使用 preview 环境完成验收。生产者保留 F0、I1、I2 独立提交，新增本工作包记录后提交 UI PR；消费者沿用 PR #104，提交 I3 并在其独立 worktree 完成远端验证。GitHub 与数据库主机的 SSH 远端命令已成功，真实数据库 E2E 正在复跑。生产者 preview 验证当前 Histoire，消费者 preview 验证 Host 与同提交的 MF 产物；消费者仍安装 registry UI 2.0.0，两个证据不能互相替代。
+
+远端 UI preview 发现两项展示构建错误：Histoire 的状态同步读取 Vue app `_instance.proxy` 时实例为空；选中 Variant 后代码区调用 `codeToHtml` 失败。构建配置把组件 Vue 切到 CDN 的生产版本，同时伪造空的 Shiki highlighter，与 Histoire 自带运行时契约冲突。此次验收修复拥有 `histoire.config.ts` 与展示文档／工作包，撤除这两套自定义替换，使用已锁定的 Histoire／Vite 常规打包。保留组件、Token、包公开入口和发布责任，以本地正式 Story 构建及远端相同操作复验，不增加兼容补丁或运行时 fallback。
+
+展示构建修复后的完整 `pnpm check` 与本地正式产物浏览器复验通过：浅深主题各 41 个变量和 I2 冻结证据一致，Switch 键盘／宽度／pending、Image 下载／焦点、原生提交及 Histoire Variant 控件／源码面板均正常，pageerror 为零。恢复常规依赖打包后 vendor 约 12.24 MB（gzip 2.31 MB），不再在运行时借 CDN 隐藏依赖体积；展示站后续若需性能优化，应使用兼容 Histoire 的分包或高亮配置，而非伪造运行时。

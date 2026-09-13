@@ -87,6 +87,8 @@ coverage, and generated Agent Skills.
 
 ## Histoire delivery
 
+展示构建使用 lockfile 中的 Vue 和 Histoire 高亮实现，由 Vite 打包到站点。不要把 Vue 单独替换成 CDN 生产版本，也不要用空对象模拟 Shiki；Histoire 的状态同步和源码面板依赖这些库的实际运行时契约。
+
 `UI checks` validates Histoire as part of the repository contract. After a
 successful same-repository run, the trusted Preview workflow checks out that
 exact pull-request head, builds Histoire itself, and publishes it to the stable
