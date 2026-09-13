@@ -1,0 +1,63 @@
+{
+  "origin": "https://pr-46.design-dd4.pages.dev",
+  "browser": "149.0.7827.55",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 375,
+      "foreground": "rgb(31, 31, 31)",
+      "bounds": {
+        "x": 319,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    },
+    {
+      "theme": "light",
+      "width": 1280,
+      "foreground": "rgb(31, 31, 31)",
+      "bounds": {
+        "x": 1224,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    },
+    {
+      "theme": "dark",
+      "width": 375,
+      "foreground": "rgb(226, 226, 226)",
+      "bounds": {
+        "x": 319,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    },
+    {
+      "theme": "dark",
+      "width": 1280,
+      "foreground": "rgb(226, 226, 226)",
+      "bounds": {
+        "x": 1224,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    }
+  ],
+  "errors": [],
+  "source": "d6125cf837e5f79f85801c9136ae805625d3c427",
+  "deployment": "https://38e5661b.design-dd4.pages.dev",
+  "ci": "https://github.com/InKCre/ui/actions/runs/34766090160",
+  "preview_run": "https://github.com/InKCre/ui/actions/runs/34766172549"
+}
