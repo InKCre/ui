@@ -1,66 +1,11 @@
-# InkTextarea
+# inkTextarea
 
-A multi-line text input component for forms.
+InkTextarea 使用具名模型 `v-model:value`，每次输入发出 `update:value(string)`。原生 textarea 接收 id、name、required、disabled，以及 maxlength、autocomplete 等透传属性。
 
-## Rationale
+label 与 textarea 自动关联；error 显示并通过 aria-describedby 关联校验信息。editable=false 展示只读文本。布局可独立设置，也可继承 InkForm 的响应式 layout。
 
-InkTextarea exists to allow users to input or display multi-line text, integrating with forms for consistent layout.
+```vue
+<InkTextarea v-model:value="description" label="说明" name="description" :maxlength="500" />
+```
 
-Use it for comments, descriptions, or any multi-line text input; avoid using it for single-line inputs.
-
-## Design Semantics
-
-### Concepts
-
-- `editable`: whether the text can be edited.
-- `rows`: number of visible lines.
-- `placeholder`: hint text when empty.
-
-### Visual / UX Meaning
-
-- Editable: shows textarea for input.
-- Read-only: displays formatted text.
-- Integrates with InkField in forms for labeling.
-
-## Canonical Examples
-
-- Basic editable textarea: For user input.
-
-  ```vue
-  <InkTextarea v-model="description" rows="4" />
-  ```
-
-- In form with label: Automatic field layout.
-
-  ```vue
-  <InkForm>
-    <InkTextarea label="Comments" v-model="comments" />
-  </InkForm>
-  ```
-
-- Read-only display: Showing text.
-
-  ```vue
-  <InkTextarea :value="bio" :editable="false" />
-  ```
-
-## Behavioral Contract
-
-- In editable mode: emits update:value on input.
-- In read-only: displays value as text.
-- When in form with label: uses InkField for layout.
-
-## Extension & Composition
-
-- Supports v-model for two-way binding.
-- Composes with InkForm for validation and layout.
-
-## Non-Goals
-
-- Single-line text input.
-- Rich text editing.
-
-## Implementation Notes
-
-- Uses reusable template for conditional rendering.
-- Injects form context for integration.
+默认使用系统 UI 字体；代码或固定宽度内容设置 mono，编辑和只读模式都读取系统等宽字体。错误边框与焦点轮廓独立。

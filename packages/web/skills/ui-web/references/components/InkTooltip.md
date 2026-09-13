@@ -33,7 +33,7 @@
 
 ## API Caveats
 
-- Keep tooltip content concise and preserve keyboard access to the trigger.
+- 悬停和焦点进入显示，Escape 关闭；默认槽参数 describedby 必须传到触发控件 aria-describedby。
 
 ## Common Mistakes
 

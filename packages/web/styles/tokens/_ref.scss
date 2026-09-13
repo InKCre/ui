@@ -4,78 +4,78 @@ $elevation: (
   "raised": (
     "low": (
       "shadow-type": "dropShadow",
-      "radius": 2,
+      "radius": "2px",
       "color": #0c153014,
-      "offset-x": 0,
-      "offset-y": 1,
-      "spread": 0
+      "offset-x": "0px",
+      "offset-y": "1px",
+      "spread": "0px"
     ),
     "md": (
       "shadow-type": "dropShadow",
-      "radius": 20,
+      "radius": "20px",
       "color": #0c15301f,
-      "offset-x": 0,
-      "offset-y": 6,
-      "spread": 0
+      "offset-x": "0px",
+      "offset-y": "6px",
+      "spread": "0px"
     ),
     "high": (
       "shadow-type": "dropShadow",
-      "radius": 32,
+      "radius": "32px",
       "color": #0c155429,
-      "offset-x": 0,
-      "offset-y": 12,
-      "spread": 0
+      "offset-x": "0px",
+      "offset-y": "12px",
+      "spread": "0px"
     )
   )
 );
 
 $color: (
   "neutral": (
-    "2": #070707,
-    "6": #131313,
-    "12": #1f1f1f,
-    "20": #303030,
-    "30": #474747,
-    "40": #5e5e5e,
-    "50": #777777,
-    "60": #919191,
-    "70": #ababab,
-    "80": #c6c6c6,
-    "90": #e2e2e2,
-    "94": #eeeeee,
-    "98": #f9f9f9,
-    "100": #ffffff
+    "2": #070707ff,
+    "6": #131313ff,
+    "12": #1f1f1fff,
+    "20": #303030ff,
+    "30": #474747ff,
+    "40": #5e5e5eff,
+    "50": #777777ff,
+    "60": #919191ff,
+    "70": #abababff,
+    "80": #c6c6c6ff,
+    "90": #e2e2e2ff,
+    "94": #eeeeeeff,
+    "98": #f9f9f9ff,
+    "100": #ffffffff
   ),
   "tertiary": (
-    "40": #1f9aa5,
-    "90": #d0f4f4
+    "40": #1f9aa5ff,
+    "90": #d0f4f4ff
   ),
   "danger": (
-    "10": #410008,
-    "30": #92001e,
-    "35": #a80324,
-    "40": #b9192f,
-    "60": #ff525c,
-    "65": #ff7073,
-    "70": #ff8889,
-    "80": #ffb3b1,
-    "90": #ffdad8,
-    "98": #fff8f7
+    "10": #410008ff,
+    "30": #92001eff,
+    "35": #a80324ff,
+    "40": #b9192fff,
+    "60": #ff525cff,
+    "65": #ff7073ff,
+    "70": #ff8889ff,
+    "80": #ffb3b1ff,
+    "90": #ffdad8ff,
+    "98": #fff8f7ff
   ),
   "brand": (
-    "2": #0b1220,
-    "6": #121928,
-    "12": #1f2635,
-    "20": #303747,
-    "30": #474e5f,
-    "40": #5f6677,
-    "50": #787e91,
-    "60": #9198ac,
-    "70": #acb3c7,
-    "80": #b2bccf,
-    "90": #c8cee3,
-    "94": #f7f7fb,
-    "98": #fbfcff
+    "2": #0b1220ff,
+    "6": #121928ff,
+    "12": #1f2635ff,
+    "20": #303747ff,
+    "30": #474e5fff,
+    "40": #5f6677ff,
+    "50": #787e91ff,
+    "60": #9198acff,
+    "70": #acb3c7ff,
+    "80": #b2bccfff,
+    "90": #c8cee3ff,
+    "94": #f7f7fbff,
+    "98": #fbfcffff
   )
 );
 
@@ -138,153 +138,58 @@ $layout: ();
 $font: (
   "label": (
     "lg": (
-      "font-size": "14px",
-      "text-decoration": "none",
-      "font-family": "Inter",
+      "font-size": "0.875rem",
       "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "16px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
+      "line-height": 1.42857143,
+      "letter-spacing": "0px"
     ),
     "md": (
-      "font-size": "12px",
-      "text-decoration": "none",
-      "font-family": "Inter",
+      "font-size": "0.75rem",
       "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "16px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
-    ),
+      "line-height": 1.33333333,
+      "letter-spacing": "0px"
+    )
+  ),
+  "body": (
     "sm": (
-      "font-size": "10px",
-      "text-decoration": "none",
-      "font-family": "Roboto",
-      "font-weight": 700,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0.7px",
-      "line-height": "14px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
-    ),
-    "lg-underlined": (
-      "font-size": "14px",
-      "text-decoration": "underline",
-      "font-family": "Inter",
+      "font-size": "0.875rem",
       "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "16px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
+      "line-height": 1.42857143,
+      "letter-spacing": "0px"
     ),
-    "lg-mono": (
-      "font-size": "14px",
-      "text-decoration": "none",
-      "font-family": "JetBrains Mono",
+    "md": (
+      "font-size": "1rem",
       "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "16px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
+      "line-height": 1.5,
+      "letter-spacing": "0px"
     ),
-    "sm-mono": (
-      "font-size": "10px",
-      "text-decoration": "none",
-      "font-family": "JetBrains Mono",
-      "font-weight": 700,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0.4px",
-      "line-height": "14px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
+    "lg": (
+      "font-size": "1.125rem",
+      "font-weight": 400,
+      "line-height": 1.33333333,
+      "letter-spacing": "0px"
     )
   ),
   "title": (
     "sm": (
-      "font-size": "22px",
-      "text-decoration": "none",
-      "font-family": "Inter",
+      "font-size": "1.375rem",
       "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "28px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
+      "line-height": 1.27272727,
+      "letter-spacing": "0px"
     ),
-    "sm-mono": (
-      "font-size": "22px",
-      "text-decoration": "none",
-      "font-family": "IBM Plex Mono",
-      "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0.66px",
-      "line-height": "28px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
-    )
-  ),
-  "body": (
     "lg": (
-      "font-size": "18px",
-      "text-decoration": "none",
-      "font-family": "Inter",
+      "font-size": "1.75rem",
       "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "24px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
-    ),
-    "lg-mono": (
-      "font-size": "18px",
-      "text-decoration": "none",
-      "font-family": "JetBrains Mono",
-      "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "24px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
+      "line-height": 1.28571429,
+      "letter-spacing": "0px"
     )
   ),
   "headline": (
     "lg": (
-      "font-size": "36px",
-      "text-decoration": "none",
-      "font-family": "Inter",
+      "font-size": "2.25rem",
       "font-weight": 400,
-      "font-style": "normal",
-      "font-stretch": "normal",
-      "letter-spacing": "0px",
-      "line-height": "48px",
-      "paragraph-indent": "0px",
-      "paragraph-spacing": "0px",
-      "text-case": "none"
+      "line-height": 1.33333333,
+      "letter-spacing": "0px"
     )
   )
 );

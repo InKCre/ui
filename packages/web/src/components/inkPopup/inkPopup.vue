@@ -1,12 +1,30 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { inkPopupProps, inkPopupEmits, type PopupPosition } from "./inkPopup";
 
+import { useNativeDialog } from "../../composables/use-native-dialog";
+
+defineOptions({ inheritAttrs: false });
 const props = defineProps(inkPopupProps);
 const emit = defineEmits(inkPopupEmits);
 
 const open = defineModel<boolean>("open", { default: false });
 
+const dialog = ref<HTMLDialogElement>();
+useNativeDialog(dialog, open, () => props.scrim);
+function requestClose() {
+  if (props.closeOnEscape) open.value = false;
+}
+function onBackdropClick(event: MouseEvent) {
+  if (!props.scrim || event.target !== dialog.value) return;
+  const rect = dialog.value.getBoundingClientRect();
+  const outside =
+    event.clientX < rect.left ||
+    event.clientX > rect.right ||
+    event.clientY < rect.top ||
+    event.clientY > rect.bottom;
+  if (outside) onScrimClick();
+}
 const positionClasses = computed(() => {
   const pos = props.position;
   if (typeof pos === "string") {
@@ -42,20 +60,30 @@ const onScrimClick = () => {
 
 <template>
   <Teleport to="body">
-    <Transition name="ink-popup-fade">
-      <div
-        v-if="open && props.scrim"
-        class="ink-popup-overlay"
-        data-testid="ink-popup-scrim"
-        @click="onScrimClick"
-      ></div>
-    </Transition>
-
-    <Transition name="ink-popup-slide">
-      <div v-if="open" :class="['ink-popup', positionClasses]" :style="positionStyles">
-        <slot></slot>
-      </div>
-    </Transition>
+    <dialog
+      ref="dialog"
+      v-bind="$attrs"
+      :aria-modal="scrim || undefined"
+      :class="['ink-popup', positionClasses]"
+      :style="positionStyles"
+      @cancel.prevent="requestClose"
+      @keydown.esc="
+        (event) => {
+          if (!scrim) {
+            event.stopPropagation();
+            requestClose();
+          }
+        }
+      "
+      @click="onBackdropClick"
+      @close="
+        () => {
+          if (!dialog?.open) open = false;
+        }
+      "
+    >
+      <slot v-if="open" />
+    </dialog>
   </Teleport>
 </template>
 

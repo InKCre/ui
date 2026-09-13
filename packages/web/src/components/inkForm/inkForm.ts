@@ -16,6 +16,10 @@ export const inkFormProps = {
 } as const;
 
 export const formControlCommonProps = {
+  id: makeStringProp(),
+  name: makeStringProp(),
+  disabled: makeBooleanProp(false),
+  error: makeStringProp(""),
   prop: makeStringProp<undefined | string>(),
   label: makeStringProp<undefined | string>(),
   layout: makeStringProp<FieldLayout | undefined>(),

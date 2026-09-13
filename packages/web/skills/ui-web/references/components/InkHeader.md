@@ -33,7 +33,7 @@
 
 ## API Caveats
 
-- Router integration is adapter-based and optional; the component does not import the consuming router.
+- 品牌和菜单都是可键盘操作的按钮，分别发出 title-click/menu-click。自定义 right-icon 负责名称和动作。
 
 ## Common Mistakes
 

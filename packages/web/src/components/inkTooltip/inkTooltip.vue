@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, useId } from "vue";
 import { inkTooltipProps, inkTooltipEmits } from "./inkTooltip";
 
 const props = defineProps(inkTooltipProps);
 const emit = defineEmits(inkTooltipEmits);
 
-const showTooltip = ref(false);
+const hovered = ref(false);
+const focused = ref(false);
+const dismissed = ref(false);
+const showTooltip = computed(() => !dismissed.value && (hovered.value || focused.value));
+const tooltipId = useId();
 
 const tooltipClass = computed(() => [
   "ink-tooltip",
@@ -19,12 +23,27 @@ const tooltipClass = computed(() => [
 <template>
   <div
     class="ink-tooltip-wrapper"
-    @mouseenter="showTooltip = true"
-    @mouseleave="showTooltip = false"
+    @mouseenter="
+      hovered = true;
+      dismissed = false;
+    "
+    @mouseleave="hovered = false"
+    @focusin="
+      focused = true;
+      dismissed = false;
+    "
+    @focusout="focused = false"
+    @keydown.esc.stop="dismissed = true"
   >
-    <slot />
+    <slot :describedby="content ? tooltipId : undefined" />
 
-    <div v-if="content" :class="tooltipClass">
+    <div
+      v-if="content"
+      :id="tooltipId"
+      role="tooltip"
+      :aria-hidden="!showTooltip"
+      :class="tooltipClass"
+    >
       <div class="ink-tooltip__content">
         {{ content }}
       </div>

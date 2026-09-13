@@ -25,16 +25,17 @@
 ## Public API Facts
 
 - Import: `import { InkDialog } from "@inkcre/ui-web";`
-- Props: `cancelText`, `closeOnScrim`, `confirmText`, `modelValue`, `position`, `showCancel`, `showConfirm`, `subtitle`, `title`
-- Events: `cancel`, `confirm`, `update:modelValue`
+- Props: `cancelText`, `closeOnScrim`, `confirmText`, `isLoading`, `modelValue`, `position`, `showCancel`, `showConfirm`, `subtitle`, `title`
+- Events: `cancel`, `confirm`, `error`, `update:modelValue`
 - Slots: `default`, `footer`, `header`
 - Public types: None
 - Story variants: `Basic`, `with Custom Slots`, `Async`, `Without Cancel`
 
 ## API Caveats
 
-- Use the actual model event contract and slots documented in the generated API facts.
-- Keep destructive consequences visible in the dialog content before confirmation.
+- modelValue 为 boolean 或 Promise<boolean>；也支持布尔模型配合 isLoading。只应用最新 Promise，拒绝发出 error。
+- pending 阻止确认、取消、遮罩和 Escape；confirm 只发事件，取消发出 cancel 和 update:modelValue(false)。
+- title 提供名称；自定义 header 或无 title 时提供 aria-label/aria-labelledby。默认槽获得 cancel/confirm/isLoading。
 
 ## Common Mistakes
 

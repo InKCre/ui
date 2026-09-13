@@ -1,46 +1,30 @@
 <script setup lang="ts">
-import { ref, computed, watch, provide, readonly } from "vue";
+import { computed, provide, readonly, useId } from "vue";
 import { inkDialogProps, inkDialogEmits, type DialogPosition } from "./inkDialog";
 import InkButton from "../inkButton/inkButton.vue";
 import InkPopup from "../inkPopup/inkPopup.vue";
 import { useOptionalI18n } from "../../i18n";
 
+import { useAsyncBoolean } from "../../composables/use-async-boolean";
+
 const props = defineProps(inkDialogProps);
 const emit = defineEmits(inkDialogEmits);
 const i18n = useOptionalI18n();
 
-const currentValue = ref(false);
-const isPromiseLoading = ref(false);
-
-const updateCurrentValue = async (value: boolean | Promise<boolean>) => {
-  if (value instanceof Promise) {
-    isPromiseLoading.value = true;
-    try {
-      currentValue.value = await value;
-    } finally {
-      isPromiseLoading.value = false;
-    }
-  } else {
-    currentValue.value = value;
-  }
-};
-
-watch(
+const titleId = useId();
+const { value: currentValue, pending } = useAsyncBoolean(
   () => props.modelValue,
-  (val) => {
-    updateCurrentValue(val);
-  },
-  { immediate: true },
+  (error) => emit("error", error),
 );
-
+const isLoading = computed(() => props.isLoading || pending.value);
 const open = computed({
   get: () => currentValue.value,
-  set: (val: boolean) => {
-    emit("update:modelValue", val);
+  set: (value: boolean) => {
+    if (isLoading.value) return;
+    if (!value) emit("cancel");
+    emit("update:modelValue", value);
   },
 });
-
-const isLoading = computed(() => isPromiseLoading.value);
 
 // Provide loading state to buttons via inject
 provide("isLoading", readonly(isLoading));
@@ -57,7 +41,6 @@ const cConfirmText = computed(() => {
 
 const handleCancel = () => {
   if (!isLoading.value) {
-    emit("cancel");
     open.value = false;
   }
 };
@@ -70,11 +53,19 @@ const handleConfirm = () => {
 </script>
 
 <template>
-  <InkPopup v-model:open="open" :position="props.position" :close-on-scrim="props.closeOnScrim">
+  <InkPopup
+    class="ink-dialog__popup"
+    v-model:open="open"
+    :position="props.position"
+    :close-on-scrim="props.closeOnScrim && !isLoading"
+    :close-on-escape="!isLoading"
+    :aria-labelledby="title ? titleId : undefined"
+    :aria-busy="isLoading || undefined"
+  >
     <div class="ink-dialog">
       <div v-if="$slots.header || title || subtitle" class="ink-dialog__header">
         <slot name="header">
-          <h2 v-if="title" class="ink-dialog__title">{{ title }}</h2>
+          <h2 v-if="title" :id="titleId" class="ink-dialog__title">{{ title }}</h2>
           <p v-if="subtitle" class="ink-dialog__subtitle">{{ subtitle }}</p>
         </slot>
       </div>

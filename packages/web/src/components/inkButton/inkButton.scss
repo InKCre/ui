@@ -2,109 +2,85 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5em;
   cursor: pointer;
-  transition-property: padding height width background-color color opacity;
-  transition-duration: 0.2s;
-  transition-timing-function: ease;
-  border: none;
-  background-color: transparent;
-  color: sys-var(color, text, base);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+  border: 1px solid transparent;
   position: relative;
   box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
 
-  // State styles
-  &__loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: inherit;
-    opacity: sys-var(opacity, strong);
-    @include apply-icon(lg);
+  &__icon,
+  &__loading {
+    font-size: 1em;
+    flex: 0 0 auto;
   }
 
-  &--loading {
-    cursor: not-allowed;
-  }
-
+  &--loading,
   &:disabled {
     cursor: not-allowed;
   }
 
-  // Theme variants
   &--theme-subtle {
-    border: 1px solid sys-var(color, border, base);
+    border-color: sys-var(color, border, base);
     background-color: sys-var(color, surface, subtle);
     color: sys-var(color, text, base);
-
-    &:hover,
-    &:active {
+    &:not(:disabled):is(:hover, :active) {
       background-color: sys-var(color, surface, subtle-hover);
     }
   }
 
   &--theme-primary {
     background-color: sys-var(color, surface, primary);
-    color: sys-var(color, text, primary);
-
-    &:hover,
-    &:active {
-      opacity: 0.9;
+    color: sys-var(color, text, on-primary);
+    &:not(:disabled):is(:hover, :active) {
+      background-color: sys-var(color, surface, primary-hover);
     }
   }
 
   &--theme-danger {
     background-color: sys-var(color, surface, danger);
-    color: sys-var(color, text, danger-on);
-
-    &:hover,
-    &:active {
-      opacity: 0.9;
+    color: sys-var(color, text, on-danger);
+    &:not(:disabled):is(:hover, :active) {
+      background-color: sys-var(color, surface, danger-hover);
     }
   }
 
-  // Size variants
+  &:disabled:not(&--loading) {
+    color: sys-var(color, text, subtle);
+    background-color: sys-var(color, surface, subtle);
+    border-color: sys-var(color, border, subtle);
+  }
+
+  &:focus-visible {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: 2px;
+  }
+
   &--size-md {
     @include apply-font(label-lg);
-
-    .ink-button__icon {
-      @include apply-icon(md);
-    }
+    min-height: 36px;
   }
-
   &--size-sm {
     @include apply-font(label-md);
-
-    .ink-button__icon {
-      @include apply-icon(sm);
-    }
+    min-height: 24px;
   }
 
-  // Type variants
   &--type-default {
-    &.ink-button--size-md {
-      padding: sys-var(space, sm) sys-var(space, md);
-    }
-
-    &.ink-button--size-sm {
-      padding: sys-var(space, xs) sys-var(space, md);
-    }
+    padding: 0.5em sys-var(space, md);
   }
 
   &--type-square {
-    padding: 0;
-
+    min-width: 36px;
+    padding: 0.5em;
     &.ink-button--size-sm {
-      height: sys-var(size, sm);
-      width: sys-var(size, sm);
-    }
-    &.ink-button--size-md {
-      height: sys-var(size, md);
-      width: sys-var(size, md);
+      min-width: 24px;
+      padding: 0.25em;
     }
   }
 }

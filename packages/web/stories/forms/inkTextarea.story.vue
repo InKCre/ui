@@ -39,5 +39,9 @@ const textValue = ref("");
     <Variant title="Customize Rows">
       <InkTextarea v-model:value="textValue" label="Short Text" :rows="6" layout="col" />
     </Variant>
+    <Variant title="代码显式使用等宽字体">
+      <InkTextarea value="workspace_id=demo" label="代码" mono layout="col" />
+      <InkTextarea value="workspace_id=demo" label="只读代码" mono :editable="false" layout="col" />
+    </Variant>
   </Story>
 </template>

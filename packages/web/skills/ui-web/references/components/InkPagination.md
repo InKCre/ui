@@ -33,8 +33,7 @@
 
 ## API Caveats
 
-- Keep the controlled page value aligned with the data request lifecycle.
-- Use the text mode only when numbered page affordances are intentionally unnecessary.
+- currentPage/totalPages 受控；page-change 传出目标页。非有限总页数视为 0，页数截断并限制范围，显示修正不主动发事件。
 
 ## Common Mistakes
 

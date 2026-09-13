@@ -33,7 +33,7 @@
 
 ## API Caveats
 
-- Choose size and density for the surrounding context instead of scaling with local CSS.
+- 提供 role=status 和默认 Loading 名称，可透传 aria-label；不管理请求和相邻按钮状态。
 
 ## Common Mistakes
 

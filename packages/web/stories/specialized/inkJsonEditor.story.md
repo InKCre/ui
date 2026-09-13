@@ -1,70 +1,11 @@
-# InkJsonEditor
+# inkJsonEditor
 
-A specialized textarea component for editing JSON with enhanced editing features.
+InkJsonEditor 的 `v-model` 是原始文本，包括未完成或语法无效的 JSON。不要在模型 setter 中直接 JSON.parse，也不要把它视为已经通过 schema 校验的字符串。外部模型更新替换编辑器文本，但不重复发出 update:modelValue。
 
-## Rationale
+validation 事件传出 JsonEditorValidation，包含对应 text、status、valid 和 messages。每次编辑先报告 pending；只有 status=valid 且 text 与当前草稿一致时才允许保存，届时再 JSON.parse。无 schema 仍校验 JSON 语法；空文本不是 JSON 值。
 
-InkJsonEditor exists to provide a consistent JSON editor field for forms with smart indentation, quote completion, and comma completion to streamline JSON configuration editing.
+每个实例隔离 schema 配置和缓存。更新 schema 或 schemaUri 会重新校验；过期结果不会覆盖新文本的结果。语法/schema 错误和服务不可用都可见，服务异常另发出 error。editable=false 或 disabled 使用 CodeMirror 只读模式。
 
-Use it for editing JSON strings in forms; avoid using it for general text editing or non-JSON content.
+Story 的“Validated save and isolated editors”演示两个 schema 并存，以及如何在无效输入期间禁用保存。label 为编辑区提供名称，error 和诊断关联到 aria-describedby。JSON Schema 编辑需要包声明的 CodeMirror 和语言服务依赖。
 
-## Design Semantics
-
-### Concepts
-
-### Visual / UX Meaning
-
-- Editable mode: displays a textarea with JSON editing features
-- Read-only mode: displays formatted JSON text
-
-## Canonical Examples
-
-- Basic editable JSON editor:
-
-  ```html
-  <InkJsonEditor v-model="{}" />
-  ```
-
-- With label inside form:
-
-  ```html
-  <InkField label="Configuration">
-    <InkJsonEditor v-model="{}" />
-  </InkField>
-  ```
-
-- Read-only display:
-
-  ```html
-  <InkJsonEditor :editable="false" v-model='{"key": "value"}' />
-  ```
-
-- Json Schema:
-
-  ```html
-  <InkJsonEditor v-model='{"key": "value"}' schema='{"type": "object", "properties": {...}}' />
-  ```
-
-## Behavioral Contract
-
-- Use modelValue and ensures it's a valid JSON string (If editor value is invalid, will not update to modelValue)
-- Supports keyboard shortcuts: Tab/Shift+Tab for indentation, quote auto-completion, comma completion
-- Supports to provide lint and autocomplete from JSON Schema.
-
-## Extension & Composition
-
-- Integrates with InkForm and InkField for consistent form layout
-- Can be used standalone or within forms
-- Supports custom layouts via `layout` prop
-
-## Non-Goals
-
-- General text editing (only optimized for JSON)
-- Data validation beyond JSON syntax
-- File upload or external JSON loading
-
-## Implementation Notes
-
-- Built on Code Mirror 6 and vscode-json-languageservice for advanced editing features
-- Height is fixed to `rows * 1.2em + space-sm * 2` and so set `line-height: 1.2 !important`
-- JSON edit features: tab indentation, quote completion, comma completion, JSON schema support (vscode-json-languageservice)
+编辑器文本读取 label-lg 角色和系统 mono 家族，避免入口不同导致字体被覆盖。第三方编辑器内部布局与语法主题仍由 CodeMirror 管理。

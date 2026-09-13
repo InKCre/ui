@@ -25,16 +25,17 @@
 ## Public API Facts
 
 - Import: `import { InkButton } from "@inkcre/ui-web";`
-- Props: `icon`, `iconPlacement`, `isLoading`, `size`, `text`, `theme`, `type`
+- Props: `disabled`, `icon`, `iconPlacement`, `isLoading`, `nativeType`, `size`, `text`, `theme`, `type`
 - Events: `click`
 - Slots: `default`, `prefix-icon`, `suffix-icon`
 - Public types: None
-- Story variants: `Subtle`, `Primary`, `Danger`, `Medium (Default)`, `Small`, `Loading State - Subtle`, `Loading State - Primary`, `Loading State - Danger`, `Very Long Text`, `Short Text`, `Icon Prefix`, `Icon Suffix`, `Icon Only (Square)`
+- Story variants: `Subtle`, `Primary`, `Danger`, `Medium (Default)`, `Small`, `Loading State - Subtle`, `Loading State - Primary`, `Loading State - Danger`, `Very Long Text`, `Short Text`, `Icon Prefix`, `Icon Suffix`, `Icon Only (Square)`, `Explicit form submission`
 
 ## API Caveats
 
-- Choose theme from the component's actual public values; do not borrow variant names from another library.
-- Keep icon-only commands accessible with surrounding context or a tooltip.
+- type 控制 default/square 外形；nativeType 控制 button/submit/reset，默认 button。提交必须使用 nativeType="submit"。
+- click 传出 MouseEvent；disabled、isLoading 或 Dialog 的 pending 禁用动作。图标按钮必须提供 aria-label。
+- 默认 theme="subtle"；主动作显式 primary。文字可换行，最小高度 md=36px、sm=24px；pending 保留标签与相邻 spinner，不使用遮盖标签的覆盖层。
 
 ## Common Mistakes
 

@@ -25,7 +25,7 @@
 ## Public API Facts
 
 - Import: `import { InkPopup } from "@inkcre/ui-web";`
-- Props: `closeOnScrim`, `position`, `scrim`
+- Props: `closeOnEscape`, `closeOnScrim`, `position`, `scrim`
 - Events: `scrim-click`
 - Slots: `default`
 - Public types: None
@@ -33,8 +33,8 @@
 
 ## API Caveats
 
-- Treat open state as controlled through the component's public model contract.
-- Decide explicitly whether scrim click should close the popup.
+- 使用 v-model:open。默认 scrim=true 通过原生 dialog 提供模态和焦点生命周期；scrim=false 为非模态。
+- 提供 aria-label/aria-labelledby 和可见关闭操作；autofocus 指定初始焦点。closeOnEscape/closeOnScrim 控制用户关闭。
 
 ## Common Mistakes
 

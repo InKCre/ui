@@ -22,15 +22,21 @@ const buttonClass = computed(() => [
   { "ink-button--loading": isLoading.value },
 ]);
 
-const handleClick = () => {
-  if (!isLoading.value) {
-    emit("click");
+const handleClick = (event: MouseEvent) => {
+  if (!isLoading.value && !props.disabled) {
+    emit("click", event);
   }
 };
 </script>
 
 <template>
-  <button :class="buttonClass" :disabled="isLoading" @click="handleClick">
+  <button
+    :class="buttonClass"
+    :type="nativeType"
+    :disabled="disabled || isLoading"
+    :aria-busy="isLoading || undefined"
+    @click="handleClick"
+  >
     <slot v-if="iconPlacement === 'prefix'" name="prefix-icon">
       <span v-if="icon" :class="icon" class="ink-button__icon"></span>
     </slot>
@@ -40,9 +46,11 @@ const handleClick = () => {
     <slot v-if="iconPlacement === 'suffix'" name="suffix-icon">
       <span v-if="icon" :class="icon" class="ink-button__icon"></span>
     </slot>
-    <div v-if="isLoading" class="ink-button__loading-overlay">
-      <span class="i-mdi-loading animate-spin" />
-    </div>
+    <span
+      v-if="isLoading"
+      class="ink-button__loading i-mdi-loading animate-spin"
+      aria-hidden="true"
+    />
   </button>
 </template>
 

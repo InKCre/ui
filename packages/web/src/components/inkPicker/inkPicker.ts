@@ -13,12 +13,14 @@ export const inkPickerProps = <T>() =>
     modelValue: {
       type: [String, Object, Date] as PropType<T>,
     },
+    minDate: { type: Date },
+    maxDate: { type: Date },
     type: makeStringProp<InkPickerType>(),
     displayValueAs: makeStringProp<DisplayValueAs>("inline-text"),
     formatter: {
       type: Function as PropType<(value: T) => string>,
     },
-    showPopup: makeBooleanProp(false),
+    showPopup: makeBooleanProp<boolean | undefined>(undefined),
   }) as const;
 
 // --- Emits ---

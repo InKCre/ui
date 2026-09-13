@@ -4,14 +4,12 @@
 
 ## Intent
 
-- two-step confirmation
-- accidental-click guard
-- compact destructive action
+- 确认弹层
+- 破坏性操作确认
 
 ## Prefer When
 
-- A nearby action needs one additional deliberate click without opening a modal.
-- The consequence is already understood and only accidental activation must be prevented.
+- 一个按钮动作需要用户在独立弹层中明确确认。
 
 ## Avoid When
 
@@ -33,10 +31,9 @@
 
 ## API Caveats
 
-- Make the second state visually and textually clear.
-- Reset confirmation state when the surrounding workflow changes.
+- 显示独立确认弹层；默认槽必须是可聚焦按钮，原始 click 在捕获阶段被阻止。业务动作只绑定 confirm。
+- 取消不发 confirm；需要异步等待/失败重试时使用 InkDialog。
 
 ## Common Mistakes
 
-- Do not use a two-click guard for every action.
-- Do not hide the destructive meaning behind an unlabeled icon.
+- 业务动作绑定 confirm，不绑定触发按钮的 click。

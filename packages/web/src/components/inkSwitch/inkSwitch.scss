@@ -1,84 +1,68 @@
 .ink-switch {
-  background-color: comp-var("switch", "track-bg");
-  border: 1px solid comp-var("switch", "track-bg");
-  border-style: solid;
-  display: flex;
-  align-items: center;
+  background-color: comp-var(switch, track-bg);
+  border: 1px solid comp-var(switch, track-bg);
+  display: inline-grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: stretch;
+  width: max-content;
+  min-width: 60px;
+  min-height: 24px;
   cursor: pointer;
   box-sizing: border-box;
   position: relative;
   padding: 0;
+  @include apply-font(label-md, mono);
 
   &__handle {
-    background-color: comp-var("switch", "handle-bg");
-    flex-shrink: 0;
+    background-color: comp-var(switch, handle-bg);
+    grid-area: 1 / 1;
+    min-width: 0;
+    padding: 2px 4px;
     transition: transform 0.2s ease;
-    height: 100%;
     transform: translateX(0);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    display: grid;
+    place-items: center;
+    position: relative;
   }
 
+  &--on &__handle {
+    transform: translateX(100%);
+  }
+
+  // Both labels contribute to the same grid cell, so state changes never resize the track.
   &__label {
-    @include apply-font(label-sm, mono);
-    color: comp-var("switch", "label-color");
+    grid-area: 1 / 1;
+    color: comp-var(switch, label-color);
     text-align: center;
     white-space: nowrap;
+    &--hidden {
+      visibility: hidden;
+    }
   }
 
-  // Size variants
-  &--xs {
-    width: 60px;
-    height: sys-var(size, xs);
-
-    .ink-switch__handle {
-      width: 27px;
-    }
-
-    &.ink-switch--on .ink-switch__handle {
-      transform: translateX(31px);
-    }
+  &__loading {
+    position: absolute;
+    color: comp-var(switch, label-color);
+    font-size: 1em;
   }
 
   &--sm {
-    width: 80px;
-    height: sys-var(size, sm);
-
-    .ink-switch__handle {
-      width: 36px;
-    }
-
-    &.ink-switch--on .ink-switch__handle {
-      transform: translateX(42px);
-    }
+    min-width: 80px;
   }
-
   &--md {
-    width: 100px;
-    height: sys-var(size, md);
-
-    .ink-switch__handle {
-      width: 45px;
-    }
-
-    &.ink-switch--on .ink-switch__handle {
-      transform: translateX(53px);
-    }
+    min-width: 100px;
+    min-height: 36px;
+  }
+  &--lg {
+    min-width: 120px;
+    min-height: 48px;
   }
 
-  &--lg {
-    width: 120px;
-    height: sys-var(size, lg);
-
-    .ink-switch__handle {
-      width: 54px;
-    }
-
-    &.ink-switch--on .ink-switch__handle {
-      transform: translateX(64px);
-    }
+  &:disabled {
+    cursor: not-allowed;
+  }
+  &:focus-visible {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: 2px;
   }
 }

@@ -18,11 +18,19 @@ html[data-theme="light"] {
   @include fn.emit-css-variables(comp.$light, "comp");
 }
 
+@mixin dark-theme {
+  color-scheme: dark;
+  @include fn.emit-css-variables(sys.$color-dark, "sys", "color");
+  @include fn.emit-css-variables(comp.$dark, "comp");
+}
+
+html[data-theme="dark"] {
+  @include dark-theme;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]),
-  html[data-theme="dark"] {
-    color-scheme: dark;
-    @include fn.emit-css-variables(sys.$color-dark, "sys", "color");
-    @include fn.emit-css-variables(comp.$dark, "comp");
+  html[data-theme="system"] {
+    @include dark-theme;
   }
 }

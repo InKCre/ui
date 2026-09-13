@@ -25,16 +25,16 @@
 ## Public API Facts
 
 - Import: `import { InkTextarea } from "@inkcre/ui-web";`
-- Props: `editable`, `label`, `layout`, `placeholder`, `prop`, `required`, `rows`, `value`
+- Props: `disabled`, `editable`, `error`, `id`, `label`, `layout`, `mono`, `name`, `placeholder`, `prop`, `required`, `rows`, `value`
 - Events: `update:value`
 - Slots: None
 - Public types: None
-- Story variants: `Default`, `Optional`, `Required`, `Customize Rows`
+- Story variants: `Default`, `Optional`, `Required`, `Customize Rows`, `代码显式使用等宽字体`
 
 ## API Caveats
 
-- The public value contract uses value/update:value rather than modelValue.
-- Use rows to communicate expected input scale without forcing fixed-height local CSS.
+- 使用 v-model:value；label/id、name、required、disabled、error 及原生 textarea 属性有明确关联。
+- 普通文本默认使用系统 UI 字体；代码或固定宽度内容显式设置 mono，JsonEditor 始终使用系统等宽字体。
 
 ## Common Mistakes
 

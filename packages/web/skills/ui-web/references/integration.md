@@ -16,6 +16,7 @@ package exports.
 - Use the package root for components and public types, /utils for utilities, /locales for locale bundles, and /uno for presetInk.
 - Keep declared peer dependencies resolvable in the consumer installation graph.
 - Do not alias raw package source or dist internals in the registry-backed production contract.
+- 运行时需要 Vue >=3.5（useId）和支持原生 dialog 的浏览器。
 
 ## Router Adapter
 

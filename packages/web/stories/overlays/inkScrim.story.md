@@ -1,91 +1,9 @@
-````markdown
-# InkScrim
+# inkScrim
 
-A simple, full-screen scrim (overlay) component for blocking background interaction and creating focus on overlay content.
+InkScrim 是全屏模态内容容器，`v-model:open` 管理打开状态。原生 dialog 负责背景不可操作、焦点进入与恢复以及嵌套层级。给容器提供 aria-label 或 aria-labelledby。
 
-## Rationale
+closeOnScrim 和 closeOnEscape 默认允许遮罩或 Escape 关闭。showCloseButton 可显示关闭按钮，默认槽也获得 close 方法。点击槽内容不会当作遮罩点击。用户关闭会发出 close；遮罩点击另发 scrim-click。消费者主动设置 open=false 不表示一次用户关闭动作。
 
-InkScrim exists to provide a lightweight, reusable backdrop overlay that dims the background and can be dismissed via user interaction. It serves as a building block for modal, drawer, and other overlay-based components.
+使用 InkPopup、InkDialog 或 InkImage 时通常不需要再套一个 Scrim，因为它们已经拥有浮层责任。
 
-Use it for:
-
-- Creating a dismissible background overlay for dialogs and modals
-- Blocking interaction with background content
-- Creating visual hierarchy by dimming background
-- Building custom overlay-based components
-
-Avoid using it for:
-
-- General page dimming without overlay content (use CSS instead)
-- Permanent background effects (scrim should be dismissible)
-- Complex modal interactions (use InkPopup or InkDialog instead)
-
-## Design Semantics
-
-### Concepts
-
-- `open`: Boolean state controlling scrim visibility
-- `closeOnScrim`: Whether clicking the scrim closes it
-- `scrim-click`: Event emitted when scrim is clicked
-
-### Visual / UX Meaning
-
-- **Scrim**: Semi-transparent dark overlay (`rgba(0, 0, 0, 0.5)`) covering entire viewport
-- **Fade Transition**: Smooth opacity transition when opening/closing
-- **Full Screen**: Fixed positioning covering entire visible area
-- **Clickable**: Can be clicked to trigger close or emit event
-
-## Canonical Examples
-
-- Basic scrim overlay:
-
-  ```vue
-  <InkScrim v-model:open="isOpen" />
-  ```
-
-- Non-dismissible scrim (blocks closing on click):
-
-  ```vue
-  <InkScrim v-model:open="isOpen" :close-on-scrim="false" />
-  ```
-
-- Scrim with custom handler:
-
-  ```vue
-  <InkScrim v-model:open="isOpen" @scrim-click="handleScrimClick" />
-  ```
-
-## Behavioral Contract
-
-- Scrim is rendered via Teleport to body (renders at top of DOM hierarchy)
-- Clicking scrim emits `scrim-click` event
-- If `closeOnScrim` is true, clicking scrim also closes it (updates v-model)
-- If `closeOnScrim` is false, clicking scrim only emits event
-- Fade transition plays smoothly when opening/closing
-- Scrim has fixed positioning covering entire viewport
-- Z-index is 999 to ensure it's above most content
-
-## Extension & Composition
-
-- Used as building block for InkPopup, InkDialog, and custom overlay components
-- Can be combined with positioned content overlays for modals
-- Works with any content that needs background dimming
-
-## Non-Goals
-
-- Does not provide positioning or layout for overlay content
-- Does not handle keyboard interactions (handled by parent components)
-- Does not provide animations beyond simple fade
-- Does not enforce modal behavior (parent component responsibility)
-
-## Implementation Notes
-
-- Props: `closeOnScrim` (boolean, default: true)
-- Emits: `scrim-click`
-- Model: `v-model:open` for state control
-- Test IDs: `ink-scrim`
-- Uses Teleport to body for proper z-index management
-- Fixed positioning covers entire viewport
-- Semi-transparent dark background (`rgba(0, 0, 0, 0.5)`)
-- Smooth fade transition (0.3s ease)
-````
+背景读取根级 overlay.scrim，与 Popup 的遮罩保持相同透明度。局部 wrapper 的变量不会自动跟随 Teleport。

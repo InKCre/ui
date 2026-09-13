@@ -1,10 +1,10 @@
 .ink-auto-form {
   &__error {
-    padding: sys-var(spacing, md);
-    background-color: sys-var(color, surface, error-subtle);
-    color: sys-var(color, text, error);
+    padding: sys-var(space, md);
+    background-color: sys-var(color, surface, subtle);
+    color: sys-var(color, feedback, error);
     border-radius: sys-var(radius, md);
-    @include apply-font(body-md);
+    @include apply-font(body-sm);
   }
 
   &__field {
@@ -14,12 +14,13 @@
   &__field-errors {
     display: flex;
     flex-direction: column;
-    gap: sys-var(spacing, xs);
-    margin-top: sys-var(spacing, xs);
+    gap: sys-var(space, xs);
+    margin-top: sys-var(space, xs);
   }
 
   &__field-error {
-    color: sys-var(color, text, error);
+    overflow-wrap: anywhere;
+    color: sys-var(color, feedback, error);
     @include apply-font(body-sm);
   }
 }

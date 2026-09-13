@@ -28,6 +28,7 @@ interface ComponentSeed {
 }
 
 interface RecipeSeed {
+  example?: string;
   name: string;
   intent: string;
   components: string[];
@@ -478,7 +479,7 @@ ${model.recipes
 
 ${recipe.steps.map((step, index) => `${index + 1}. ${step}`).join("\n")}
 
-${recipe.caveats?.length ? `**Caveats**\n\n${bullets(recipe.caveats)}` : ""}`,
+${recipe.example ? "```vue\n" + recipe.example + "\n```\n\n" : ""}${recipe.caveats?.length ? `**Caveats**\n\n${bullets(recipe.caveats)}` : ""}`,
   )
   .join("\n\n")}
 `;

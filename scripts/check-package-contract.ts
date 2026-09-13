@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import {
   existsSync,
   lstatSync,
@@ -306,6 +307,19 @@ try {
   assertNoDeclarationLeaks(packedRoot, packedManifest);
   assertSkillTree(packedRoot);
 
+  // 验证实际交付 CSS 的 Token 引用，避免 Sass 拼接出未定义变量后仍通过构建。
+  const css = readFileSync(resolve(packedRoot, "dist/index.css"), "utf8");
+  const definedTokens = new Set(
+    [...css.matchAll(/(--(?:ref|sys|comp)-[\w-]+)\s*:/g)].map((match) => match[1]),
+  );
+  const referencedTokens = new Set(
+    [...css.matchAll(/var\(\s*(--(?:ref|sys|comp)-[\w-]+)/g)].map((match) => match[1]),
+  );
+  const missingTokens = [...referencedTokens].filter((token) => !definedTokens.has(token));
+  if (missingTokens.length > 0) {
+    throw new Error(`Packed CSS references undefined design tokens: ${missingTokens.join(", ")}`);
+  }
+
   const consumerRoot = resolve(temporaryRoot, "consumer");
   const consumerModules = resolve(consumerRoot, "node_modules");
   const runtimeModules = resolve(extractionRoot, "node_modules");
@@ -390,6 +404,8 @@ try {
 const root = await import(${JSON.stringify(targetPackageName)});
 const utilities = await import(${JSON.stringify(`${targetPackageName}/utils`)});
 const localeModule = await import(${JSON.stringify(`${targetPackageName}/locales`)});
+const { createGenerator, presetWind3 } = await import("unocss");
+const { default: assert } = await import("node:assert/strict");
 const unoModule = await import(${JSON.stringify(`${targetPackageName}/uno`)});
 if (!root.default?.install || !root[${JSON.stringify(componentName)}] || !root.version) {
   throw new Error("Root entry is incomplete");
@@ -400,6 +416,17 @@ if (typeof utilities.useOptionalVModel !== "function") {
 if (!localeModule.locales?.en || !unoModule.presetInk) {
   throw new Error("Locales or UnoCSS entry is incomplete");
 }
+const uno = await createGenerator({ presets: [presetWind3(), unoModule.presetInk()] });
+const generated = await uno.generate("font-label-lg font-label-lg-mono font-label-lg-underlined font-mono underline p-md rounded-md text-text-on-primary bg-surface-primary bg-surface-danger-hover", { preflights: false });
+for (const declaration of [
+  "font-size:var(--sys-font-label-lg-font-size)", "line-height:var(--sys-font-label-lg-line-height)",
+  "font-weight:var(--sys-font-label-lg-font-weight)", "letter-spacing:var(--sys-font-label-lg-letter-spacing)",
+  "font-family:var(--sys-typo-family-sans)", "font-family:var(--sys-typo-family-mono)",
+  "text-decoration:none", "text-decoration:underline", "padding:var(--sys-space-md)",
+  "border-radius:var(--sys-radius-md)", "color:var(--sys-color-text-on-primary)", "background-color:var(--sys-color-surface-danger-hover)",
+]) assert.ok(generated.css.includes(declaration), "Uno contract is missing " + declaration);
+const invalid = await uno.generate("font-label-sm font-title-md", { preflights: false });
+assert.equal(invalid.matched.size, 0, "Removed or undefined roles must not silently emit a partial style");
 try {
   await import(${JSON.stringify(`${targetPackageName}/components/inkButton/inkButton.vue`)});
   throw new Error("Raw component subpath unexpectedly resolved");
@@ -423,7 +450,11 @@ try {
 
 .contract-probe {
   color: functions.ref-var("color", "neutral", "2");
-  @include mixins.apply-font("sm");
+  @include mixins.apply-font("label-lg");
+  padding: functions.sys-var(space, md);
+}
+.contract-modifiers {
+  @include mixins.apply-font(label-lg, $mono: true, $underlined: true);
 }
 `,
     { importers: [new sass.NodePackageImporter(consumerRoot)] },
@@ -435,9 +466,36 @@ try {
     throw new Error("Sass contract probe did not emit expected output");
   }
 
+  const declarations = sassResult.css.match(/\.contract-probe\s*\{([^}]+)\}/)?.[1] ?? "";
+  for (const declaration of [
+    "font-family: var(--sys-typo-family-sans)",
+    "font-size: var(--sys-font-label-lg-font-size)",
+    "font-weight: var(--sys-font-label-lg-font-weight)",
+    "line-height: var(--sys-font-label-lg-line-height)",
+    "letter-spacing: var(--sys-font-label-lg-letter-spacing)",
+    "text-decoration: none",
+    "padding: var(--sys-space-md)",
+  ])
+    assert.ok(declarations.includes(declaration), `Sass contract is missing ${declaration}`);
+  const modifiers = sassResult.css.match(/\.contract-modifiers\s*\{([^}]+)\}/)?.[1] ?? "";
+  assert.ok(modifiers.includes("font-family: var(--sys-typo-family-mono)"));
+  assert.ok(modifiers.includes("text-decoration: underline"));
+  assert.match(sassResult.css, /--sys-font-label-lg-letter-spacing:\s*0px/);
+  assert.match(sassResult.css, /--sys-font-label-lg-line-height:\s*1\.42857143;/);
+  assert.match(sassResult.css, /--sys-color-overlay-scrim:\s*rgba\(0, 0, 0, 0\.5\)/);
+  assert.match(sassResult.css, /--sys-opacity-muted:\s*0\.72;/);
+  assert.throws(
+    () =>
+      sass.compileString(
+        `@use "pkg:${targetPackageName}/styles/mixins" as m; .invalid { @include m.apply-font('title', 'lg'); }`,
+        { importers: [new sass.NodePackageImporter(consumerRoot)] },
+      ),
+    /Unknown font role|base font role|complete role/,
+  );
+
   writeFileSync(
     resolve(consumerRoot, "App.vue"),
-    `<template><${componentName} /></template>\n`,
+    `<template><${componentName} /><InkTextarea mono value="code" /></template>\n`,
     "utf8",
   );
   writeFileSync(

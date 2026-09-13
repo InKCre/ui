@@ -7,6 +7,8 @@ type ButtonSize = "md" | "sm";
 
 // --- Props ---
 export const inkButtonProps = {
+  nativeType: makeStringProp<"button" | "submit" | "reset">("button"),
+  disabled: makeBooleanProp(false),
   text: makeStringProp(),
   /** iconfont class name, eg. i-mdi-menu */
   icon: makeStringProp(),
@@ -19,5 +21,5 @@ export const inkButtonProps = {
 
 // --- Emits ---
 export const inkButtonEmits = {
-  click: () => true,
+  click: (_event: MouseEvent) => true,
 } as const;

@@ -5,6 +5,9 @@ export type FieldLayout = "inline" | "col" | "row";
 
 // --- Props ---
 export const inkFieldProps = {
+  for: makeStringProp(),
+  error: makeStringProp(""),
+  errorId: makeStringProp(),
   label: makeStringProp("Label"),
   layout: makeStringProp<FieldLayout>("col"),
   value: makeStringProp(""),

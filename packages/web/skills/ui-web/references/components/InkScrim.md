@@ -33,7 +33,8 @@
 
 ## API Caveats
 
-- Keep open state and click-to-close behavior synchronized with the owning overlay.
+- 使用 v-model:open，全屏原生 dialog 负责模态、Escape 和焦点恢复。提供可访问名称。
+- closeOnScrim/closeOnEscape 默认 true，showCloseButton 可添加关闭按钮；槽获得 close，点击槽内容不关闭。
 
 ## Common Mistakes
 

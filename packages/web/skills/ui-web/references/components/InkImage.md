@@ -33,8 +33,8 @@
 
 ## API Caveats
 
-- Always provide meaningful alt text for informative images.
-- Handle the public error payload instead of relying on internal image state.
+- 缩略图为原生按钮，alt/title 提供名称。v-model:expanded 可受控，省略则内部管理。
+- InkScrim 提供模态、Escape 和焦点恢复；槽内容点击不关闭。
 
 ## Common Mistakes
 

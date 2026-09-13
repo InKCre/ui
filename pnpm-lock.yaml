@@ -121,7 +121,7 @@ importers:
         specifier: ^1.0.12
         version: 1.0.12
       vue:
-        specifier: ^3.4.0
+        specifier: ^3.5.0
         version: 3.5.25(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
       vue-i18n:
         specifier: ^11.2.7

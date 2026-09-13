@@ -1,32 +1,14 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
-import { useAsyncState } from "@vueuse/core";
+import { computed } from "vue";
+import { useAsyncBoolean } from "../../composables/use-async-boolean";
 import { inkSwitchProps, inkSwitchEmits } from "./inkSwitch";
 
 const props = defineProps(inkSwitchProps);
 const emit = defineEmits(inkSwitchEmits);
 
-const {
-  state: currentValue,
-  isLoading: isSwitchingInternal,
-  execute,
-} = useAsyncState(
-  async () => {
-    const v = props.modelValue;
-    return v instanceof Promise ? await v : v;
-  },
-  false,
-  {
-    immediate: true,
-    resetOnExecute: false,
-  },
-);
-
-watch(
+const { value: currentValue, pending: isSwitchingInternal } = useAsyncBoolean(
   () => props.modelValue,
-  async (newVal) => {
-    await execute();
-  },
+  (error) => emit("error", error),
 );
 
 const switchClass = computed(() => [
@@ -40,17 +22,43 @@ const labelText = computed(() => (currentValue.value ? props.onText : props.offT
 const isSwitching = computed(() => props.isSwitching || isSwitchingInternal.value);
 
 const handleClick = () => {
-  if (!isSwitching.value) {
+  if (!isSwitching.value && !props.disabled) {
     emit("update:modelValue", !currentValue.value);
   }
 };
 </script>
 
 <template>
-  <button :class="switchClass" @click="handleClick">
+  <button
+    type="button"
+    role="switch"
+    :aria-checked="currentValue"
+    :aria-label="showLabel ? labelText : undefined"
+    :aria-busy="isSwitching || undefined"
+    :disabled="disabled || isSwitching"
+    :class="switchClass"
+    @click="handleClick"
+  >
     <div class="ink-switch__handle">
-      <span v-if="props.showLabel && !isSwitching" class="ink-switch__label">{{ labelText }}</span>
-      <span v-if="isSwitching" class="i-mdi-loading animate-spin"></span>
+      <template v-if="showLabel">
+        <span
+          class="ink-switch__label"
+          :class="{ 'ink-switch__label--hidden': !currentValue || isSwitching }"
+          :aria-hidden="!currentValue || isSwitching"
+          >{{ onText }}</span
+        >
+        <span
+          class="ink-switch__label"
+          :class="{ 'ink-switch__label--hidden': currentValue || isSwitching }"
+          :aria-hidden="currentValue || isSwitching"
+          >{{ offText }}</span
+        >
+      </template>
+      <span
+        v-if="isSwitching"
+        class="ink-switch__loading i-mdi-loading animate-spin"
+        aria-hidden="true"
+      />
     </div>
   </button>
 </template>

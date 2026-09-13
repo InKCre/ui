@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from "vue";
+const deletions = ref(0);
 import InkDoubleCheck from "../../src/components/inkDoubleCheck/inkDoubleCheck.vue";
 import InkButton from "../../src/components/inkButton/inkButton.vue";
 </script>
@@ -10,6 +12,7 @@ import InkButton from "../../src/components/inkButton/inkButton.vue";
   >
     <Variant title="Delete Confirmation">
       <InkDoubleCheck
+        @confirm="deletions++"
         title="Delete Item?"
         message="This action cannot be undone. Are you sure you want to delete this item?"
         confirm-text="Delete"
@@ -17,6 +20,7 @@ import InkButton from "../../src/components/inkButton/inkButton.vue";
       >
         <InkButton text="Delete Item" theme="danger" />
       </InkDoubleCheck>
+      <p>确认次数：{{ deletions }}</p>
     </Variant>
   </Story>
 </template>

@@ -19,72 +19,22 @@
     min-width: 100px;
     display: flex;
     flex-direction: column;
-  }
-
-  &__label {
-    @include apply-font(label-sm);
-    color: sys-var(color, text, subtle);
-    margin-bottom: sys-var(space, xs);
-    text-align: center;
-    font-weight: 500;
-  }
-
-  &__options {
-    display: flex;
-    flex-direction: column;
     gap: sys-var(space, xs);
-    max-height: 240px;
-    overflow-y: auto;
-    padding: sys-var(space, xs);
-    border: 1px solid sys-var(color, border, subtle);
-    background-color: sys-var(color, surface, raised);
+    @include apply-font(label-lg);
 
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
+    select {
+      width: 100%;
+      font: inherit;
+      color: sys-var(color, text, base);
       background: sys-var(color, surface, base);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: sys-var(color, border, subtle);
-
-      &:hover {
-        background: sys-var(color, border, base);
+      border: 1px solid sys-var(color, border, base);
+      &:focus-visible {
+        outline: 2px solid sys-var(color, border, strong);
+        outline-offset: 2px;
+      }
+      option {
+        padding: sys-var(space, xs);
       }
     }
-  }
-
-  &__option {
-    @include apply-font(label-md);
-    padding: sys-var(space, xs) sys-var(space, sm);
-    text-align: center;
-    color: sys-var(color, text, base);
-    cursor: pointer;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease;
-    user-select: none;
-
-    &:hover {
-      background-color: sys-var(color, surface, base-hover);
-    }
-
-    &--selected {
-      background-color: sys-var(color, surface, primary);
-      color: sys-var(color, text, primary);
-      font-weight: 500;
-
-      &:hover {
-        background-color: sys-var(color, surface, primary-hover);
-      }
-    }
-  }
-
-  &__actions {
-    display: flex;
-    gap: sys-var(space, sm);
-    justify-content: flex-end;
   }
 }

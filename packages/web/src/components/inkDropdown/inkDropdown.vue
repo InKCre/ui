@@ -1,350 +1,292 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch, onMounted } from "vue";
-import { createReusableTemplate } from "@vueuse/core";
+import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
+import { createReusableTemplate, onClickOutside } from "@vueuse/core";
 import { inkDropdownProps, inkDropdownEmits, type DropdownOption } from "./inkDropdown";
 import InkField from "../inkField/inkField.vue";
 import InkButton from "../inkButton/inkButton.vue";
-import { INK_FORM_CONTEXT_KEY } from "../inkForm/inkForm";
+import { useFieldControl } from "../../composables/use-field-control";
 import { useOptionalModel } from "../../composables/use-optional-model";
 
+defineOptions({ inheritAttrs: false });
 const props = defineProps(inkDropdownProps);
 const emit = defineEmits(inkDropdownEmits);
-
-const formContext = inject(INK_FORM_CONTEXT_KEY, null);
-
-const useField = computed(() => formContext !== null && props.label);
-const fieldLayout = computed(() => props.layout || formContext?.layout);
-
+const { controlId, errorId, describedBy, fieldLayout, useField } = useFieldControl(props);
+const container = ref<HTMLElement>();
+const trigger = ref<HTMLButtonElement>();
+const searchInput = ref<HTMLInputElement>();
 const showOptions = ref(false);
 const isRefreshing = ref(false);
+const loadError = ref("");
 const searchText = ref("");
-const isSearching = ref(false);
-const searchInputRef = ref<HTMLInputElement | null>(null);
-const containerRef = ref<HTMLDivElement | null>(null);
-const hoveredIndex = ref<number>(-1);
-
+const hoveredIndex = ref(0);
 const optionsModel = useOptionalModel<DropdownOption[]>({
   props,
   emit,
   modelName: "options",
   defaultValue: [],
 });
-
-// --- computed ---
-const displayValue = computed(() => {
-  const option = optionsModel.value.find((opt) => opt.value === props.modelValue);
-  return option ? option.label : props.placeholder;
-});
-
+const disabled = computed(() => props.disabled || !props.editable);
+const currentIndex = computed(() =>
+  optionsModel.value.findIndex((option) => option.value === props.modelValue),
+);
+const displayValue = computed(
+  () => optionsModel.value[currentIndex.value]?.label ?? props.placeholder,
+);
 const filteredOptions = computed(() => {
-  if (!searchText.value.trim()) {
-    return optionsModel.value;
-  }
-
-  const query = searchText.value.toLowerCase();
-  return optionsModel.value.filter((opt) => {
-    const labelMatches = opt.label.toLowerCase().includes(query);
-    const descriptionMatches = opt.description?.toLowerCase().includes(query);
-    return labelMatches || descriptionMatches;
-  });
+  const query = searchText.value.toLocaleLowerCase();
+  return optionsModel.value.filter((option) =>
+    `${option.label} ${option.description ?? ""}`.toLocaleLowerCase().includes(query),
+  );
 });
-
-const currentIndex = computed(() => {
-  return optionsModel.value.findIndex((opt) => opt.value === props.modelValue);
-});
-
-const isSteppingDisabled = computed(() => {
-  return !props.editable || optionsModel.value.length === 0;
-});
-
-// --- methods ---
-const loadOptionsIfNeeded = async (force: boolean = false) => {
-  if (optionsModel.value.length > 0 && !force) {
-    return;
-  }
+const activeId = computed(() =>
+  showOptions.value && filteredOptions.value[hoveredIndex.value]
+    ? `${controlId.value}-option-${hoveredIndex.value}`
+    : undefined,
+);
+let request = 0;
+async function loadOptions(force = false) {
+  if (!props.refresher || (!force && optionsModel.value.length)) return;
+  const identity = ++request;
   isRefreshing.value = true;
+  loadError.value = "";
   try {
-    if (props.refresher) {
-      const options = await props.refresher();
-      optionsModel.value = options;
-    } else {
-      return; // No load needed
+    const options = await props.refresher();
+    if (identity === request) optionsModel.value = options;
+  } catch (error) {
+    if (identity === request) {
+      loadError.value = "Unable to load options";
+      emit("error", error);
     }
   } finally {
+    if (identity === request) isRefreshing.value = false;
+  }
+}
+onBeforeUnmount(() => {
+  request++;
+});
+watch(
+  () => props.refresher,
+  () => {
+    request++;
     isRefreshing.value = false;
-  }
-};
-
-const onRefresh = async () => {
-  await loadOptionsIfNeeded(true);
-};
-
-const onPrev = () => {
-  if (isSteppingDisabled.value) return;
-  const len = optionsModel.value.length;
-  const nextIdx = (currentIndex.value - 1 + len) % len;
-  onOptionSelect(optionsModel.value[nextIdx].value);
-};
-
-const onNext = () => {
-  if (isSteppingDisabled.value) return;
-  const len = optionsModel.value.length;
-  const nextIdx = (currentIndex.value + 1) % len;
-  onOptionSelect(optionsModel.value[nextIdx].value);
-};
-
-const onDropdownClick = async () => {
-  if (props.editable) {
-    if (showOptions.value) {
-      showOptions.value = false;
-    } else {
-      // Load options before showing dropdown
-      await loadOptionsIfNeeded();
-      showOptions.value = true;
-      // Initialize hover to current selection or first option
-      hoveredIndex.value = currentIndex.value >= 0 ? currentIndex.value : 0;
-      // Focus container to enable keyboard events
-      setTimeout(() => {
-        containerRef.value?.focus();
-      }, 0);
-    }
-  }
-};
-
-const onOptionSelect = (value: DropdownOption["value"]) => {
-  emit("update:modelValue", value);
-  emit("change", value);
-  showOptions.value = false;
-  clearSearch();
-};
-
-const clearSearch = () => {
-  searchText.value = "";
-  isSearching.value = false;
-  hoveredIndex.value = -1;
-};
-
-const startSearch = (char: string) => {
-  searchText.value = char;
-  isSearching.value = true;
+    loadError.value = "";
+  },
+);
+watch(searchText, () => {
   hoveredIndex.value = 0;
-  // Focus input on next tick after it's rendered
-  setTimeout(() => {
-    searchInputRef.value?.focus();
-  }, 0);
-};
-
-const handleContainerKeyDown = (e: KeyboardEvent) => {
-  if (!showOptions.value || isRefreshing.value) return;
-
-  const options = isSearching.value ? filteredOptions.value : optionsModel.value;
-
-  // Arrow down navigates to next option
-  if (e.key === "ArrowDown") {
-    e.preventDefault();
-    if (options.length > 0) {
-      hoveredIndex.value = (hoveredIndex.value + 1) % options.length;
-    }
-  }
-  // Arrow up navigates to previous option
-  else if (e.key === "ArrowUp") {
-    e.preventDefault();
-    if (options.length > 0) {
-      hoveredIndex.value = (hoveredIndex.value - 1 + options.length) % options.length;
-    }
-  }
-  // Enter selects hovered option
-  else if (e.key === "Enter") {
-    e.preventDefault();
-    if (hoveredIndex.value >= 0 && hoveredIndex.value < options.length) {
-      onOptionSelect(options[hoveredIndex.value].value);
-    }
-  }
-  // Start search on alphanumeric key
-  else if (e.key.length === 1 && /[a-z0-9 ]/i.test(e.key) && !isSearching.value) {
-    e.preventDefault();
-    startSearch(e.key);
-  }
-  // ESC closes dropdown or clears search
-  else if (e.key === "Escape") {
-    e.preventDefault();
-    if (isSearching.value) {
-      clearSearch();
-    } else {
-      showOptions.value = false;
-    }
-  }
-};
-
-const handleSearchKeyDown = (e: KeyboardEvent) => {
-  const options = filteredOptions.value;
-
-  // Arrow down navigates to next option
-  if (e.key === "ArrowDown") {
-    e.preventDefault();
-    e.stopPropagation();
-    if (options.length > 0) {
-      hoveredIndex.value = (hoveredIndex.value + 1) % options.length;
-    }
-  }
-  // Arrow up navigates to previous option
-  else if (e.key === "ArrowUp") {
-    e.preventDefault();
-    e.stopPropagation();
-    if (options.length > 0) {
-      hoveredIndex.value = (hoveredIndex.value - 1 + options.length) % options.length;
-    }
-  }
-  // ESC clears search first, then closes dropdown
-  else if (e.key === "Escape") {
-    e.preventDefault();
-    e.stopPropagation();
-    if (searchText.value) {
-      clearSearch();
-    } else {
-      showOptions.value = false;
-    }
-  }
-  // Enter selects hovered option
-  else if (e.key === "Enter" && options.length > 0) {
-    e.preventDefault();
-    e.stopPropagation();
-    const idx = hoveredIndex.value >= 0 ? hoveredIndex.value : 0;
-    onOptionSelect(options[idx].value);
-  }
-};
-
-// Clear search when dropdown closes
-watch(showOptions, (isOpen) => {
-  if (!isOpen) {
-    clearSearch();
-  }
 });
-
-// Update hover to first option when search text changes
-watch(searchText, (newVal) => {
-  if (newVal && isSearching.value) {
-    hoveredIndex.value = 0;
-  }
+watch(
+  () => props.disabled || !props.editable,
+  (value) => {
+    if (value) close();
+  },
+);
+watch(filteredOptions, (options) => {
+  hoveredIndex.value = Math.min(hoveredIndex.value, Math.max(0, options.length - 1));
 });
-
-// Load lazy options immediately if modelValue is set
+onClickOutside(container, () => close());
+function close() {
+  showOptions.value = false;
+  searchText.value = "";
+}
+function open() {
+  if (disabled.value) return;
+  showOptions.value = true;
+  hoveredIndex.value = Math.max(0, currentIndex.value);
+  void loadOptions();
+}
+function select(option: DropdownOption) {
+  if (disabled.value || isRefreshing.value) return;
+  emit("update:modelValue", option.value);
+  emit("change", option.value);
+  close();
+  trigger.value?.focus();
+}
+function step(direction: number) {
+  if (disabled.value || isRefreshing.value || !optionsModel.value.length) return;
+  const count = optionsModel.value.length;
+  select(optionsModel.value[(currentIndex.value + direction + count) % count]);
+}
+async function handleKey(event: KeyboardEvent) {
+  if (disabled.value || event.isComposing) return;
+  const fromSearch = event.target === searchInput.value;
+  if (event.key === "Tab") {
+    close();
+    return;
+  }
+  if (event.key === "Escape" && showOptions.value) {
+    event.preventDefault();
+    event.stopPropagation();
+    close();
+    trigger.value?.focus();
+    return;
+  }
+  if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
+    event.preventDefault();
+    if (!showOptions.value) {
+      open();
+      return;
+    }
+    const count = filteredOptions.value.length;
+    if (!count) return;
+    if (event.key === "Home") hoveredIndex.value = 0;
+    else if (event.key === "End") hoveredIndex.value = count - 1;
+    else
+      hoveredIndex.value =
+        (hoveredIndex.value + (event.key === "ArrowDown" ? 1 : -1) + count) % count;
+    await nextTick();
+    document.getElementById(activeId.value ?? "")?.scrollIntoView({ block: "nearest" });
+  } else if (event.key === "Enter" || (!fromSearch && event.key === " ")) {
+    event.preventDefault();
+    if (!showOptions.value) open();
+    else {
+      const option = filteredOptions.value[hoveredIndex.value];
+      if (option) select(option);
+    }
+  } else if (
+    !fromSearch &&
+    event.key.length === 1 &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.altKey
+  ) {
+    event.preventDefault();
+    if (!showOptions.value) open();
+    searchText.value = event.key;
+    await nextTick();
+    searchInput.value?.focus();
+  }
+}
 onMounted(() => {
-  const hasModelValue =
-    props.modelValue !== undefined && props.modelValue !== null && props.modelValue !== "";
-  const hasRefresher = props.refresher !== undefined;
-  const hasNoOptions = optionsModel.value.length === 0;
-
-  if (hasModelValue && hasRefresher && hasNoOptions) {
-    loadOptionsIfNeeded();
-  }
+  if (props.modelValue !== undefined && props.modelValue !== null && props.modelValue !== "")
+    void loadOptions();
 });
-
 const [DefineDropdown, ReuseDropdown] = createReusableTemplate();
 </script>
-
 <template>
   <DefineDropdown>
     <div
-      ref="containerRef"
+      ref="container"
       class="ink-dropdown-container"
-      tabindex="0"
-      @keydown="handleContainerKeyDown"
+      @focusout="
+        (event) => {
+          if (!container?.contains(event.relatedTarget as Node)) close();
+        }
+      "
     >
-      <!-- Box -->
-      <div
+      <button
+        v-bind="$attrs"
+        :id="controlId"
+        ref="trigger"
+        type="button"
+        role="combobox"
+        :disabled="disabled"
+        :aria-expanded="showOptions"
+        :aria-controls="`${controlId}-options`"
+        aria-haspopup="listbox"
+        :aria-activedescendant="activeId"
+        :aria-required="required || undefined"
+        :aria-invalid="!!error || undefined"
+        :aria-describedby="describedBy"
         :class="[
           'ink-dropdown',
-          {
-            'ink-dropdown--editable': editable,
-            'ink-dropdown--active': showOptions,
-            'ink-dropdown--searching': isSearching,
-          },
+          { 'ink-dropdown--editable': !disabled, 'ink-dropdown--active': showOptions },
         ]"
-        @click="onDropdownClick"
+        @click="showOptions ? close() : open()"
+        @keydown="handleKey"
       >
-        <input
-          v-if="isSearching"
-          ref="searchInputRef"
-          v-model="searchText"
-          class="ink-dropdown__search-input"
-          type="text"
-          @keydown="handleSearchKeyDown"
-          @click.stop
+        <span class="ink-dropdown__value">{{ displayValue }}</span
+        ><span
+          v-if="!disabled"
+          class="i-mdi-chevron-down ink-dropdown__chevron"
+          aria-hidden="true"
         />
-        <span v-else class="ink-dropdown__value">{{ displayValue }}</span>
-
-        <span v-if="editable" :class="['i-mdi-chevron-down', 'ink-dropdown__chevron']"></span>
-      </div>
-
-      <!-- Stepping Buttons -->
+      </button>
+      <input
+        v-if="name"
+        type="hidden"
+        :name="name"
+        :value="modelValue ?? ''"
+        :disabled="disabled"
+      />
       <template v-if="enableStepping">
         <InkButton
           icon="i-mdi-chevron-left"
-          :disabled="isSteppingDisabled"
-          @click="onPrev"
           type="square"
-          title="Previous"
+          aria-label="Previous option"
+          :disabled="disabled || isRefreshing || !optionsModel.length"
+          @click="step(-1)"
         />
         <InkButton
           icon="i-mdi-chevron-right"
-          :disabled="isSteppingDisabled"
           type="square"
-          @click="onNext"
-          title="Next"
+          aria-label="Next option"
+          :disabled="disabled || isRefreshing || !optionsModel.length"
+          @click="step(1)"
         />
       </template>
-
-      <!-- Refresh Button -->
       <InkButton
-        v-if="props.refresher"
-        class="ink-dropdown__refresh"
-        :icon="`i-mdi-refresh ${isRefreshing ? 'animate-spin' : ''}`"
-        :disabled="isRefreshing"
+        v-if="refresher"
+        icon="i-mdi-refresh"
         type="square"
-        @click="onRefresh"
-        title="Refresh options"
+        aria-label="Refresh options"
+        :is-loading="isRefreshing"
+        :disabled="disabled"
+        @click="loadOptions(true)"
       />
-
-      <!-- Options -->
       <div v-if="showOptions" class="ink-dropdown__options">
-        <div v-if="isRefreshing" class="ink-dropdown__loading">
-          <span class="i-mdi-loading animate-spin"></span>
-          Loading...
+        <input
+          ref="searchInput"
+          v-model="searchText"
+          role="combobox"
+          aria-label="Search options"
+          :aria-expanded="showOptions"
+          :aria-controls="`${controlId}-options`"
+          :aria-activedescendant="activeId"
+          class="ink-dropdown__search-input"
+          @keydown="handleKey"
+        />
+        <div v-if="isRefreshing" role="status" class="ink-dropdown__loading">Loading...</div>
+        <div :id="`${controlId}-options`" role="listbox" :aria-label="label || placeholder">
+          <div
+            v-for="(option, index) in filteredOptions"
+            :id="`${controlId}-option-${index}`"
+            :key="option.value"
+            role="option"
+            :aria-selected="option.value === modelValue"
+            :class="[
+              'ink-dropdown__option',
+              {
+                'ink-dropdown__option--selected': option.value === modelValue,
+                'ink-dropdown__option--hovered': hoveredIndex === index,
+              },
+            ]"
+            @mousedown.prevent
+            @click="select(option)"
+          >
+            <span class="option__label">{{ option.label }}</span
+            ><span v-if="option.description" class="option__description">{{
+              option.description
+            }}</span>
+          </div>
         </div>
-        <template v-else>
-          <div v-if="filteredOptions.length === 0" class="ink-dropdown__empty">
-            No matching options
-          </div>
-          <div v-for="(option, index) in filteredOptions" :key="option.value">
-            <div
-              :class="[
-                'ink-dropdown__option',
-                {
-                  'ink-dropdown__option--selected': option.value === modelValue,
-                  'ink-dropdown__option--hovered': hoveredIndex === index,
-                },
-              ]"
-              @click="onOptionSelect(option.value)"
-            >
-              <span class="option__label">{{ option.label }}</span>
-              <span class="option__description" v-if="option.description">{{
-                option.description
-              }}</span>
-            </div>
-          </div>
-        </template>
+        <div v-if="!isRefreshing && !filteredOptions.length" class="ink-dropdown__empty">
+          No matching options
+        </div>
       </div>
+      <span v-if="loadError" role="alert">{{ loadError }}</span>
     </div>
   </DefineDropdown>
-
-  <InkField v-if="useField" :label="label" :layout="fieldLayout" :required="required">
-    <ReuseDropdown />
-  </InkField>
-
-  <template v-else>
-    <ReuseDropdown />
-  </template>
+  <InkField
+    v-if="useField"
+    :for="controlId"
+    :label="label || ''"
+    :layout="fieldLayout"
+    :required="required"
+    :error="error"
+    :error-id="errorId"
+    ><ReuseDropdown
+  /></InkField>
+  <ReuseDropdown v-else />
 </template>
-
 <style lang="scss" scoped src="./inkDropdown.scss" />

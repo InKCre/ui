@@ -25,16 +25,17 @@
 ## Public API Facts
 
 - Import: `import { InkSwitch } from "@inkcre/ui-web";`
-- Props: `isSwitching`, `modelValue`, `offText`, `onText`, `showLabel`, `size`
-- Events: `update:modelValue`
+- Props: `disabled`, `isSwitching`, `modelValue`, `offText`, `onText`, `showLabel`, `size`
+- Events: `error`, `update:modelValue`
 - Slots: None
 - Public types: None
-- Story variants: `Extra Small`, `Small`, `Medium`, `Large`, `Off`, `On`
+- Story variants: `Extra Small`, `Small`, `Medium`, `Large`, `Off`, `On`, `长状态文案保持轨道尺寸`
 
 ## API Caveats
 
-- Keep the controlled boolean or promised state consistent with the async update lifecycle.
-- Provide a visible label whenever context is not otherwise explicit.
+- boolean 或 Promise<boolean> 模型；最新 Promise 才能更新显示，拒绝发出 error，保留旧值并结束 pending。
+- 推荐布尔模型配合 isSwitching；disabled 或 pending 阻止操作。必须提供稳定标签或 aria-label。
+- 两种状态文案共同决定轨道宽度；xs 最小 60×24px，文字放大可增长。给状态文字留空间，不为固定旧高度裁切。
 
 ## Common Mistakes
 

@@ -25,7 +25,7 @@
 ## Public API Facts
 
 - Import: `import { InkPicker } from "@inkcre/ui-web";`
-- Props: `displayValueAs`, `editable`, `formatter`, `label`, `layout`, `modelValue`, `prop`, `required`, `showPopup`, `type`
+- Props: `disabled`, `displayValueAs`, `editable`, `error`, `formatter`, `id`, `label`, `layout`, `maxDate`, `minDate`, `modelValue`, `name`, `prop`, `required`, `showPopup`, `type`
 - Events: `pick`, `update:modelValue`, `update:showPopup`
 - Slots: `default`
 - Public types: None
@@ -33,8 +33,9 @@
 
 ## API Caveats
 
-- The generic value type must stay consistent across formatter, model value, and emitted update.
-- Custom picker content uses the default slot and owns its own value interaction.
+- 内置 type=date/time/datetime 必须使用 Date，null/undefined 表示空值。showPopup 省略时内部管理，也支持 v-model:showPopup。
+- 打开创建草稿，Confirm 才更新模型，Cancel/Escape/遮罩关闭丢弃草稿；外部值/范围更新重置草稿。
+- minDate/maxDate 限制时间戳；无效日期/范围显示错误。自定义默认槽保留 modelValue/closePopup，由消费者负责提交。
 
 ## Common Mistakes
 

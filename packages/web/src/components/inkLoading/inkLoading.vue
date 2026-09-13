@@ -12,7 +12,7 @@ const loadingClass = computed(() => [
 </script>
 
 <template>
-  <div :class="loadingClass">
+  <div :class="loadingClass" role="status" aria-label="Loading">
     <div class="ink-loading__block ink-loading__block--1"></div>
     <div class="ink-loading__block ink-loading__block--2"></div>
     <div class="ink-loading__block ink-loading__block--3"></div>

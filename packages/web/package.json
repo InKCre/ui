@@ -124,7 +124,7 @@
     "vite-plugin-dts": "^4.5.4",
     "vscode-json-languageservice": "^5.6.4",
     "vscode-languageserver-textdocument": "^1.0.12",
-    "vue": "^3.4.0",
+    "vue": "^3.5.0",
     "vue-i18n": "^11.2.7",
     "vue-router": "^4.0.0",
     "vue-tsc": "3.3.8"
@@ -141,7 +141,7 @@
     "unocss": "^66.5.0",
     "vscode-json-languageservice": "^5.6.4",
     "vscode-languageserver-textdocument": "^1.0.12",
-    "vue": "^3.0.0",
+    "vue": "^3.5.0",
     "vue-router": "^4.0.0"
   },
   "peerDependenciesMeta": {

@@ -11,16 +11,45 @@ current generated API facts used to implement them.
 
 **Components:** `InkForm`, `InkField`, `InkInput`, `InkTextarea`, `InkDropdown`, `InkPicker`, `InkSwitch`, `InkButton`
 
-1. Use InkForm to establish the shared field layout.
-2. Choose one control per value intent: input, textarea, dropdown, picker, or switch.
-3. Use InkField for custom controls or explicit field structure not already supplied by form context.
-4. Keep validation, submission, and async error handling in application code.
-5. Use InkButton for submit or secondary commands.
+1. 使用 InkForm layout="col"，内置控件直接传 label、error，保留各自模型名称；自定义字段才包 InkField。
+2. 标题选择 title-lg，正文 body-md，说明和错误 body-sm；短元信息才选 label-md。页面留白和列数写在宿主 CSS 中。
+3. 主提交写 InkButton theme="primary" native-type="submit"，传 isLoading；业务代码处理校验、异步失败和防止重复提交。
+4. 成功／失败写明确文字，默认使用 surface.subtle 搭配 feedback.success／error；不要创建不存在的 success.surface 或 danger.light。
+
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import { InkForm, InkInput, InkButton } from "@inkcre/ui-web";
+// 宿主提供实际持久化函数，失败时 reject。
+const props = defineProps<{ save: (name: string) => Promise<void> }>();
+const name = ref(""), error = ref(""), result = ref(""), pending = ref(false);
+async function submit() {
+  if (pending.value) return;
+  error.value = name.value.trim() ? "" : "请输入名称。";
+  result.value = "";
+  if (error.value) return;
+  pending.value = true;
+  try { await props.save(name.value.trim()); result.value = "设置已保存。"; }
+  catch { error.value = "保存失败，请稍后重试。"; }
+  finally { pending.value = false; }
+}
+</script>
+<template>
+  <h1 class="font-title-lg">工作空间设置</h1>
+  <p class="font-body-md">修改团队看到的工作空间名称。</p>
+  <InkForm layout="col" @submit="submit">
+    <InkInput v-model="name" label="名称" name="workspace" :error="error" required />
+    <InkButton theme="primary" native-type="submit" text="保存设置" :is-loading="pending" />
+    <p v-if="result" role="status" class="font-body-sm bg-surface-subtle text-feedback-success p-md">{{ result }}</p>
+  </InkForm>
+</template>
+```
 
 **Caveats**
 
 - Do not normalize every control to the same model prop name; use each component's actual API.
 - Do not wrap controls in duplicate InkField labels when they already consume InkForm context.
+- 示例的文本和颜色工具类需要 presetInk；应用入口加载样式。未使用 Uno 时可用同名 Sass 角色和系统变量。
 
 ## Schema Configuration
 
@@ -30,8 +59,9 @@ current generated API facts used to implement them.
 
 1. Use InkAutoForm when a flat schema maps cleanly to ordinary primitive controls.
 2. Use InkJsonEditor when users must see or edit the raw JSON document.
-3. Keep parsing and persistence errors separate from schema validation feedback.
-4. Use InkPlaceholder for unrecoverable schema-loading or permission states.
+3. JsonEditor 保留字符串草稿，通过 validation.valid 和对应 text 控制保存，确认有效后再 JSON.parse。
+4. Keep parsing and persistence errors separate from schema validation feedback.
+5. Use InkPlaceholder for unrecoverable schema-loading or permission states.
 
 **Caveats**
 
@@ -44,7 +74,7 @@ current generated API facts used to implement them.
 
 **Components:** `InkDoubleCheck`, `InkDialog`, `InkButton`, `InkLoading`
 
-1. Use InkDoubleCheck when the consequence is already understood and a second deliberate click is enough.
+1. InkDoubleCheck 用于独立确认弹层，动作绑定 confirm；异步 pending 选择 InkDialog。
 2. Use InkDialog when the user needs explanation, choices, or a focused decision.
 3. Show pending state while the destructive request is running.
 4. Close or reset confirmation state only after the application lifecycle is explicit.
@@ -63,7 +93,7 @@ current generated API facts used to implement them.
 1. Use InkPopup as the controlled surface and choose its position deliberately.
 2. Use the popup's existing scrim behavior when it meets the interaction contract.
 3. Add InkScrim only when the custom composition has no backdrop owner.
-4. Provide explicit close controls and application-appropriate keyboard behavior.
+4. 提供可访问名称和可见关闭动作；原生 dialog 负责模态焦点，scrim=false 保留背景操作。
 
 **Caveats**
 

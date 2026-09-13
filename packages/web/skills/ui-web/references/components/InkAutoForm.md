@@ -26,15 +26,16 @@
 
 - Import: `import { InkAutoForm } from "@inkcre/ui-web";`
 - Props: `formData`, `layout`, `schema`
-- Events: `update:formData`
+- Events: `error`, `update:formData`, `validation`
 - Slots: None
-- Public types: `JSONSchema`, `JSONSchemaProperty`
-- Story variants: `Text Fields with Validation`, `Textarea (Long Text)`, `Boolean Switches`, `Dropdown (Enum Values)`, `Date and Time Pickers`, `Default Values from Schema`, `Validation Errors`, `Invalid Schema Handling`, `Complex Form (Mixed Field Types)`, `Inline Layout`, `Row Layout`
+- Public types: `JSONSchema`, `JSONSchemaProperty`, `FormValidation`
+- Story variants: `Text Fields with Validation`, `Textarea (Long Text)`, `Boolean Switches`, `Dropdown (Enum Values)`, `Date and Time Pickers`, `Default Values from Schema`, `Validation Errors`, `Invalid Schema Handling`, `Complex Form (Mixed Field Types)`, `Inline Layout`, `Row Layout`, `Existing values, numeric and date boundaries`
 
 ## API Caveats
 
-- Treat the supported schema subset as a deliberate flat-form contract.
-- Supply custom component mappings only when the generated default control is insufficient.
+- 仅支持扁平 primitive schema，不提供自定义映射 prop。v-model:formData 保留已有值及额外属性，只为缺失值补默认值。
+- 数字为 number，空数字删除字段；日期保留 JSON 字符串，Picker 确认才序列化。
+- validation(FormValidation) 的 valid/status/errors/rootErrors 控制保存，pending/invalid/error 均不可保存。实例隔离，过期结果不应用。
 
 ## Common Mistakes
 

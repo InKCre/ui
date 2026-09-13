@@ -35,7 +35,7 @@ createApp(App).use(InKCreUIWeb).mount("#app");
 }
 ```
 
-Sass helper 与 Token 子路径见[样式入口](styles/README.md)。应用使用动态图标时，应在应用的 UnoCSS 配置中保证所需类能被提取，必要时显式声明 safelist；以实际使用的图标和生成 CSS 为准。
+Sass helper 与 Token 子路径见[样式入口](styles/README.md)。构建 CSS 包含组件内置图标和工具类，不包含 UnoCSS preflight。应用通过 icon 属性提供额外动态图标时，应在应用的 UnoCSS 配置中保证所需类能被提取，必要时显式声明 safelist；以实际使用的图标和生成 CSS 为准。
 
 路由和国际化通过公开的 `InkRouter`、`InkI18n` 及对应注入键适配，接口边界见[随包集成参考](skills/ui-web/references/integration.md)。Locale bundle 从 `@inkcre/ui-web/locales` 导入。组件选型与组合入口见[随包 Skill](skills/ui-web/SKILL.md)。这些 Markdown 可直接阅读，不要求先安装 Agent 工具。
 

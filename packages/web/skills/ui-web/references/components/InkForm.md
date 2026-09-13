@@ -29,12 +29,12 @@
 - Events: `submit`
 - Slots: `default`
 - Public types: None
-- Story variants: `Column Layout`, `Inline Layout`
+- Story variants: `Column Layout`, `Inline Layout`, `Reactive layout`, `长标签、错误与窄容器`
 
 ## API Caveats
 
-- InkForm primarily owns layout context; application validation and submission remain explicit.
-- Use the emitted native submit event rather than relying on browser navigation.
+- layout 响应式传给子字段，控件自身 layout 优先；submit 传出 Event 并阻止默认导航。
+- 不要嵌套 form，InkAutoForm 已拥有一个 form。
 
 ## Common Mistakes
 

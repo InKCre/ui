@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { provide, computed } from "vue";
+import { provide } from "vue";
 import { inkFormProps, inkFormEmits, INK_FORM_CONTEXT_KEY, type InkFormContext } from "./inkForm";
 
 const props = defineProps(inkFormProps);
 const emit = defineEmits(inkFormEmits);
 
-// --- provide form context ---
-const formContext = computed<InkFormContext>(() => ({
-  layout: props.layout,
-}));
-
-provide(INK_FORM_CONTEXT_KEY, formContext.value);
+provide(INK_FORM_CONTEXT_KEY, {
+  get layout() {
+    return props.layout;
+  },
+} satisfies InkFormContext);
 
 // --- methods ---
 const onSubmit = (e: Event) => {

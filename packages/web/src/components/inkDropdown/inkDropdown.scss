@@ -1,6 +1,7 @@
 .ink-dropdown-container {
   position: relative;
-  min-width: 120px;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   gap: sys-var(space, sm);
   align-items: flex-start;
@@ -11,14 +12,24 @@
   align-items: center;
   justify-content: space-between;
   gap: sys-var(space, sm);
-  padding: 0 sys-var(space, sm);
-  height: sys-var(size, md);
+  padding: sys-var(space, xs) sys-var(space, sm);
+  min-height: 36px;
   box-sizing: border-box;
-  border: 1px solid sys-var(color, border, subtle);
+  border: 1px solid sys-var(color, border, base);
   background-color: sys-var(color, surface, base);
-  transition: border 0.2s;
+  @include apply-font(label-lg);
+  min-width: 0;
   flex: 1;
   position: relative;
+
+  &[aria-invalid="true"] {
+    border-color: sys-var(color, feedback, error);
+  }
+  &:focus-visible,
+  &:has(:focus-visible) {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: 2px;
+  }
 
   &--editable {
     cursor: pointer;
@@ -34,6 +45,8 @@
   flex: 1;
   color: sys-var(color, text, base);
   user-select: none;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .ink-dropdown__search-input {
@@ -86,29 +99,28 @@
   &--selected {
     background-color: sys-var(color, surface, primary);
 
-    .option__label {
-      color: sys-var(color, text, primary);
-    }
-
+    .option__label,
     .option__description {
-      color: sys-var(color, text, primary-subtle);
+      color: sys-var(color, text, on-primary);
     }
 
     &:hover,
-    .ink-dropdown__option--hovered {
+    &.ink-dropdown__option--hovered {
       background-color: sys-var(color, surface, primary-hover);
-      color: sys-var(color, text, primary);
+      color: sys-var(color, text, on-primary);
     }
   }
 }
 
 .option__label {
+  overflow-wrap: anywhere;
   @include apply-font(label-lg);
   color: sys-var(color, text, base);
 }
 
 .option__description {
-  @include apply-font(label-md);
+  overflow-wrap: anywhere;
+  @include apply-font(body-sm);
   color: sys-var(color, text, subtle);
 }
 
@@ -119,7 +131,7 @@
   gap: sys-var(space, sm);
   padding: sys-var(space, sm) sys-var(space, md);
   color: sys-var(color, text, subtle);
-  @include apply-font(label-sm);
+  @include apply-font(label-md);
 }
 
 .ink-dropdown__empty {
@@ -128,5 +140,9 @@
   justify-content: center;
   padding: sys-var(space, sm) sys-var(space, md);
   color: sys-var(color, text, subtle);
-  @include apply-font(label-sm);
+  @include apply-font(label-md);
+}
+
+button.ink-dropdown {
+  text-align: start;
 }

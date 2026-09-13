@@ -1,44 +1,56 @@
-# Token 生成器
+# Token 生成与导入
 
-[build-tokens.ts](build-tokens.ts) 使用 Style Dictionary 将 [Token 源](../tokens/inkcre.tokens.json) 转成 Web 的 Sass 映射和 UnoCSS preset。输入格式及维护责任见 [Token 指南](../tokens/tokens.md)。
+[build-tokens.ts](build-tokens.ts) 使用 Style Dictionary 将[规范源](../tokens/inkcre.tokens.json)生成 Web Sass 映射和 UnoCSS preset。角色及维护责任见 [Token 指南](../tokens/tokens.md)。
 
-## 命令与路径
-
-从仓库根执行：
-
-```bash
-pnpm build-tokens
-```
-
-默认输入是仓库根下的 `tokens/inkcre.tokens.json`。也可传入自定义文件路径：
+从仓库根运行 `pnpm build-tokens`；正式变更之后运行 `pnpm generate` 同步其他生成物。也可以指定源文件：
 
 ```bash
 pnpm build-tokens /absolute/path/to/custom.tokens.json
 ```
 
-自定义输入仍会写入本仓库的生成目录。隔离实验可用 `--root` 指定临时根目录；输入的相对路径和输出路径都以该目录解析：
+该命令仍写入本仓库。隔离实验必须指定临时根目录，并事先在其中放好输入：
 
 ```bash
 pnpm exec tsx scripts/build-tokens.ts --root /absolute/path/to/temporary-root tokens/inkcre.tokens.json
 ```
 
-临时根目录必须已有指定输入文件。生成器只创建输出，不复制 Token 源，也不生成 Changeset。
+## 输出与求值
 
-## 当前输出
+| 输出                                    | 内容                                        |
+| --------------------------------------- | ------------------------------------------- |
+| `packages/web/styles/tokens/_ref.scss`  | ref、typography、effect 的分类映射及 `$all` |
+| `packages/web/styles/tokens/_sys.scss`  | 主题颜色映射及非颜色 `$base`                |
+| `packages/web/styles/tokens/_comp.scss` | 组件主题值及 `$all`                         |
+| `packages/web/styles/uno/preset-ink.ts` | UnoCSS preset                               |
 
-| 输出文件                                | 内容                                                                             |
-| --------------------------------------- | -------------------------------------------------------------------------------- |
-| `packages/web/styles/tokens/_ref.scss`  | ref 层，以及 effect.elevation 和 typography；导出分类映射与 `$all`               |
-| `packages/web/styles/tokens/_sys.scss`  | sys.light/dark.color 对应 `$color-light`／`$color-dark`，以及引用 ref 的 `$base` |
-| `packages/web/styles/tokens/_comp.scss` | comp.light/dark 对应 `$light`／`$dark` 和聚合 `$all`                             |
-| `packages/web/styles/uno/preset-ink.ts` | Web UnoCSS 的 Token preset                                                       |
+检查器只接受仓库支持的类型／值形状，检查引用目标类型、必要入口、文本角色属性和浅深主题路径配对；Style Dictionary 负责解析别名及拒绝悬空、循环引用。名称统一为 kebab-case。数值 dimension 转为 px，已有 rem/em 等长度保留；number（比例行高、字重、透明度）保持无量纲。八位 hex 和 RGBA 的 alpha 保留，阴影的数值长度转为 px。
 
-当前转换会规范化输出键名，将数值 dimension 转成 px，并剥离独立八位十六进制 color 值的 alpha 通道。这是现有实现描述，不是颜色保真保证；更改输入格式或转换规则前应检查受影响的输出和消费者。
+Sass map 保存构建结果。CSS 初始化同一组系统变量；apply-font 与 Uno 字体规则读取四个文本属性变量和独立的家族变量，并明确输出装饰，包括 none 和零字距。Uno 的空间、圆角和语义颜色保留系统变量读取；尺寸、图标、断点和阴影工具类使用构建值。它们不是任意 ref 覆盖的动态依赖图。
 
-当前生成器只配置 Web 输出。不要把源文件替换成另一种 Token 格式后，假定生成器会自动迁移结构或支持非 Web 平台。
+`pnpm check:generated` 会重新生成后比较文件，过期时失败。`pnpm check:package` 从 tarball 验证公开 CSS/Sass/Uno 入口；这些检查不代替浏览器字体、主题和控件状态复核。目前只生成 Web 代码。
 
-## 维护与验证
+## Figma 值更新
 
-修改正式 Token 源后运行 `pnpm generate`，检查生成差异与实际视觉效果，并为发布影响记录 Changeset。`pnpm check:generated` 会在工作区重新生成后比较内容，发现过期文件时失败；它不是只读检查。
+[update-tokens.yml](../.github/workflows/update-tokens.yml) 接收 `update-tokens` 类型的 repository_dispatch。维护者须显式选择 releaseType；没有自动 patch 或语义版本推断。下面是**接收端契约示例**，不是已抓取的真实发送端报文：
 
-Figma 更新由 [update-tokens.yml](../.github/workflows/update-tokens.yml) 调用 `pnpm tokens:update`，负责写入源、生成输出和创建 patch Changeset。这个入口依赖工作流传入的环境变量，不是普通本地生成命令。`pnpm check:token-workflow` 在临时目录验证该准备流程，不提交或发布结果。
+```json
+{
+  "event_type": "update-tokens",
+  "client_payload": {
+    "filename": "inkcre.tokens.json",
+    "releaseType": "minor",
+    "commitMessage": "调整字段组间距",
+    "tokens": {
+      "ref": { "space": { "md": { "type": "dimension", "value": 24 } } }
+    }
+  }
+}
+```
+
+`tokens` 接受对象或其 JSON 字符串，必须包含至少一个已知路径。`pnpm tokens:update` 由工作流映射的 `INKCRE_TOKEN_FILENAME`、`INKCRE_TOKEN_JSON`、`INKCRE_CHANGESET_ID`、`INKCRE_CHANGESET_SUMMARY`、`INKCRE_CHANGESET_RELEASE` 驱动。
+
+导入只替换叶节点的 value，保留遗漏角色及仓库元数据；提供的非空 description 必须与仓库一致。未知／已删除路径、类型、组结构或别名变化直接失败。发布分类只能为 patch/minor/major，由维护者根据可观察影响选择：命名、类型、用途、默认字体和尺寸变化不能仅因为由 Figma 发起就视为 patch。需要改契约时直接修改规范源、实现和迁移说明。
+
+候选在临时目录验证并生成，成功后才更新源、四份输出和 Changeset；文件写入失败会恢复已写文件。Changeset 不覆盖已有文件；没有值变化时不创建 Changeset。工作流随后提出 PR，合并与发布沿用仓库治理。
+
+`pnpm check:token-workflow` 在临时目录验证部分导入、元数据保留、alpha、复合阴影更新、无变化和失败不残留；其中循环引用失败是预期检查。旧的整份导出包含已删除角色时会明确拒绝，发送端应只提交已知路径的值提议。该 fixture 证明接收端行为，发送端适配仍需其代码或真实 payload 核对。

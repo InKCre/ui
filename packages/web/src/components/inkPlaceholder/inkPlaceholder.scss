@@ -5,16 +5,17 @@
   justify-content: center;
   padding: sys-var(space, xl);
   text-align: center;
+  overflow-wrap: anywhere;
   gap: sys-var(space, md);
   color: sys-var(color, text, subtle);
 
   &__illustration {
-    @include apply-icon(xl, true);
+    @include apply-icon(lg, true);
     color: sys-var(color, text, subtle);
   }
 
   &__title {
-    @include apply-font(headline-sm);
+    @include apply-font(title-sm);
     color: sys-var(color, text, base);
   }
 
@@ -35,7 +36,7 @@
   // State variants
   &--error {
     .ink-placeholder__illustration {
-      color: sys-var(color, text, danger);
+      color: sys-var(color, feedback, error);
     }
   }
 }

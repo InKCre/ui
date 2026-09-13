@@ -25,7 +25,7 @@
 ## Public API Facts
 
 - Import: `import { InkField } from "@inkcre/ui-web";`
-- Props: `editable`, `label`, `layout`, `required`, `value`
+- Props: `editable`, `error`, `errorId`, `for`, `label`, `layout`, `required`, `value`
 - Events: `value-click`
 - Slots: `default`, `label-right`
 - Public types: None
@@ -33,7 +33,7 @@
 
 ## API Caveats
 
-- Keep field layout consistent with the surrounding InkForm unless an intentional local override is needed.
+- 自定义控件用 for/id 关联标签，error/errorId 配合控件 aria-invalid/aria-describedby；required 在 Field 上只是提示。
 
 ## Common Mistakes
 

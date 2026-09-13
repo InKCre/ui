@@ -25,17 +25,17 @@
 ## Public API Facts
 
 - Import: `import { InkDropdown } from "@inkcre/ui-web";`
-- Props: `displayAs`, `editable`, `enableStepping`, `label`, `layout`, `modelValue`, `options`, `placeholder`, `prop`, `refresher`, `required`
-- Events: `change`, `update:modelValue`, `update:options`
+- Props: `disabled`, `displayAs`, `editable`, `enableStepping`, `error`, `id`, `label`, `layout`, `modelValue`, `name`, `options`, `placeholder`, `prop`, `refresher`, `required`
+- Events: `change`, `error`, `update:modelValue`, `update:options`
 - Slots: None
 - Public types: `DropdownOption`
 - Story variants: `Basic`, `With Refresh`, `Async Options`, `With Descriptions`, `Preselected Async Value`, `With Stepping`, `Stepping & Refresh`, `Keyboard Navigation`
 
 ## API Caveats
 
-- Use DropdownOption for public option values.
-- Choose either static options or the refresher lifecycle deliberately.
-- Editable state controls whether selection interactions are available.
+- options 省略时保存内部选项；传入时由父级接收 update:options，refresher 失败显示提示并发出 error。
+- Enter/Space/方向键打开，上下/Home/End 导航，Enter 选择，输入搜索，Escape/Tab/离开关闭。
+- label 关联触发按钮；required 是 aria-required，消费者仍需验证必选值。
 
 ## Common Mistakes
 

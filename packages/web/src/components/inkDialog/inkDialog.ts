@@ -20,6 +20,7 @@ export const inkDialogProps = {
     type: [String, Array] as PropType<DialogPosition>,
     default: "center",
   },
+  isLoading: makeBooleanProp(false),
   closeOnScrim: makeBooleanProp(true),
   title: makeStringProp(""),
   subtitle: makeStringProp(""),
@@ -32,6 +33,7 @@ export const inkDialogProps = {
 // --- Emits ---
 export const inkDialogEmits = {
   "update:modelValue": (value: boolean) => typeof value === "boolean",
+  error: (_error: unknown) => true,
   cancel: () => true,
   confirm: () => true,
 } as const;

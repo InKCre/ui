@@ -25,16 +25,17 @@
 ## Public API Facts
 
 - Import: `import { InkJsonEditor } from "@inkcre/ui-web";`
-- Props: `editable`, `label`, `layout`, `modelValue`, `placeholder`, `prop`, `required`, `rows`, `schema`, `schemaUri`
-- Events: `update:modelValue`
+- Props: `disabled`, `editable`, `error`, `id`, `label`, `layout`, `modelValue`, `name`, `placeholder`, `prop`, `required`, `rows`, `schema`, `schemaUri`
+- Events: `error`, `update:modelValue`, `validation`
 - Slots: None
-- Public types: None
-- Story variants: `Basic`, `JSON Schema`, `In popup`
+- Public types: `JsonEditorValidation`
+- Story variants: `Basic`, `JSON Schema`, `In popup`, `Validated save and isolated editors`
 
 ## API Caveats
 
-- The model is JSON text, not an automatically parsed application object.
-- The CodeMirror and VS Code language-service packages remain part of the declared peer contract.
+- v-model 是原始文本，包括无效 JSON；禁止在模型 setter 中直接 JSON.parse。
+- validation(JsonEditorValidation) 含 text/status/valid/messages。只有 valid=true 且 text 等于当前草稿才解析和保存，pending/invalid/error 禁止保存。
+- 无 schema 也校验语法；实例配置和缓存隔离，schema/schemaUri 改变重新校验，过期结果不覆盖新文本。
 
 ## Common Mistakes
 

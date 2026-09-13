@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: sys-var(space, md);
-  padding: sys-var(space, md) sys-var(space, lg);
 
   &__header {
     display: flex;
@@ -11,13 +10,15 @@
   }
 
   &__title {
+    overflow-wrap: anywhere;
     @include apply-font(title-sm);
     color: sys-var(color, text, base);
     margin: 0;
   }
 
   &__subtitle {
-    @include apply-font(body-lg);
+    overflow-wrap: anywhere;
+    @include apply-font(body-md);
     color: sys-var(color, text, subtle);
     margin: 0;
   }
@@ -28,8 +29,15 @@
   }
 
   &__footer {
+    flex-wrap: wrap;
     display: flex;
     justify-content: flex-end;
     gap: sys-var(space, sm);
   }
+}
+
+// Popup owns the padding; a bounded width avoids shrink-to-fit at its centered left offset.
+:global(.ink-dialog__popup) {
+  width: min(640px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
 }

@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import InkButton from "../../src/components/inkButton/inkButton.vue";
+const submissions = ref(0);
 </script>
 
 <template>
@@ -62,6 +64,12 @@ import InkButton from "../../src/components/inkButton/inkButton.vue";
 
     <Variant title="Icon Only (Square)">
       <InkButton icon="i-mdi-plus" type="square" theme="primary" />
+    </Variant>
+    <Variant title="Explicit form submission">
+      <form @submit.prevent="submissions++">
+        <InkButton text="普通动作" /><InkButton text="提交" native-type="submit" />
+        <p>提交次数：{{ submissions }}</p>
+      </form>
     </Variant>
   </Story>
 </template>

@@ -25,7 +25,7 @@
 ## Public API Facts
 
 - Import: `import { InkDatetimePickerView } from "@inkcre/ui-web";`
-- Props: `hourFormat`, `maxDate`, `minDate`, `mode`, `modelValue`
+- Props: `hourFormat`, `locale`, `maxDate`, `minDate`, `mode`, `modelValue`
 - Events: `update:modelValue`
 - Slots: None
 - Public types: None
@@ -33,8 +33,8 @@
 
 ## API Caveats
 
-- Use Date values for date/time modes and preserve the selected mode contract.
-- Treat this as a view primitive, not the complete labelled form control.
+- Date 模型从不原地修改；原生 select 提供键盘交互，12 小时为 1—12，weekday 选择同一周内日期。
+- minDate/maxDate 夹取显示和候选值，无效 Date/倒置范围显示错误；外部变化不自动提交。locale 或 i18n.locale 控制日期名称。
 
 ## Common Mistakes
 
