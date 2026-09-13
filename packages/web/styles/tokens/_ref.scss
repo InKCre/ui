@@ -5,25 +5,25 @@ $elevation: (
     "low": (
       "shadow-type": "dropShadow",
       "radius": "2px",
-      "color": #0c153014,
+      "color": #0000001a,
       "offset-x": "0px",
       "offset-y": "1px",
       "spread": "0px"
     ),
     "md": (
       "shadow-type": "dropShadow",
-      "radius": "20px",
-      "color": #0c15301f,
+      "radius": "6px",
+      "color": #00000029,
       "offset-x": "0px",
-      "offset-y": "6px",
+      "offset-y": "2px",
       "spread": "0px"
     ),
     "high": (
       "shadow-type": "dropShadow",
-      "radius": "32px",
-      "color": #0c155429,
+      "radius": "12px",
+      "color": #0000002e,
       "offset-x": "0px",
-      "offset-y": "12px",
+      "offset-y": "4px",
       "spread": "0px"
     )
   )
@@ -54,28 +54,28 @@ $color: (
     "10": #410008ff,
     "30": #92001eff,
     "35": #a80324ff,
-    "40": #b9192fff,
+    "40": #b3342bff,
     "60": #ff525cff,
     "65": #ff7073ff,
-    "70": #ff8889ff,
+    "70": #ed9690ff,
     "80": #ffb3b1ff,
     "90": #ffdad8ff,
     "98": #fff8f7ff
   ),
   "brand": (
-    "2": #0b1220ff,
-    "6": #121928ff,
-    "12": #1f2635ff,
-    "20": #303747ff,
-    "30": #474e5fff,
-    "40": #5f6677ff,
-    "50": #787e91ff,
-    "60": #9198acff,
-    "70": #acb3c7ff,
-    "80": #b2bccfff,
-    "90": #c8cee3ff,
-    "94": #f7f7fbff,
-    "98": #fbfcffff
+    "2": #070707ff,
+    "6": #131313ff,
+    "12": #1f1f1fff,
+    "20": #303030ff,
+    "30": #474747ff,
+    "40": #5e5e5eff,
+    "50": #777777ff,
+    "60": #919191ff,
+    "70": #abababff,
+    "80": #c6c6c6ff,
+    "90": #e2e2e2ff,
+    "94": #eeeeeeff,
+    "98": #f9f9f9ff
   )
 );
 

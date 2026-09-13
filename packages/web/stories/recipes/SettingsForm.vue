@@ -63,6 +63,6 @@ async function submit() {
   line-height: var(--sys-font-body-sm-line-height);
   font-weight: var(--sys-font-body-sm-font-weight);
   letter-spacing: var(--sys-font-body-sm-letter-spacing);
-  color: var(--sys-color-feedback-success);
+  color: var(--sys-color-text-subtle);
 }
 </style>

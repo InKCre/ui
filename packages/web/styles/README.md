@@ -77,7 +77,7 @@ font-mono/font-sans 和 underline/no-underline 选择家族及装饰。旧 Uno �
 
 ## 主题和覆盖边界
 
-普通表面的文字使用 text.base 或 text.subtle；primary 和 danger 表面分别配 text.on-primary 与 text.on-danger。error、success、warning、info 用于普通表面上的反馈前景，不能从这些前景色自行推导带色容器。图片上的文字应有稳定的承载表面，不能依赖图片恰好够暗。
+普通表面的文字使用 text.base 或 text.subtle；primary 和 danger 表面分别配 text.on-primary 与 text.on-danger。feedback 下的 error、success、warning、info 用于普通表面上需要强调的反馈前景，不因状态类别而自动应用于所有状态文字；选择时机见[页面组合](../docs/design/composition.md)。这些前景与动作底色分别承担用途，不能自行推导带色容器。图片上的文字应有稳定的承载表面，不能依赖图片恰好够暗。
 
 必要控件边界使用 border.base，辅助分隔使用 border.subtle，键盘焦点使用 border.strong。hover／pressed、焦点、错误与进行状态各有职责；错误边框不能抹掉焦点提示，进行中的动作保留文字与可读配色。配色需要延续主题间的信息主次和状态含义。
 
@@ -102,6 +102,7 @@ html[data-theme="dark"] {
 | ------------------------------------- | ------------------------------------------------------------- |
 | 系统颜色、sans/mono 家族、角色四属性  | CSS、apply-font、Uno 角色在运行时读取；颜色须成对复核所有状态 |
 | sys.space、sys.radius                 | CSS/Sass 变量读取与 Uno 间距、圆角工具类共同响应              |
+| apply-elevation                       | 运行时读取 sys.elevation.raised 对应档位                      |
 | Sass maps、Uno 尺寸／图标／断点／阴影 | 构建值；改变源后重新生成、构建                                |
 | 任意 ref 变量                         | 不保证带动已经解析的 sys 或 comp，优先覆盖明确的系统角色      |
 

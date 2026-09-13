@@ -14,7 +14,7 @@ current generated API facts used to implement them.
 1. 使用 InkForm layout="col"，内置控件直接传 label、error，保留各自模型名称；自定义字段才包 InkField。
 2. 标题选择 title-lg，正文 body-md，说明和错误 body-sm；短元信息才选 label-md。页面留白和列数写在宿主 CSS 中。
 3. 主提交写 InkButton theme="primary" native-type="submit"，传 isLoading；业务代码处理校验、异步失败和防止重复提交。
-4. 成功／失败写明确文字，默认使用 surface.subtle 搭配 feedback.success／error；不要创建不存在的 success.surface 或 danger.light。
+4. 成功／失败写明确文字，例行保存结果和普通进度使用 text.base 或 text.subtle；需要强调的结果、风险或变化才使用对应 feedback 前景。不要创建不存在的 success.surface 或 danger.light；出现时机见设计指南的页面组合。
 
 ```vue
 <script setup lang="ts">
@@ -82,7 +82,7 @@ async function submit() {
   line-height: var(--sys-font-body-sm-line-height);
   font-weight: var(--sys-font-body-sm-font-weight);
   letter-spacing: var(--sys-font-body-sm-letter-spacing);
-  color: var(--sys-color-feedback-success);
+  color: var(--sys-color-text-subtle);
 }
 </style>
 

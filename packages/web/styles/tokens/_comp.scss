@@ -5,17 +5,17 @@
 
 $light: (
   "switch": (
-    "track-bg": fn.map-deep-get(ref.$color, "neutral", "2"),
+    "track-bg": fn.map-deep-get(ref.$color, "neutral", "12"),
     "handle-bg": fn.map-deep-get(ref.$color, "neutral", "98"),
-    "label-color": fn.map-deep-get(ref.$color, "neutral", "2")
+    "label-color": fn.map-deep-get(ref.$color, "neutral", "12")
   )
 );
 
 $dark: (
   "switch": (
-    "track-bg": fn.map-deep-get(ref.$color, "neutral", "98"),
-    "handle-bg": fn.map-deep-get(ref.$color, "neutral", "2"),
-    "label-color": fn.map-deep-get(ref.$color, "neutral", "98")
+    "track-bg": fn.map-deep-get(ref.$color, "neutral", "90"),
+    "handle-bg": fn.map-deep-get(ref.$color, "neutral", "12"),
+    "label-color": fn.map-deep-get(ref.$color, "neutral", "90")
   )
 );
 

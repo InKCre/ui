@@ -3,38 +3,38 @@
     "elevation": {
       "raised": {
         "low": {
-          "description": null,
+          "description": "临时覆盖层的轮廓阴影；常驻内容默认不使用。",
           "type": "custom-shadow",
           "value": {
             "shadowType": "dropShadow",
             "radius": 2,
-            "color": "#0c153014",
+            "color": "#0000001a",
             "offsetX": 0,
             "offsetY": 1,
             "spread": 0
           }
         },
         "md": {
-          "description": null,
+          "description": "临时覆盖层的轮廓阴影；常驻内容默认不使用。",
           "type": "custom-shadow",
           "value": {
             "shadowType": "dropShadow",
-            "radius": 20,
-            "color": "#0c15301f",
+            "radius": 6,
+            "color": "#00000029",
             "offsetX": 0,
-            "offsetY": 6,
+            "offsetY": 2,
             "spread": 0
           }
         },
         "high": {
-          "description": null,
+          "description": "临时覆盖层的轮廓阴影；常驻内容默认不使用。",
           "type": "custom-shadow",
           "value": {
             "shadowType": "dropShadow",
-            "radius": 32,
-            "color": "#0c155429",
+            "radius": 12,
+            "color": "#0000002e",
             "offsetX": 0,
-            "offsetY": 12,
+            "offsetY": 4,
             "spread": 0
           }
         }
@@ -145,7 +145,7 @@
         },
         "40": {
           "type": "color",
-          "value": "#b9192fff",
+          "value": "#b3342bff",
           "blendMode": "normal"
         },
         "60": {
@@ -160,7 +160,7 @@
         },
         "70": {
           "type": "color",
-          "value": "#ff8889ff",
+          "value": "#ed9690ff",
           "blendMode": "normal"
         },
         "80": {
@@ -182,67 +182,67 @@
       "brand": {
         "2": {
           "type": "color",
-          "value": "#0b1220ff",
+          "value": "{ref.color.neutral.2}",
           "blendMode": "normal"
         },
         "6": {
           "type": "color",
-          "value": "#121928ff",
+          "value": "{ref.color.neutral.6}",
           "blendMode": "normal"
         },
         "12": {
           "type": "color",
-          "value": "#1f2635ff",
+          "value": "{ref.color.neutral.12}",
           "blendMode": "normal"
         },
         "20": {
           "type": "color",
-          "value": "#303747ff",
+          "value": "{ref.color.neutral.20}",
           "blendMode": "normal"
         },
         "30": {
           "type": "color",
-          "value": "#474e5fff",
+          "value": "{ref.color.neutral.30}",
           "blendMode": "normal"
         },
         "40": {
           "type": "color",
-          "value": "#5f6677ff",
+          "value": "{ref.color.neutral.40}",
           "blendMode": "normal"
         },
         "50": {
           "type": "color",
-          "value": "#787e91ff",
+          "value": "{ref.color.neutral.50}",
           "blendMode": "normal"
         },
         "60": {
           "type": "color",
-          "value": "#9198acff",
+          "value": "{ref.color.neutral.60}",
           "blendMode": "normal"
         },
         "70": {
           "type": "color",
-          "value": "#acb3c7ff",
+          "value": "{ref.color.neutral.70}",
           "blendMode": "normal"
         },
         "80": {
           "type": "color",
-          "value": "#b2bccfff",
+          "value": "{ref.color.neutral.80}",
           "blendMode": "normal"
         },
         "90": {
           "type": "color",
-          "value": "#c8cee3ff",
+          "value": "{ref.color.neutral.90}",
           "blendMode": "normal"
         },
         "94": {
           "type": "color",
-          "value": "#f7f7fbff",
+          "value": "{ref.color.neutral.94}",
           "blendMode": "normal"
         },
         "98": {
           "type": "color",
-          "value": "#fbfcffff",
+          "value": "{ref.color.neutral.98}",
           "blendMode": "normal"
         }
       }
@@ -395,7 +395,7 @@
           "base": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.neutral.2}"
+            "value": "{ref.color.neutral.12}"
           },
           "subtle": {
             "description": "普通表面上的辅助文字；不用于 primary 或 danger 表面。",
@@ -410,7 +410,7 @@
           "on-danger": {
             "description": "与 surface.danger 及其 hover 配对的反色前景。",
             "type": "color",
-            "value": "{ref.color.danger.98}"
+            "value": "{ref.color.neutral.98}"
           }
         },
         "surface": {
@@ -427,12 +427,12 @@
           "primary": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.brand.6}"
+            "value": "{ref.color.brand.12}"
           },
           "primary-hover": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.brand.30}"
+            "value": "{ref.color.brand.20}"
           },
           "subtle-hover": {
             "description": "",
@@ -440,14 +440,14 @@
             "value": "{ref.color.neutral.94}"
           },
           "danger": {
-            "description": "",
+            "description": "危险动作底色，与 text.on-danger 成对使用；不从反馈前景推导。",
             "type": "color",
-            "value": "{ref.color.danger.35}"
+            "value": "#825955"
           },
           "danger-hover": {
-            "description": "",
+            "description": "危险动作的 hover/pressed 底色，保持 text.on-danger 可读。",
             "type": "color",
-            "value": "{ref.color.danger.30}"
+            "value": "#704947"
           },
           "base-hover": {
             "description": "",
@@ -474,24 +474,24 @@
         },
         "feedback": {
           "error": {
-            "description": "",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。",
             "type": "color",
             "value": "{ref.color.danger.40}"
           },
           "success": {
             "type": "color",
-            "value": "#176b39",
-            "description": "用于 base/subtle 表面的状态文字；同时提供明确状态文案。"
+            "value": "#19713d",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。"
           },
           "warning": {
             "type": "color",
-            "value": "#7a4b00",
-            "description": "用于 base/subtle 表面的状态文字；同时提供明确状态文案。"
+            "value": "#8a5900",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。"
           },
           "info": {
             "type": "color",
-            "value": "#005c8a",
-            "description": "用于 base/subtle 表面的状态文字；同时提供明确状态文案。"
+            "value": "#1267a7",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。"
           }
         },
         "overlay": {
@@ -509,34 +509,34 @@
           "base": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.neutral.98}"
+            "value": "{ref.color.neutral.90}"
           },
           "subtle": {
             "description": "普通表面上的辅助文字；不用于 primary 或 danger 表面。",
             "type": "color",
-            "value": "{ref.color.neutral.80}"
+            "value": "{ref.color.neutral.70}"
           },
           "on-primary": {
             "description": "与 surface.primary 及其 hover 配对的反色前景。",
             "type": "color",
-            "value": "{ref.color.brand.2}"
+            "value": "{ref.color.brand.12}"
           },
           "on-danger": {
             "description": "与 surface.danger 及其 hover 配对的反色前景。",
             "type": "color",
-            "value": "{ref.color.danger.98}"
+            "value": "{ref.color.neutral.12}"
           }
         },
         "surface": {
           "base": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.neutral.30}"
+            "value": "{ref.color.neutral.12}"
           },
           "subtle": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.neutral.12}"
+            "value": "{ref.color.neutral.20}"
           },
           "primary": {
             "description": "",
@@ -546,34 +546,34 @@
           "primary-hover": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.brand.60}"
+            "value": "{ref.color.brand.80}"
           },
           "subtle-hover": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.neutral.40}"
+            "value": "#3a3a3a"
           },
           "danger": {
-            "description": "",
+            "description": "危险动作底色，与 text.on-danger 成对使用；不从反馈前景推导。",
             "type": "color",
-            "value": "{ref.color.danger.40}"
+            "value": "#c8a19d"
           },
           "danger-hover": {
-            "description": "",
+            "description": "危险动作的 hover/pressed 底色，保持 text.on-danger 可读。",
             "type": "color",
-            "value": "{ref.color.danger.35}"
+            "value": "#b9918b"
           },
           "base-hover": {
             "description": "",
             "type": "color",
-            "value": "{ref.color.neutral.40}"
+            "value": "{ref.color.neutral.20}"
           }
         },
         "border": {
           "base": {
             "description": "必要的控件边界；装饰分隔使用 border.subtle。",
             "type": "color",
-            "value": "{ref.color.neutral.70}"
+            "value": "{ref.color.neutral.60}"
           },
           "strong": {
             "description": "",
@@ -588,24 +588,24 @@
         },
         "feedback": {
           "error": {
-            "description": "",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。",
             "type": "color",
-            "value": "{ref.color.danger.80}"
+            "value": "{ref.color.danger.70}"
           },
           "success": {
             "type": "color",
-            "value": "#75d69a",
-            "description": "用于 base/subtle 表面的状态文字；同时提供明确状态文案。"
+            "value": "#67c88c",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。"
           },
           "warning": {
             "type": "color",
-            "value": "#ffd27a",
-            "description": "用于 base/subtle 表面的状态文字；同时提供明确状态文案。"
+            "value": "#e5b951",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。"
           },
           "info": {
             "type": "color",
-            "value": "#8bceff",
-            "description": "用于 base/subtle 表面的状态文字；同时提供明确状态文案。"
+            "value": "#70b5ed",
+            "description": "普通表面上需要注意的反馈前景；配合明确文案，例行状态默认使用中性色。"
           }
         },
         "overlay": {
@@ -624,7 +624,7 @@
         "track-bg": {
           "description": "",
           "type": "color",
-          "value": "{ref.color.neutral.2}"
+          "value": "{ref.color.neutral.12}"
         },
         "handle-bg": {
           "description": "",
@@ -634,7 +634,7 @@
         "label-color": {
           "description": "",
           "type": "color",
-          "value": "{ref.color.neutral.2}"
+          "value": "{ref.color.neutral.12}"
         }
       }
     },
@@ -643,17 +643,17 @@
         "track-bg": {
           "description": "",
           "type": "color",
-          "value": "{ref.color.neutral.98}"
+          "value": "{ref.color.neutral.90}"
         },
         "handle-bg": {
           "description": "",
           "type": "color",
-          "value": "{ref.color.neutral.2}"
+          "value": "{ref.color.neutral.12}"
         },
         "label-color": {
           "description": "",
           "type": "color",
-          "value": "{ref.color.neutral.98}"
+          "value": "{ref.color.neutral.90}"
         }
       }
     }

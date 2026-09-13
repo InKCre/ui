@@ -1,23 +1,31 @@
-# Token 与样式契约升级（待发布 major）
+# 未发布：默认配色与阴影
+
+浅深主题的主动作、普通表面与 Switch 采用中性灰配对；危险按钮底色保持灰红，需要注意的反馈文字使用较纯的语义色。覆盖层阴影缩小偏移与模糊范围。公开角色、组件 API 与调用方式保持不变，升级后重新构建即可获得默认值。
+
+使用主题覆盖的消费者应一起复核前景、背景、hover/pressed 与选中状态，尤其是深色危险按钮的深色文字配对。普通状态不因成功或进行中而自动着色，使用范围见[页面组合](docs/design/composition.md)。Sass `apply-elevation` 读取运行时变量，Uno 阴影工具类使用构建值；修改根级阴影变量不会改变已经生成的 Uno 阴影，详见[样式指南](styles/README.md)。
+
+下面记录已随 2.0.0 发布的迁移要求；从 1.x 升级时同时完成。
+
+## 2.0.0：Token 与样式契约
 
 本次升级统一了文本角色、运行时读取与状态配色。包名、组件模型和事件沿用本文后续契约，但旧文本外观和部分 Token 路径不兼容。先升级依赖及锁文件，再迁移以下调用，最后以安装产物验证页面。不要把同名角色当成旧度量的兼容别名。
 
-| 旧入口或用法 | 迁移选择 |
-| --- | --- |
-| `label-sm` 及 `font-label-sm`、对应 `--sys-font-label-sm-*`、Sass map | 短元信息用 label-md；正常说明／错误用 body-sm。移除 10px 默认信息角色，不提供旧别名。 |
-| 其他已有文本角色 | 名称保留，采用 rem 字号、比例行高、400 字重、0 字距；label-lg 行高从 16 调至 20。复核高度与换行。 |
-| 源／Sass map 中 `*-mono`、`lg-underlined` 复合角色 | 改为基础角色加家族／装饰；Sass `apply-font(label-lg, $mono: true, $underlined: true)`。旧 Uno mono/underlined 后缀仍接受，但采用新度量。 |
-| 字体角色的 `font-family`、`text-decoration`、`font-style/stretch`、段落缩进／间距、text-case 等变量或 map 属性 | 四属性之外不再生成。家族读取 `--sys-typo-family-sans/mono`；装饰和段落布局显式写在使用元素上。 |
-| `apply-font('title', 'lg')` | 改为 `apply-font(title-lg)`；第二参数是 mono 选项，不是字号。无效角色／选项现在编译失败。 |
-| 不存在的 body-md | 现已提供 16/24 正文；输入框用途仍优先 label-lg。新增 body-sm 和 title-lg。 |
-| `text.primary`／`text.danger-on` | 分别改为 `text.on-primary`／`text.on-danger`，仅用于对应强调表面；普通标题应选 text.base。 |
-| `text.muted` | 普通次要文字改为 text.subtle。颜色和层级有意改变。 |
-| `border.muted` | 装饰分隔用 border.subtle；必要控件边界用 border.base。base 已增强对比度。 |
-| `surface.muted` | 普通容器按层次选择 surface.base/subtle，没有无条件等价别名。 |
-| 不存在的 `color.success/warning/info.base`、`color.danger.base` | 改为 `color.feedback.success/warning/info/error`。 |
-| 不存在的 `color.success.surface`、`color.danger.surface/light` | 默认使用 surface.subtle + 对应反馈前景，不自动新增彩色容器。 |
-| 固定行高、Inter／独立 mono 字体依赖 | 检查系统 UI／mono 字体栈；库不再混用各角色字体，也不下载字体。Textarea 普通文本为 sans，代码显式 `mono`。 |
-| 覆盖 `--ref-*` 或只修改 Sass maps 期待运行时联动 | 按[样式指南](styles/README.md)覆盖 sys 家族、文本四属性、颜色、space/radius。断点等仍为构建值。 |
+| 旧入口或用法                                                                                                   | 迁移选择                                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `label-sm` 及 `font-label-sm`、对应 `--sys-font-label-sm-*`、Sass map                                          | 短元信息用 label-md；正常说明／错误用 body-sm。移除 10px 默认信息角色，不提供旧别名。                                                    |
+| 其他已有文本角色                                                                                               | 名称保留，采用 rem 字号、比例行高、400 字重、0 字距；label-lg 行高从 16 调至 20。复核高度与换行。                                        |
+| 源／Sass map 中 `*-mono`、`lg-underlined` 复合角色                                                             | 改为基础角色加家族／装饰；Sass `apply-font(label-lg, $mono: true, $underlined: true)`。旧 Uno mono/underlined 后缀仍接受，但采用新度量。 |
+| 字体角色的 `font-family`、`text-decoration`、`font-style/stretch`、段落缩进／间距、text-case 等变量或 map 属性 | 四属性之外不再生成。家族读取 `--sys-typo-family-sans/mono`；装饰和段落布局显式写在使用元素上。                                           |
+| `apply-font('title', 'lg')`                                                                                    | 改为 `apply-font(title-lg)`；第二参数是 mono 选项，不是字号。无效角色／选项现在编译失败。                                                |
+| 不存在的 body-md                                                                                               | 现已提供 16/24 正文；输入框用途仍优先 label-lg。新增 body-sm 和 title-lg。                                                               |
+| `text.primary`／`text.danger-on`                                                                               | 分别改为 `text.on-primary`／`text.on-danger`，仅用于对应强调表面；普通标题应选 text.base。                                               |
+| `text.muted`                                                                                                   | 普通次要文字改为 text.subtle。颜色和层级有意改变。                                                                                       |
+| `border.muted`                                                                                                 | 装饰分隔用 border.subtle；必要控件边界用 border.base。base 已增强对比度。                                                                |
+| `surface.muted`                                                                                                | 普通容器按层次选择 surface.base/subtle，没有无条件等价别名。                                                                             |
+| 不存在的 `color.success/warning/info.base`、`color.danger.base`                                                | 改为 `color.feedback.success/warning/info/error`。                                                                                       |
+| 不存在的 `color.success.surface`、`color.danger.surface/light`                                                 | 默认使用 surface.subtle + 对应反馈前景，不自动新增彩色容器。                                                                             |
+| 固定行高、Inter／独立 mono 字体依赖                                                                            | 检查系统 UI／mono 字体栈；库不再混用各角色字体，也不下载字体。Textarea 普通文本为 sans，代码显式 `mono`。                                |
+| 覆盖 `--ref-*` 或只修改 Sass maps 期待运行时联动                                                               | 按[样式指南](styles/README.md)覆盖 sys 家族、文本四属性、颜色、space/radius。断点等仍为构建值。                                          |
 
 颜色映射同时适用于 `--sys-color-*`、`sys-var(color, ...)`、`$color-light/dark` 的键和 Uno theme 色名；例如 `text-text-primary` 改为 `text-text-on-primary`。不保留会掩盖语义变化的双套颜色名。Uno theme.colors 的复合键按 Wind3 解析规则使用 camelCase（如 onPrimary、dangerHover）；工具类仍为 text-text-on-primary、bg-surface-danger-hover。直接读取 preset theme 的代码也需迁移。
 
@@ -31,9 +39,9 @@ Figma 导入也改变：仅更新已知路径的值，显式提供 releaseType�
 
 ---
 
-# 组件基础契约升级（待发布 major）
+## 2.0.0：组件基础契约
 
-本节对应基础控件、弹层和 schema 编辑契约调整，尚未发布。选择包含这些变更的版本前，完成以下迁移并验证真实保存流程。
+本节对应 2.0.0 的基础控件、弹层和 schema 编辑契约调整。升级时完成以下迁移并验证真实保存流程。
 
 - InkButton 默认原生类型改为 button。表单提交写 `nativeType="submit"`；type 仍控制 default/square 外形。client-web 的 info-base/list 和 RecallSearch 搜索按钮依赖旧默认提交行为，需要明确标记。
 - InkJsonEditor 的模型现在包含原始文本和无效 JSON。将直接 JSON.parse 的 computed setter 改为独立字符串草稿，监听 validation；仅在 valid=true 且结果 text 与草稿一致时解析和持久化。client-web 的 peerCard 配置编辑属于这种调用，必须迁移，否则输入中间态会让 setter 抛错。
@@ -56,7 +64,11 @@ function save() {
 </script>
 <template>
   <InkJsonEditor v-model="draft" label="配置" @validation="validation = $event" />
-  <InkButton text="保存" :disabled="!validation?.valid || validation.text !== draft" @click="save" />
+  <InkButton
+    text="保存"
+    :disabled="!validation?.valid || validation.text !== draft"
+    @click="save"
+  />
 </template>
 ```
 
