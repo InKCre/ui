@@ -45,7 +45,7 @@
   }
 
   &__menu-icon {
-    @include apply-icon(md);
+    @include apply-icon(md, true);
   }
 
   &__menu-button {

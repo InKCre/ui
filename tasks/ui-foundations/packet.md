@@ -360,3 +360,7 @@ UI PR #46 和消费者 PR #104 均已提交并推送。生产者设计知识、I
 用户已授权修复、提交和推送。实现从按钮自身承载 mask 改为子 span 绘制图标，按钮保留透明背景、24×24 最小命中区域及独立焦点轮廓。拥有 Header Vue／SCSS、现有 Basic Story／说明、生成 Skill、patch Changeset 和任务证据；保留 props、事件、right-icon 槽、Token 及消费者依赖。通过完整 check、正式构建的浅深／窄宽浏览器检查验证图标填色、键盘焦点与逐次事件，不添加消费者 safelist 或覆盖。
 
 Header 修复已通过完整 `pnpm check` 和正式 Story 产物的浅深／375px／1280px 检查，图标填色、未被 mask 裁剪的按钮焦点及三种输入的事件次数均正确，pageerror 为零。已补 patch Changeset；详见 [Header 验收](header-evidence/README.md)。本轮不发布新包、不改消费者依赖，随后推送 UI PR #46 进行远端复验。
+
+截图复核发现首次拆分后，子图标按 12px 字体尺寸绘制，改变了原按钮 mask 的 24px 图形尺寸。改用已有 apply-icon(md, true) 的图标盒尺寸，使独立图标保持原来的 24px；验收同时检查图形和按钮尺寸，避免仅验证命中区域而漏掉视觉缩小。
+
+保留 24px 图形尺寸后，最终完整 `pnpm check` 与四组浏览器检查再次通过；浅深菜单截图已复核。该收尾只使用原有图标尺寸 helper，没有改变 Token、事件或消费者样式。
