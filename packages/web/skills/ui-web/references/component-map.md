@@ -15,7 +15,7 @@ component references relevant to the task.
 ## feedback
 
 - [InkDialog](components/InkDialog.md): dialog; confirmation modal; focused overlay workflow
-- [InkDoubleCheck](components/InkDoubleCheck.md): two-step confirmation; accidental-click guard; compact destructive action
+- [InkDoubleCheck](components/InkDoubleCheck.md): 确认弹层; 破坏性操作确认
 - [InkLoading](components/InkLoading.md): loading indicator; async progress feedback; pending state
 - [InkPlaceholder](components/InkPlaceholder.md): empty state; error state; unavailable content guidance
 - [InkPopup](components/InkPopup.md): positioned popup; low-level overlay surface; custom controlled overlay

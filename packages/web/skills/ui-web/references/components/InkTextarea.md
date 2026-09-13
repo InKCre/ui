@@ -25,16 +25,47 @@
 ## Public API Facts
 
 - Import: `import { InkTextarea } from "@inkcre/ui-web";`
-- Props: `editable`, `label`, `layout`, `placeholder`, `prop`, `required`, `rows`, `value`
-- Events: `update:value`
-- Slots: None
+
+### Models
+
+- `v-model:value` → `update:value` `[_value: string]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `id` | `undefined \| string` | 否 | `undefined` |
+| `name` | `undefined \| string` | 否 | `undefined` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `prop` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `undefined` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `undefined` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+| `value` | `undefined \| string` | 否 | `""` |
+| `mono` | `undefined \| boolean` | 否 | `false` |
+| `placeholder` | `undefined \| string` | 否 | `""` |
+| `rows` | `undefined \| number` | 否 | `5` |
+
+### Events
+
+- `update:value`: `[_value: string]`
+
+### Slots
+
+- None.
+
 - Public types: None
-- Story variants: `Default`, `Optional`, `Required`, `Customize Rows`
+- Story variants: `Default`, `Optional`, `Required`, `Customize Rows`, `代码显式使用等宽字体`
+
 
 ## API Caveats
 
-- The public value contract uses value/update:value rather than modelValue.
-- Use rows to communicate expected input scale without forcing fixed-height local CSS.
+- 使用 v-model:value；label/id、name、required、disabled、error 及原生 textarea 属性有明确关联。
+- 普通文本默认使用系统 UI 字体；代码或固定宽度内容显式设置 mono，JsonEditor 始终使用系统等宽字体。
 
 ## Common Mistakes
 

@@ -25,16 +25,50 @@
 ## Public API Facts
 
 - Import: `import { InkInput } from "@inkcre/ui-web";`
-- Props: `editable`, `label`, `layout`, `modelValue`, `placeholder`, `prop`, `required`, `type`
-- Events: `update:modelValue`
-- Slots: `default`
+
+### Models
+
+- `v-model` → `update:modelValue` `[_value: string]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `id` | `undefined \| string` | 否 | `undefined` |
+| `name` | `undefined \| string` | 否 | `undefined` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `prop` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `undefined` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `undefined` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+| `modelValue` | `undefined \| null \| string` | 否 | `""` |
+| `nativeType` | `undefined \| string` | 否 | `"text"` |
+| `placeholder` | `undefined \| string` | 否 | `""` |
+| `type` | `undefined \| "default" \| "inline"` | 否 | `"default"` |
+
+### Events
+
+- `cancel`: `[]`
+- `confirm`: `[_value: string]`
+- `update:modelValue`: `[_value: string]`
+
+### Slots
+
+- `default`: `{}`
+
 - Public types: None
-- Story variants: `Column Layout`, `Inline Layout`, `Optional`, `Required`, `Inline Editable`
+- Story variants: `Column Layout`, `Inline Layout`, `Optional`, `Required`, `Inline Editable`, `Inline confirmation and cancellation`
+
 
 ## API Caveats
 
-- Use the component's value event contract rather than assuming modelValue naming.
-- When used inside InkForm, let form context own the default field layout.
+- 默认模式 update:modelValue 传出字符串，包括 nativeType="number"。nativeType 控制原生输入类型。
+- inline 模式 Enter 先更新模型再发出 confirm(string)，Escape/失焦发出 cancel 并丢弃草稿，IME Enter 不确认。
+- label 自动关联 id；name、required、disabled、error 及原生输入属性可用。editable=false 不允许内联编辑。
 
 ## Common Mistakes
 

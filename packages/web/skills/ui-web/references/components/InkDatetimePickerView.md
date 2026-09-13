@@ -25,16 +25,40 @@
 ## Public API Facts
 
 - Import: `import { InkDatetimePickerView } from "@inkcre/ui-web";`
-- Props: `hourFormat`, `maxDate`, `minDate`, `mode`, `modelValue`
-- Events: `update:modelValue`
-- Slots: None
+
+### Models
+
+- `v-model` → `update:modelValue` `[value: Date]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `modelValue` | `Date \| undefined` | 否 | `new Date()` |
+| `locale` | `undefined \| string` | 否 | `undefined` |
+| `mode` | `undefined \| "date" \| "datetime" \| "time" \| "weekday" \| "weekday-date" \| "weekday-datetime"` | 否 | `"datetime"` |
+| `minDate` | `Date \| undefined` | 否 | `undefined` |
+| `maxDate` | `Date \| undefined` | 否 | `undefined` |
+| `hourFormat` | `undefined \| "12" \| "24"` | 否 | `"24"` |
+
+### Events
+
+- `update:modelValue`: `[value: Date]`
+
+### Slots
+
+- None.
+
 - Public types: None
 - Story variants: `Basic`
 
+
 ## API Caveats
 
-- Use Date values for date/time modes and preserve the selected mode contract.
-- Treat this as a view primitive, not the complete labelled form control.
+- Date 模型从不原地修改；原生 select 提供键盘交互，12 小时为 1—12，weekday 选择同一周内日期。
+- minDate/maxDate 夹取显示和候选值，无效 Date/倒置范围显示错误；外部变化不自动提交。locale 或 i18n.locale 控制日期名称。
 
 ## Common Mistakes
 

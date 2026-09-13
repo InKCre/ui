@@ -6,8 +6,19 @@ import InkButton from "../inkButton/inkButton.vue";
 const props = defineProps(inkPaginationProps);
 const emit = defineEmits(inkPaginationEmits);
 
-const isPrevDisabled = computed(() => props.currentPage <= 1);
-const isNextDisabled = computed(() => props.currentPage >= props.totalPages);
+const totalPages = computed(() =>
+  Number.isFinite(props.totalPages) ? Math.max(0, Math.trunc(props.totalPages)) : 0,
+);
+const currentPage = computed(() =>
+  totalPages.value === 0
+    ? 0
+    : Math.min(
+        totalPages.value,
+        Math.max(1, Number.isFinite(props.currentPage) ? Math.trunc(props.currentPage) : 1),
+      ),
+);
+const isPrevDisabled = computed(() => currentPage.value <= 1);
+const isNextDisabled = computed(() => currentPage.value >= totalPages.value);
 
 const visiblePages = computed(() => {
   if (props.type !== "default") {
@@ -15,8 +26,8 @@ const visiblePages = computed(() => {
   }
 
   const pages: (number | string)[] = [];
-  const total = props.totalPages;
-  const current = props.currentPage;
+  const total = totalPages.value;
+  const current = currentPage.value;
 
   if (total <= 7) {
     for (let i = 1; i <= total; i++) {
@@ -51,25 +62,25 @@ const visiblePages = computed(() => {
 });
 
 const handlePageClick = (page: number | string) => {
-  if (typeof page === "number" && page !== props.currentPage) {
+  if (typeof page === "number" && page !== currentPage.value) {
     emit("page-change", page);
   }
 };
 
 const handlePrev = () => {
   if (!isPrevDisabled.value) {
-    emit("page-change", props.currentPage - 1);
+    emit("page-change", currentPage.value - 1);
   }
 };
 
 const handleNext = () => {
   if (!isNextDisabled.value) {
-    emit("page-change", props.currentPage + 1);
+    emit("page-change", currentPage.value + 1);
   }
 };
 
 const getPageButtonClass = (page: number | string) => {
-  const isActive = typeof page === "number" && page === props.currentPage;
+  const isActive = typeof page === "number" && page === currentPage.value;
   return [
     "ink-pagination__page",
     { "ink-pagination__page--active": isActive },
@@ -79,7 +90,11 @@ const getPageButtonClass = (page: number | string) => {
 </script>
 
 <template>
-  <div class="ink-pagination" :class="{ 'ink-pagination--text': props.type === 'text' }">
+  <nav
+    aria-label="Pagination"
+    class="ink-pagination"
+    :class="{ 'ink-pagination--text': props.type === 'text' }"
+  >
     <!-- Default type: icon buttons with numbered pages -->
     <template v-if="props.type === 'default'">
       <InkButton
@@ -88,10 +103,14 @@ const getPageButtonClass = (page: number | string) => {
         size="md"
         type="square"
         icon="i-mdi-chevron-left"
+        aria-label="Previous page"
         @click="handlePrev"
       />
 
       <button
+        type="button"
+        :aria-current="page === currentPage ? 'page' : undefined"
+        :aria-label="typeof page === 'number' ? `Page ${page}` : undefined"
         v-for="(page, index) in visiblePages"
         :key="index"
         :class="getPageButtonClass(page)"
@@ -107,6 +126,7 @@ const getPageButtonClass = (page: number | string) => {
         size="md"
         type="square"
         icon="i-mdi-chevron-right"
+        aria-label="Next page"
         @click="handleNext"
       />
     </template>
@@ -121,7 +141,7 @@ const getPageButtonClass = (page: number | string) => {
         :disabled="isPrevDisabled"
         @click="handlePrev"
       />
-      <div class="ink-pagination__page-info">{{ props.currentPage }} of {{ props.totalPages }}</div>
+      <div class="ink-pagination__page-info">{{ currentPage }} of {{ totalPages }}</div>
       <InkButton
         text="Next"
         class="ink-pagination__text-nav"
@@ -131,7 +151,7 @@ const getPageButtonClass = (page: number | string) => {
         @click="handleNext"
       />
     </template>
-  </div>
+  </nav>
 </template>
 
 <style lang="scss" scoped src="./inkPagination.scss"></style>

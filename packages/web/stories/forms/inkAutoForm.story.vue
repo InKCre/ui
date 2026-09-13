@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { FormValidation } from "../../src/index";
 import { ref } from "vue";
 import InkAutoForm from "../../src/components/inkAutoForm/inkAutoForm.vue";
 import type { JSONSchema } from "../../src/components/inkAutoForm/inkAutoForm";
@@ -225,6 +226,18 @@ const complexSchema: JSONSchema = {
 };
 
 const complexFormData = ref({});
+const retainedData = ref({ name: "existing", count: 0, enabled: false, date: "2024-02-29" });
+const retainedValidation = ref<FormValidation>();
+const retainedSchema: JSONSchema = {
+  type: "object",
+  properties: {
+    name: { type: "string", default: "default" },
+    count: { type: "integer", default: 9 },
+    enabled: { type: "boolean", default: true },
+    date: { type: "string", format: "date" },
+  },
+  required: ["name", "count"],
+};
 </script>
 
 <template>
@@ -294,6 +307,15 @@ const complexFormData = ref({});
     <!-- [Edge] Row Layout -->
     <Variant title="Row Layout">
       <InkAutoForm :schema="basicTextSchema" :form-data="{}" layout="row" />
+    </Variant>
+    <Variant title="Existing values, numeric and date boundaries">
+      <InkAutoForm
+        v-model:form-data="retainedData"
+        :schema="retainedSchema"
+        @validation="retainedValidation = $event"
+      />
+      <p>校验：{{ retainedValidation?.status }}</p>
+      <pre>{{ retainedData }}</pre>
     </Variant>
   </Story>
 </template>

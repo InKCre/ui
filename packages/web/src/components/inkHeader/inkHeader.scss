@@ -1,12 +1,16 @@
 .ink-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: sys-var(space, md);
   align-items: center;
   justify-content: space-between;
   padding: sys-var(space, md) sys-var(space, lg);
   background-color: sys-var(color, surface, subtle);
-  border-bottom: 1px solid sys-var(color, border, base);
+  border-bottom: 1px solid sys-var(color, border, subtle);
 
   &__logo {
+    min-width: 0;
+    max-width: 100%;
     display: flex;
     align-items: center;
     gap: sys-var(space, sm);
@@ -14,23 +18,28 @@
   }
 
   &__logo-icon {
+    flex-shrink: 0;
     width: 32px;
     height: 32px;
   }
 
   &__logo-text {
+    overflow-wrap: anywhere;
     @include apply-font(title-sm, mono);
     color: sys-var(color, text, base);
     user-select: none;
   }
 
   &__right {
+    flex-wrap: wrap;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: sys-var(space, md);
   }
 
   &__page-title {
+    overflow-wrap: anywhere;
     @include apply-font(title-sm);
     color: sys-var(color, text, base);
   }
@@ -40,4 +49,25 @@
     color: sys-var(color, text, base);
     cursor: pointer;
   }
+}
+
+button.ink-header__logo {
+  color: inherit;
+  font: inherit;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+}
+
+button.ink-header__menu-icon {
+  min-width: 24px;
+  min-height: 24px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.ink-header button:focus-visible {
+  outline: 2px solid sys-var(color, border, strong);
+  outline-offset: 2px;
 }

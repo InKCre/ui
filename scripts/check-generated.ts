@@ -10,7 +10,6 @@ const packageDirectory = relative(repositoryRoot, packageRoot);
 const generatedPaths = [
   `${packageDirectory}/styles/tokens`,
   `${packageDirectory}/styles/uno/preset-ink.ts`,
-  `${packageDirectory}/skills`,
   `${packageDirectory}/src/public-components.ts`,
   `${packageDirectory}/src/components.d.ts`,
   `${packageDirectory}/src/version.ts`,
@@ -53,7 +52,7 @@ function runGenerator(script: string) {
 const before = readGeneratedState();
 runGenerator("build-tokens");
 runGenerator("build-package-metadata");
-runGenerator("build-skills");
+
 const after = readGeneratedState();
 
 const changed = [...new Set([...before.keys(), ...after.keys()])].filter(

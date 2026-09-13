@@ -5,10 +5,13 @@ import UnoCSS from "unocss/vite";
 import { isAbsolute, relative, resolve, sep } from "path";
 import packageJson from "./package.json" with { type: "json" };
 
-const peerDependencies = Object.keys(packageJson.peerDependencies);
+const externalDependencies = Object.keys({
+  ...packageJson.dependencies,
+  ...packageJson.peerDependencies,
+});
 const declarationRoot = resolve(__dirname, "dist");
-const isPeerDependency = (id) =>
-  peerDependencies.some((dependency) => id === dependency || id.startsWith(`${dependency}/`));
+const isExternalDependency = (id) =>
+  externalDependencies.some((dependency) => id === dependency || id.startsWith(`${dependency}/`));
 
 const normalizeDeclarationOutput = (filePath, content) => {
   const isInsideDist = filePath.startsWith(`${declarationRoot}${sep}`);
@@ -59,7 +62,7 @@ export default defineConfig({
     sourcemap: "inline",
     outDir: "dist",
     rollupOptions: {
-      external: isPeerDependency,
+      external: isExternalDependency,
 
       output: {
         globals: {

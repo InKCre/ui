@@ -1,0 +1,250 @@
+{
+  "before": {
+    "font": "13px",
+    "height": 16,
+    "box": 100,
+    "viewport": 1000,
+    "root": "16px"
+  },
+  "native": {
+    "text": 2,
+    "full": 1
+  },
+  "after": {
+    "font": "26px",
+    "height": 32,
+    "box": 100,
+    "viewport": 1000,
+    "root": "32px"
+  },
+  "form": {
+    "viewport": 1000,
+    "overflow": -15,
+    "mainOverflow": 0,
+    "fonts": [
+      {
+        "name": "ink-input__input",
+        "font": "28px",
+        "h": 40,
+        "w": 302
+      },
+      {
+        "name": "ink-input__input",
+        "font": "28px",
+        "h": 40,
+        "w": 302
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-primary ink-button--size-md",
+        "font": "28px",
+        "h": 150,
+        "w": 320
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-subtle ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 90
+      }
+    ],
+    "submitResult": "已保存设置 Settings saved"
+  },
+  "controls": {
+    "viewport": 1000,
+    "overflow": -15,
+    "mainOverflow": 0,
+    "fonts": [
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-primary ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 146
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-primary ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 118
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-primary ink-button--size-md ink-button--loading",
+        "font": "28px",
+        "h": 70,
+        "w": 160
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-subtle ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 146
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-subtle ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 118
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-subtle ink-button--size-md ink-button--loading",
+        "font": "28px",
+        "h": 70,
+        "w": 160
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-danger ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 146
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-danger ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 118
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-danger ink-button--size-md ink-button--loading",
+        "font": "28px",
+        "h": 70,
+        "w": 160
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-subtle ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 188
+      },
+      {
+        "name": "ink-button ink-button--type-square ink-button--theme-subtle ink-button--size-md",
+        "font": "28px",
+        "h": 58,
+        "w": 58
+      },
+      {
+        "name": "ink-button ink-button--type-square ink-button--theme-subtle ink-button--size-sm",
+        "font": "24px",
+        "h": 38,
+        "w": 38
+      },
+      {
+        "name": "ink-button ink-button--type-square ink-button--theme-subtle ink-button--size-md ink-pagination__nav ink-pagination__nav--prev",
+        "font": "24px",
+        "h": 50,
+        "w": 50
+      },
+      {
+        "name": "ink-button ink-button--type-square ink-button--theme-subtle ink-button--size-md ink-pagination__nav ink-pagination__nav--next",
+        "font": "24px",
+        "h": 50,
+        "w": 50
+      },
+      {
+        "name": "ink-switch__label ink-switch__label--hidden",
+        "font": "24px",
+        "h": 32,
+        "w": 28.800003051757812
+      },
+      {
+        "name": "ink-switch__label",
+        "font": "24px",
+        "h": 32,
+        "w": 43.19999694824219
+      },
+      {
+        "name": "ink-switch__label ink-switch__label--hidden",
+        "font": "24px",
+        "h": 32,
+        "w": 28.79998779296875
+      },
+      {
+        "name": "ink-switch__label",
+        "font": "24px",
+        "h": 32,
+        "w": 43.20001220703125
+      },
+      {
+        "name": "ink-switch__label ink-switch__label--hidden",
+        "font": "24px",
+        "h": 32,
+        "w": 28.800003051757812
+      },
+      {
+        "name": "ink-switch__label",
+        "font": "24px",
+        "h": 32,
+        "w": 43.19999694824219
+      },
+      {
+        "name": "ink-switch__label ink-switch__label--hidden",
+        "font": "24px",
+        "h": 32,
+        "w": 28.800003051757812
+      },
+      {
+        "name": "ink-switch__label",
+        "font": "24px",
+        "h": 32,
+        "w": 43.19999694824219
+      },
+      {
+        "name": "ink-switch__label ink-switch__label--hidden",
+        "font": "24px",
+        "h": 32,
+        "w": 72
+      },
+      {
+        "name": "ink-switch__label",
+        "font": "24px",
+        "h": 32,
+        "w": 72
+      },
+      {
+        "name": "ink-switch__label ink-switch__label--hidden",
+        "font": "24px",
+        "h": 32,
+        "w": 100.80000305175781
+      },
+      {
+        "name": "ink-switch__label",
+        "font": "24px",
+        "h": 32,
+        "w": 115.19999694824219
+      }
+    ],
+    "checked": "true"
+  },
+  "overlay": {
+    "viewport": 1000,
+    "overflow": 0,
+    "mainOverflow": 0,
+    "fonts": [
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-danger ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 202
+      },
+      {
+        "name": "ink-button ink-button--type-default ink-button--theme-subtle ink-button--size-md",
+        "font": "28px",
+        "h": 70,
+        "w": 146
+      }
+    ]
+  },
+  "pageZoom": {
+    "text": 1,
+    "full": 2
+  },
+  "pageZoomMetrics": {
+    "font": "13px",
+    "height": 16,
+    "box": 100,
+    "viewport": 500,
+    "root": "16px"
+  },
+  "pageZoomForm": {
+    "viewport": 500,
+    "overflow": -7
+  }
+}

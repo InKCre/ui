@@ -1,8 +1,7 @@
 .ink-json-editor {
-  border: 1px solid sys-var(color, border, subtle);
+  border: 1px solid sys-var(color, border, base);
   transition: border-color 0.15s ease;
   padding: sys-var(space, sm);
-  line-height: 1.2 !important;
 
   &__editor {
     height: 100%;
@@ -15,18 +14,18 @@
     }
 
     :deep(.cm-scroller) {
-      font-family: "Monaco", "Courier New", monospace;
-      @include apply-font(label-lg);
+      @include apply-font(label-lg, mono);
     }
 
     &--readonly {
       :deep(.cm-editor) {
-        background: sys-var(color, background, secondary);
+        background: sys-var(color, surface, subtle);
       }
     }
   }
 
   &:focus-within {
-    border-color: sys-var(color, border, base);
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: 2px;
   }
 }

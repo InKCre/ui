@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import InkPicker from "../../src/components/inkPicker/inkPicker.vue";
 
-const selectedDate = ref(null);
+const selectedDate = ref<Date | null>(null);
 </script>
 
 <template>
@@ -10,6 +10,7 @@ const selectedDate = ref(null);
     <!-- [Semantic] Date Selection -->
     <Variant title="Date Picker">
       <InkPicker v-model="selectedDate" label="Select Date" type="date" layout="col" />
+      <p>只有确认才更新：{{ selectedDate?.toLocaleDateString() || "尚未选择" }}</p>
     </Variant>
 
     <!-- [State] Required -->

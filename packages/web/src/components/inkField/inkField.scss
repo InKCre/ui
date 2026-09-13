@@ -1,13 +1,15 @@
 .ink-field {
   display: flex;
   gap: sys-var(space, sm);
+  min-width: 0;
+  max-width: 100%;
   @include apply-font(label-lg);
 
   &--col {
     flex-direction: column;
     gap: sys-var(space, xs);
     width: 100%;
-    min-width: 160px;
+    min-width: 0;
   }
 
   &--row {
@@ -18,18 +20,15 @@
 
   &__label {
     color: sys-var(color, text, subtle);
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    min-width: 0;
     position: relative;
   }
 
   &__required {
-    @include apply-font(label-sm);
-    color: red;
-    // color: sys-var(color, feedback, error); TODO
-  }
-
-  &--col &__label {
     @include apply-font(label-md);
+    color: sys-var(color, feedback, error);
   }
 
   &__value {
@@ -41,4 +40,20 @@
       cursor: pointer;
     }
   }
+}
+
+.ink-field__error {
+  @include apply-font(body-sm);
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: sys-var(color, feedback, error);
+}
+button.ink-field__value {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: start;
 }

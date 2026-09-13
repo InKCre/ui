@@ -1,52 +1,13 @@
-# InkDoubleCheck
+# inkDoubleCheck
 
-Provides a confirmation mechanism for destructive or irreversible actions, preventing accidental clicks.
+InkDoubleCheck 为一个破坏性动作展示独立的确认弹层。默认槽放一个有可访问名称的按钮；组件在捕获阶段阻止该按钮的原始 click 动作，打开弹层。真正的业务操作必须绑定在 DoubleCheck 的 confirm 上。
 
-## Rationale
+取消、Escape 或遮罩关闭都不发出 confirm。确认关闭弹层并发出 confirm。它不等待业务 Promise；如果需要展示保存等待或错误后重试，使用 InkDialog。
 
-InkDoubleCheck exists to add a layer of confirmation for actions that could have significant consequences, such as deletions or irreversible changes. Use it when wrapping clickable elements that trigger such actions to avoid accidental executions. Do not use it for non-destructive actions or where confirmation is not necessary.
+```vue
+<InkDoubleCheck title="删除记录" message="此操作不可恢复。" @confirm="deleteRecord">
+  <InkButton text="删除" theme="danger" />
+</InkDoubleCheck>
+```
 
-## Design Semantics
-
-### Concepts
-
-- `Confirmation Popup`: A modal dialog that appears on click, requiring user acknowledgment before proceeding.
-
-### Visual / UX Meaning
-
-The component maintains the original clickable element's appearance until clicked. Upon click, a popup overlays with a title, message, and action buttons. The confirm button is emphasized to guide the user towards confirmation, while cancel allows dismissal. States include open (popup visible) and closed (default).
-
-## Canonical Examples
-
-- Basic confirmation for a delete button:
-
-  ```vue
-  <InkDoubleCheck @confirm="deleteItem">
-    <InkButton text="Delete" />
-  </InkDoubleCheck>
-  ```
-
-## Behavioral Contract
-
-- Click events on the wrapped element are intercepted and do not propagate until confirmation.
-- The `confirm` event is emitted only after the user clicks the confirm button in the popup.
-- The popup closes on either confirm or cancel, resetting the component to its initial state.
-- No actions are performed if the popup is dismissed via cancel.
-
-## Extension & Composition
-
-- Can be composed with any clickable component via the default slot.
-- Supports customization of popup text through props.
-- Not recommended for use inside forms where validation might conflict.
-
-## Non-Goals
-
-- Handling the actual destructive action logic.
-- Managing user permissions or authentication.
-- Providing advanced popup customization beyond text.
-
-## Implementation Notes
-
-- Uses a slot to wrap the clickable element and attaches event listeners.
-- Relies on a popup component for the confirmation dialog.
-- State management handles popup visibility and event emission.
+标题使用普通表面上的 text.base，尺寸为 title-sm。Popup 统一承担内边距，弹层宽度不超过 400px 或视口减 32px，长内容与操作允许换行。

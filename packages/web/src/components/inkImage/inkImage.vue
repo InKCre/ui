@@ -43,7 +43,9 @@ const handleImageError = (error: Event) => {
 <template>
   <div class="ink-image">
     <!-- Thumbnail -->
-    <div
+    <button
+      type="button"
+      :aria-label="props.alt || props.title || 'Expand image'"
       class="ink-image__thumbnail"
       data-testid="ink-image-thumbnail"
       @click="handleThumbnailClick"
@@ -59,13 +61,14 @@ const handleImageError = (error: Event) => {
           @error="handleImageError"
         />
       </slot>
-    </div>
+    </button>
 
     <!-- Scrim overlay with expanded view content -->
     <InkScrim
       v-model:open="expanded"
       :close-on-scrim="true"
       :show-close-button="true"
+      :aria-label="props.alt || props.title || 'Image preview'"
       @close="handleClose"
     >
       <div class="ink-image__expanded" data-testid="ink-image-expanded">

@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import {
   existsSync,
   lstatSync,
@@ -7,7 +8,6 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
-  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -35,7 +35,7 @@ interface PublishedPackageManifest {
 const packageRoot = resolveWebPackageRoot();
 const packageManifest = readPackageManifest(packageRoot);
 const publicComponents = readComponentManifest(packageRoot);
-const targetPackageName = process.argv[2] ?? packageManifest.name;
+const targetPackageName = packageManifest.name;
 const temporaryRoot = mkdtempSync(join(tmpdir(), "inkcre-ui-contract-"));
 
 function run(
@@ -58,21 +58,6 @@ function run(
   }
 
   return result.stdout ?? "";
-}
-
-function ensureParent(path: string): void {
-  mkdirSync(dirname(path), { recursive: true });
-}
-
-function linkDependency(dependency: string, consumerModules: string): void {
-  const source = resolve(packageRoot, "node_modules", dependency);
-  if (!existsSync(source)) {
-    throw new Error(`Missing installed peer dependency: ${dependency}`);
-  }
-
-  const destination = resolve(consumerModules, dependency);
-  ensureParent(destination);
-  symlinkSync(source, destination, "junction");
 }
 
 function assertNoDeclarationLeaks(
@@ -170,11 +155,7 @@ function assertSkillTree(packedRoot: string): void {
 
   for (const markdownFile of markdownFiles) {
     const content = readFileSync(markdownFile, "utf8");
-    if (
-      content.includes("src/components/") ||
-      content.includes("stories/") ||
-      content.includes("../")
-    ) {
+    if (content.includes("src/components/") || content.includes("stories/")) {
       throw new Error(`Packed skill leaks repository paths: ${markdownFile}`);
     }
 
@@ -188,7 +169,11 @@ function assertSkillTree(packedRoot: string): void {
     ];
 
     for (const target of targets) {
-      if (!lstatSync(target).isFile()) {
+      if (
+        relative(packedRoot, target).startsWith("..") ||
+        !existsSync(target) ||
+        !lstatSync(target).isFile()
+      ) {
         throw new Error(`Packed skill reference is missing: ${target}`);
       }
     }
@@ -205,35 +190,38 @@ try {
     throw new Error(`Expected one package tarball, found ${tarballs.length}`);
   }
 
-  let extractionRoot = resolve(temporaryRoot, "extracted");
-  mkdirSync(extractionRoot);
-  run("tar", ["-xzf", resolve(sourcePackRoot, tarballs[0]), "-C", extractionRoot]);
-
-  if (targetPackageName !== packageManifest.name) {
-    const identityRoot = resolve(extractionRoot, "package");
-    const identityManifestPath = resolve(identityRoot, "package.json");
-    const identityManifest = JSON.parse(readFileSync(identityManifestPath, "utf8")) as {
-      name: string;
-    };
-    identityManifest.name = targetPackageName;
-    writeFileSync(identityManifestPath, `${JSON.stringify(identityManifest, null, 2)}\n`, "utf8");
-
-    const identityPackRoot = resolve(temporaryRoot, "identity-pack");
-    mkdirSync(identityPackRoot);
-    run("npm", ["pack", "--ignore-scripts", "--pack-destination", identityPackRoot], {
-      cwd: identityRoot,
-    });
-    const identityTarballs = readdirSync(identityPackRoot).filter((file) => file.endsWith(".tgz"));
-    if (identityTarballs.length !== 1) {
-      throw new Error(`Expected one identity tarball, found ${identityTarballs.length}`);
-    }
-
-    extractionRoot = resolve(temporaryRoot, "identity-extracted");
-    mkdirSync(extractionRoot);
-    run("tar", ["-xzf", resolve(identityPackRoot, identityTarballs[0]), "-C", extractionRoot]);
-  }
-
-  const packedRoot = resolve(extractionRoot, "package");
+  const consumerRoot = resolve(temporaryRoot, "consumer");
+  const consumerModules = resolve(consumerRoot, "node_modules");
+  mkdirSync(consumerRoot);
+  writeFileSync(
+    resolve(consumerRoot, "package.json"),
+    JSON.stringify(
+      {
+        private: true,
+        type: "module",
+        dependencies: {
+          [targetPackageName]: `file:${resolve(sourcePackRoot, tarballs[0])}`,
+          vue: "3.5.25",
+        },
+        devDependencies: {
+          typescript: "5.9.3",
+          "vue-tsc": "3.3.8",
+          vite: "7.2.7",
+          "@vitejs/plugin-vue": "6.0.3",
+          "@tanstack/intent": "0.3.6",
+        },
+        intent: { skills: [targetPackageName] },
+      },
+      null,
+      2,
+    ),
+  );
+  run(
+    "pnpm",
+    ["install", "--ignore-scripts", "--config.auto-install-peers=false", "--prefer-offline"],
+    { cwd: consumerRoot },
+  );
+  const packedRoot = realpathSync(resolve(consumerModules, targetPackageName));
   const packedManifest = JSON.parse(
     readFileSync(resolve(packedRoot, "package.json"), "utf8"),
   ) as PublishedPackageManifest;
@@ -251,6 +239,7 @@ try {
   }
 
   const requiredFiles = [
+    "DESIGN.md",
     "dist/index.js",
     "dist/index.d.ts",
     "dist/components.d.ts",
@@ -305,38 +294,130 @@ try {
   }
   assertNoDeclarationLeaks(packedRoot, packedManifest);
   assertSkillTree(packedRoot);
-
-  const consumerRoot = resolve(temporaryRoot, "consumer");
-  const consumerModules = resolve(consumerRoot, "node_modules");
-  const runtimeModules = resolve(extractionRoot, "node_modules");
-  mkdirSync(consumerModules, { recursive: true });
-  mkdirSync(runtimeModules, { recursive: true });
-  const packageLink = resolve(consumerModules, targetPackageName);
-  ensureParent(packageLink);
-  symlinkSync(packedRoot, packageLink, "junction");
-
-  const installedDependencies = new Set([
-    ...Object.keys(packedManifest.dependencies ?? {}),
-    ...Object.keys(packedManifest.peerDependencies ?? {}),
-  ]);
-  for (const dependency of installedDependencies) {
-    linkDependency(dependency, consumerModules);
-    linkDependency(dependency, runtimeModules);
-  }
-
-  writeFileSync(
-    resolve(consumerRoot, "package.json"),
-    JSON.stringify({
-      private: true,
-      type: "module",
-      intent: {
-        skills: [targetPackageName],
-      },
-    }),
+  const popupReference = readFileSync(
+    resolve(packedRoot, "skills/ui-web/references/components/InkPopup.md"),
     "utf8",
   );
+  assert.ok(
+    popupReference.includes("`v-model:open`") && popupReference.includes("`update:open`"),
+    "Named Vue models must be present in the shipped API facts",
+  );
+  const dialogReference = readFileSync(
+    resolve(packedRoot, "skills/ui-web/references/components/InkDialog.md"),
+    "utf8",
+  );
+  assert.ok(
+    dialogReference.includes("cancel: () => void") &&
+      dialogReference.includes("isLoading: boolean"),
+    "Scoped slot arguments must be available to consumers",
+  );
+  for (const file of ["README.md", "DESIGN.md", "MIGRATION.md", "styles/README.md"]) {
+    const content = readFileSync(resolve(packedRoot, file), "utf8");
+    for (const match of content.matchAll(/\]\(([^)]+)\)/g)) {
+      if (/^(?:https?:|#)/.test(match[1])) continue;
+      const target = resolve(dirname(resolve(packedRoot, file)), match[1].split("#")[0]);
+      assert.ok(
+        !relative(packedRoot, target).startsWith("..") && existsSync(target),
+        `Broken packed documentation link: ${file} -> ${match[1]}`,
+      );
+    }
+  }
 
-  const intentCli = resolve(packageRoot, "node_modules/@tanstack/intent/dist/cli.mjs");
+  // 验证实际交付 CSS 的 Token 引用，避免 Sass 拼接出未定义变量后仍通过构建。
+  const css = readFileSync(resolve(packedRoot, "dist/index.css"), "utf8");
+  const definedTokens = new Set(
+    [...css.matchAll(/(--(?:ref|sys|comp)-[\w-]+)\s*:/g)].map((match) => match[1]),
+  );
+  const referencedTokens = new Set(
+    [...css.matchAll(/var\(\s*(--(?:ref|sys|comp)-[\w-]+)/g)].map((match) => match[1]),
+  );
+  const missingTokens = [...referencedTokens].filter((token) => !definedTokens.has(token));
+  if (missingTokens.length > 0) {
+    throw new Error(`Packed CSS references undefined design tokens: ${missingTokens.join(", ")}`);
+  }
+
+  assert.equal(
+    readFileSync(resolve(packedRoot, "DESIGN.md"), "utf8"),
+    readFileSync(resolve(repositoryRoot, "DESIGN.md"), "utf8"),
+  );
+  assert.ok(
+    !existsSync(resolve(consumerModules, "unocss")),
+    "Basic install must not require UnoCSS",
+  );
+  assert.ok(
+    !existsSync(resolve(consumerModules, "vue-router")),
+    "Router adapter must not require vue-router",
+  );
+  run(
+    process.execPath,
+    [
+      "--input-type=module",
+      "--eval",
+      `
+    const ui = await import(${JSON.stringify(targetPackageName)});
+    const utils = await import(${JSON.stringify(`${targetPackageName}/utils`)});
+    const locales = await import(${JSON.stringify(`${targetPackageName}/locales`)});
+    if (!ui.InkButton || !ui.InkJsonEditor || !utils.useOptionalVModel || !locales.locales.en) throw new Error("Minimal runtime import failed");
+  `,
+    ],
+    { cwd: consumerRoot },
+  );
+  const recipeReference = readFileSync(
+    resolve(packedRoot, "skills/ui-web/references/composition-recipes.md"),
+    "utf8",
+  );
+  const shippedExamples = [...recipeReference.matchAll(/```vue\n([\s\S]*?)\n```/g)].map((match) =>
+    match[1].trim(),
+  );
+  for (const file of ["SettingsForm.vue", "HostIntegration.vue", "JsonConfiguration.vue"]) {
+    const source = readFileSync(resolve(packageRoot, "stories/recipes", file), "utf8").trim();
+    const example = shippedExamples.find((shipped) => shipped === source);
+    assert.ok(example, `The shipped guide must contain the checked recipe: ${file}`);
+    writeFileSync(resolve(consumerRoot, file), example);
+  }
+  writeFileSync(
+    resolve(consumerRoot, "App.vue"),
+    `<script setup lang="ts">
+import { InkButton, InkTextarea } from "${targetPackageName}";
+import SettingsForm from "./SettingsForm.vue";
+import HostIntegration from "./HostIntegration.vue";
+import JsonConfiguration from "./JsonConfiguration.vue";
+const save = async () => {};
+</script>
+<template><InkButton /><InkTextarea mono value="code" /><SettingsForm :save="save" />
+<HostIntegration current-path="/settings" current-name="Settings" locale="en" :translate="(key) => key" />
+<JsonConfiguration :save="save" /></template>`,
+  );
+  writeFileSync(
+    resolve(consumerRoot, "tsconfig.json"),
+    JSON.stringify({
+      compilerOptions: {
+        strict: true,
+        target: "ES2022",
+        module: "ESNext",
+        moduleResolution: "Bundler",
+        skipLibCheck: false,
+        types: [],
+      },
+      include: ["*.vue"],
+    }),
+  );
+  run("pnpm", ["exec", "vue-tsc", "--noEmit", "-p", "tsconfig.json"], { cwd: consumerRoot });
+  writeFileSync(
+    resolve(consumerRoot, "index.html"),
+    '<div id="app"></div><script type="module" src="/main.ts"></script>',
+  );
+  writeFileSync(
+    resolve(consumerRoot, "main.ts"),
+    `import {createApp} from "vue"; import App from "./App.vue"; import "${targetPackageName}/styles"; createApp(App).mount("#app");`,
+  );
+  writeFileSync(
+    resolve(consumerRoot, "vite.config.ts"),
+    'import {defineConfig} from "vite"; import vue from "@vitejs/plugin-vue"; export default defineConfig({plugins:[vue()]});',
+  );
+  run("pnpm", ["exec", "vite", "build"], { cwd: consumerRoot });
+
+  const intentCli = resolve(consumerModules, "@tanstack/intent/dist/cli.mjs");
   const intentList = JSON.parse(
     run(process.execPath, [intentCli, "list", "--json"], {
       cwd: consumerRoot,
@@ -375,6 +456,18 @@ try {
     );
   }
 
+  run(
+    "pnpm",
+    [
+      "add",
+      "--ignore-scripts",
+      "--config.auto-install-peers=false",
+      "--prefer-offline",
+      "unocss@66.5.10",
+    ],
+    { cwd: consumerRoot },
+  );
+
   const componentName = publicComponents.find(
     (component) => component.source === "inkButton",
   )?.name;
@@ -390,6 +483,8 @@ try {
 const root = await import(${JSON.stringify(targetPackageName)});
 const utilities = await import(${JSON.stringify(`${targetPackageName}/utils`)});
 const localeModule = await import(${JSON.stringify(`${targetPackageName}/locales`)});
+const { createGenerator, presetWind3 } = await import("unocss");
+const { default: assert } = await import("node:assert/strict");
 const unoModule = await import(${JSON.stringify(`${targetPackageName}/uno`)});
 if (!root.default?.install || !root[${JSON.stringify(componentName)}] || !root.version) {
   throw new Error("Root entry is incomplete");
@@ -400,6 +495,17 @@ if (typeof utilities.useOptionalVModel !== "function") {
 if (!localeModule.locales?.en || !unoModule.presetInk) {
   throw new Error("Locales or UnoCSS entry is incomplete");
 }
+const uno = await createGenerator({ presets: [presetWind3(), unoModule.presetInk()] });
+const generated = await uno.generate("font-label-lg font-label-lg-mono font-label-lg-underlined font-mono underline p-md rounded-md text-text-on-primary bg-surface-primary bg-surface-danger-hover", { preflights: false });
+for (const declaration of [
+  "font-size:var(--sys-font-label-lg-font-size)", "line-height:var(--sys-font-label-lg-line-height)",
+  "font-weight:var(--sys-font-label-lg-font-weight)", "letter-spacing:var(--sys-font-label-lg-letter-spacing)",
+  "font-family:var(--sys-typo-family-sans)", "font-family:var(--sys-typo-family-mono)",
+  "text-decoration:none", "text-decoration:underline", "padding:var(--sys-space-md)",
+  "border-radius:var(--sys-radius-md)", "color:var(--sys-color-text-on-primary)", "background-color:var(--sys-color-surface-danger-hover)",
+]) assert.ok(generated.css.includes(declaration), "Uno contract is missing " + declaration);
+const invalid = await uno.generate("font-label-sm font-title-md", { preflights: false });
+assert.equal(invalid.matched.size, 0, "Removed or undefined roles must not silently emit a partial style");
 try {
   await import(${JSON.stringify(`${targetPackageName}/components/inkButton/inkButton.vue`)});
   throw new Error("Raw component subpath unexpectedly resolved");
@@ -423,7 +529,11 @@ try {
 
 .contract-probe {
   color: functions.ref-var("color", "neutral", "2");
-  @include mixins.apply-font("sm");
+  @include mixins.apply-font("label-lg");
+  padding: functions.sys-var(space, md);
+}
+.contract-modifiers {
+  @include mixins.apply-font(label-lg, $mono: true, $underlined: true);
 }
 `,
     { importers: [new sass.NodePackageImporter(consumerRoot)] },
@@ -435,11 +545,33 @@ try {
     throw new Error("Sass contract probe did not emit expected output");
   }
 
-  writeFileSync(
-    resolve(consumerRoot, "App.vue"),
-    `<template><${componentName} /></template>\n`,
-    "utf8",
+  const declarations = sassResult.css.match(/\.contract-probe\s*\{([^}]+)\}/)?.[1] ?? "";
+  for (const declaration of [
+    "font-family: var(--sys-typo-family-sans)",
+    "font-size: var(--sys-font-label-lg-font-size)",
+    "font-weight: var(--sys-font-label-lg-font-weight)",
+    "line-height: var(--sys-font-label-lg-line-height)",
+    "letter-spacing: var(--sys-font-label-lg-letter-spacing)",
+    "text-decoration: none",
+    "padding: var(--sys-space-md)",
+  ])
+    assert.ok(declarations.includes(declaration), `Sass contract is missing ${declaration}`);
+  const modifiers = sassResult.css.match(/\.contract-modifiers\s*\{([^}]+)\}/)?.[1] ?? "";
+  assert.ok(modifiers.includes("font-family: var(--sys-typo-family-mono)"));
+  assert.ok(modifiers.includes("text-decoration: underline"));
+  assert.match(sassResult.css, /--sys-font-label-lg-letter-spacing:\s*0px/);
+  assert.match(sassResult.css, /--sys-font-label-lg-line-height:\s*1\.42857143;/);
+  assert.match(sassResult.css, /--sys-color-overlay-scrim:\s*rgba\(0, 0, 0, 0\.5\)/);
+  assert.match(sassResult.css, /--sys-opacity-muted:\s*0\.72;/);
+  assert.throws(
+    () =>
+      sass.compileString(
+        `@use "pkg:${targetPackageName}/styles/mixins" as m; .invalid { @include m.apply-font('title', 'lg'); }`,
+        { importers: [new sass.NodePackageImporter(consumerRoot)] },
+      ),
+    /Unknown font role|base font role|complete role/,
   );
+
   writeFileSync(
     resolve(consumerRoot, "index.ts"),
     `
@@ -468,30 +600,22 @@ void presetInk;
         target: "ES2022",
         module: "ESNext",
         moduleResolution: "Bundler",
-        skipLibCheck: true,
+        skipLibCheck: false,
         types: [targetPackageName],
       },
-      include: ["*.ts", "*.vue"],
+      include: ["index.ts", "env.d.ts", "*.vue"],
     }),
     "utf8",
   );
-  run(
-    "pnpm",
-    [
-      "--dir",
-      packageRoot,
-      "exec",
-      "vue-tsc",
-      "--noEmit",
-      "-p",
-      resolve(consumerRoot, "tsconfig.json"),
-    ],
-    { cwd: consumerRoot },
-  );
+  run("pnpm", ["exec", "vue-tsc", "--noEmit", "-p", resolve(consumerRoot, "tsconfig.json")], {
+    cwd: consumerRoot,
+  });
 
   process.stdout.write(
-    `Packed contract passed for ${targetPackageName}@${packageManifest.version}.\n`,
+    `Independent minimal install, recipes, and packed contract passed for ${targetPackageName}@${packageManifest.version}.\n`,
   );
 } finally {
-  rmSync(temporaryRoot, { recursive: true, force: true });
+  if (process.argv.includes("--keep"))
+    process.stdout.write(`Consumer retained at ${temporaryRoot}\n`);
+  else rmSync(temporaryRoot, { recursive: true, force: true });
 }

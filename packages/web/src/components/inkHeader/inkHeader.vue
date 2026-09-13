@@ -23,14 +23,19 @@ const onTitleClick = () => {
 
 <template>
   <header class="ink-header">
-    <div class="ink-header__logo" @click="onTitleClick">
+    <button type="button" class="ink-header__logo" @click="onTitleClick">
       <img v-if="logoSrc" class="ink-header__logo-icon" :src="logoSrc" alt="InKCre Logo" />
       <span class="ink-header__logo-text">{{ title }}</span>
-    </div>
+    </button>
     <div class="ink-header__right">
       <span v-if="displayPageTitle" class="ink-header__page-title">{{ displayPageTitle }}</span>
       <slot name="right-icon">
-        <span class="i-mdi-menu ink-header__menu-icon" @click="onMenuClick"></span>
+        <button
+          type="button"
+          aria-label="Menu"
+          class="i-mdi-menu ink-header__menu-icon"
+          @click="onMenuClick"
+        ></button>
       </slot>
     </div>
   </header>

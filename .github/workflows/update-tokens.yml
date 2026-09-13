@@ -34,6 +34,7 @@ jobs:
         env:
           INKCRE_TOKEN_FILENAME: ${{ github.event.client_payload.filename }}
           INKCRE_TOKEN_JSON: ${{ toJSON(github.event.client_payload.tokens) }}
+          INKCRE_CHANGESET_RELEASE: ${{ github.event.client_payload.releaseType }}
           INKCRE_CHANGESET_ID: figma-${{ github.run_id }}-${{ github.run_attempt }}
           INKCRE_CHANGESET_SUMMARY: ${{ github.event.client_payload.commitMessage || 'Update design tokens from Figma.' }}
 
@@ -42,9 +43,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: ${{ github.event.client_payload.commitMessage || 'Update design tokens from Figma' }}
-          title: "Design tokens updated from Figma"
-          body: "Design tokens have been updated via Figma and need to be reviewed."
-          branch: design-tokens/update-${{ github.run_id }}-${{ github.run_attempt }}
+          title: "更新 Figma 设计 Token 候选值"
+          body: "已按现有角色准备 Token 值更新。请复核角色用途、视觉效果和显式声明的 Changeset 级别。"
+          branch: feat/design-tokens-update-${{ github.run_id }}-${{ github.run_attempt }}
           delete-branch: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

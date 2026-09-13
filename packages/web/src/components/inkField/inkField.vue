@@ -23,15 +23,19 @@ const onValueClick = () => {
 <template>
   <div :class="fieldClass">
     <div class="flex flex-row">
-      <span class="ink-field__label">
+      <label :for="props.for" class="ink-field__label">
         {{ label }}
-        <sup v-if="props.required" class="ink-field__required">*</sup>
-      </span>
+        <sup aria-hidden="true" v-if="props.required" class="ink-field__required">*</sup>
+      </label>
       <slot name="label-right" />
     </div>
     <slot>
-      <span :class="valueClass" @click="onValueClick">{{ value }}</span>
+      <button v-if="editable" type="button" :class="valueClass" @click="onValueClick">
+        {{ value }}
+      </button>
+      <span v-else :class="valueClass">{{ value }}</span>
     </slot>
+    <p v-if="error" :id="errorId" class="ink-field__error" role="alert">{{ error }}</p>
   </div>
 </template>
 

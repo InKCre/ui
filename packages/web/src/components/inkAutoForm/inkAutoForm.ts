@@ -1,4 +1,7 @@
 import type { PropType } from "vue";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import type { LanguageService } from "vscode-json-languageservice";
+import { SCHEMA_RESOLVE_ERROR } from "../inkJsonEditor/jsonSchemaService";
 import { makeStringProp, makeObjectProp } from "../../utils/vue-props";
 
 // --- Types ---
@@ -45,6 +48,8 @@ export const inkAutoFormProps = {
 
 // --- Emits ---
 export const inkAutoFormEmits = {
+  validation: (_result: FormValidation) => true,
+  error: (_error: unknown) => true,
   "update:formData": (_value: Record<string, any>) => true,
 } as const;
 
@@ -78,8 +83,13 @@ export function mapSchemaPropertyToComponent(property: JSONSchemaProperty): Fiel
   }
 
   // String with date/time format -> Picker
-  if (type === "string" && format) {
-    const pickerType = format === "date-time" ? "datetime" : format === "time" ? "time" : "date";
+  if (type === "string" && format && ["date", "time", "date-time", "datetime"].includes(format)) {
+    const pickerType =
+      format === "date-time" || format === "datetime"
+        ? "datetime"
+        : format === "time"
+          ? "time"
+          : "date";
     return {
       component: "inkPicker",
       props: {
@@ -98,12 +108,13 @@ export function mapSchemaPropertyToComponent(property: JSONSchemaProperty): Fiel
     };
   }
 
-  // Number/Integer -> Input (fallback to text for now)
+  // Numeric controls emit text; AutoForm converts complete finite numbers at its data boundary.
   if (type === "number" || type === "integer") {
     return {
       component: "inkInput",
       props: {
-        type: "default",
+        nativeType: "text",
+        inputmode: type === "integer" ? "numeric" : "decimal",
       },
     };
   }
@@ -117,58 +128,67 @@ export function mapSchemaPropertyToComponent(property: JSONSchemaProperty): Fiel
   };
 }
 
-/**
- * Validates form data against JSON Schema
- */
+export interface FormValidation {
+  valid: boolean;
+  status: "pending" | "valid" | "invalid" | "error";
+  errors: Record<string, string[]>;
+  rootErrors: string[];
+}
+
+/** Validation failures reject; the component reports an unavailable validator as an error. */
 export async function validateFormData(
-  formData: Record<string, any>,
-  schema: JSONSchema,
-  jsonService: any,
-): Promise<{ valid: boolean; errors: Record<string, string[]> }> {
-  try {
-    const jsonString = JSON.stringify(formData, null, 2);
-    const TextDocument = await import("vscode-json-languageservice").then((m) => m.TextDocument);
-
-    const doc = TextDocument.create("autoform://form-data.json", "json", 0, jsonString);
-    const jsonDocument = jsonService.parseJSONDocument(doc);
-
-    // Configure schema
-    jsonService.resetSchema("autoform://form-data.json");
-    jsonService.configure({
-      schemas: [
-        {
-          uri: "autoform://schema.json",
-          fileMatch: ["autoform://form-data.json"],
-          schema,
-        },
-      ],
-    });
-
-    const diagnostics = await jsonService.doValidation(doc, jsonDocument);
-
-    const errors: Record<string, string[]> = {};
-
-    diagnostics.forEach((d: any) => {
-      // Extract property name from message or path
-      const message = d.message;
-      const match = message.match(/Property (\w+)/);
-      const propertyName = match ? match[1] : "root";
-
-      if (!errors[propertyName]) {
-        errors[propertyName] = [];
-      }
-      errors[propertyName].push(message);
-    });
-
-    return {
-      valid: diagnostics.length === 0,
-      errors,
-    };
-  } catch (error) {
-    console.warn("[InkAutoForm] Validation error:", error);
-    return {
-      valid: true,
-      errors: {},
-    };
+  formData: Record<string, unknown>,
+  service: LanguageService,
+): Promise<FormValidation> {
+  const doc = TextDocument.create(
+    "autoform://form-data.json",
+    "json",
+    0,
+    JSON.stringify(formData, null, 2),
+  );
+  const jsonDocument = service.parseJSONDocument(doc);
+  const diagnostics = await service.doValidation(doc, jsonDocument);
+  const errors: Record<string, string[]> = Object.create(null);
+  const rootErrors: string[] = [];
+  for (const diagnostic of diagnostics) {
+    let node = jsonDocument.getNodeFromOffset(doc.offsetAt(diagnostic.range.start));
+    while (node?.parent && node.parent !== jsonDocument.root) node = node.parent;
+    if (node?.type === "property") (errors[node.keyNode.value] ??= []).push(diagnostic.message);
+    else rootErrors.push(diagnostic.message);
   }
+  return {
+    valid: diagnostics.length === 0,
+    status: diagnostics.some((item) => item.code === SCHEMA_RESOLVE_ERROR)
+      ? "error"
+      : diagnostics.length
+        ? "invalid"
+        : "valid",
+    errors,
+    rootErrors,
+  };
+}
+
+/** JSON Schema date strings stay strings in formData. Picker alone uses local Date objects. */
+export function parseFieldDate(value: unknown, format?: string): Date | null {
+  if (typeof value !== "string" || !value) return null;
+  if (format === "date") {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!match) return null;
+    const date = new Date(0);
+    date.setFullYear(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    date.setHours(0, 0, 0, 0);
+    return date.getFullYear() === Number(match[1]) &&
+      date.getMonth() === Number(match[2]) - 1 &&
+      date.getDate() === Number(match[3])
+      ? date
+      : null;
+  }
+  const date = new Date(format === "time" ? `1970-01-01T${value}` : value);
+  return Number.isFinite(date.getTime()) ? date : null;
+}
+export function serializeFieldDate(value: Date, format?: string): string {
+  if (format === "date")
+    return `${String(value.getFullYear()).padStart(4, "0")}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
+  if (format === "time") return value.toISOString().slice(11);
+  return value.toISOString();
 }

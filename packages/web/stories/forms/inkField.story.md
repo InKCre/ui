@@ -1,68 +1,7 @@
-# InkField
+# inkField
 
-A component for displaying and editing key-value pairs in forms.
+InkField 负责标签、布局、必填提示和错误说明。给自定义控件提供稳定 id，并用 Field 的 `for` 关联它。`error` 显示校验消息，`errorId` 应与控件的 `aria-describedby` 一致；控件同时设置 `aria-invalid`。
 
-## Rationale
+默认槽放控件；`label-right` 放标签旁的辅助内容。省略默认槽时显示 value，editable 状态下使用原生按钮并发出 `value-click`。required 在 Field 上只是提示，真实输入约束由内部控件负责。
 
-InkField exists to provide a consistent way to display labels and values in forms, supporting different layouts and editability.
-
-Use it for form fields where you need a label and a value display or input; avoid using it for standalone labels or values without context.
-
-## Design Semantics
-
-### Concepts
-
-- `layout`: arrangement of label and value (`inline`, `col`, `row`).
-- `editable`: whether the value can be interacted with.
-- `required`: indicates mandatory field.
-
-### Visual / UX Meaning
-
-- `inline`: label and value on the same line; value underlined and clickable if editable.
-- `col`: label above value in a column.
-- `row`: label and value side by side.
-
-## Canonical Examples
-
-- Inline editable field: Used for compact forms.
-
-  ```vue
-  <InkField label="Name" value="John Doe" />
-  ```
-
-- Column layout: For structured forms.
-
-  ```vue
-  <InkField label="Email" layout="col">
-    <InkInput v-model="email" />
-  </InkField>
-  ```
-
-- Required field: Indicates mandatory input.
-
-  ```vue
-  <InkField label="Password" required layout="col">
-    <InkInput type="password" v-model="password" />
-  </InkField>
-  ```
-
-## Behavioral Contract
-
-- In editable state: value is clickable and emits 'value-click'.
-- Required fields display a red asterisk next to the label.
-- Layout changes affect positioning but not functionality.
-
-## Extension & Composition
-
-- Supports slot for custom value content (e.g., inputs, pickers).
-- Can be used in forms with InkForm.
-
-## Non-Goals
-
-- Handling validation or submission logic.
-- Data persistence.
-
-## Implementation Notes
-
-- Uses computed classes for layout and state.
-- Relies on Vue slots for flexibility.
+标签与 body-sm 错误文本允许换行，错误段落没有额外默认 margin。正常说明不要用更小的 label-md 压缩。

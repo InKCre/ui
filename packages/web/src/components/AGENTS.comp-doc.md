@@ -1,88 +1,16 @@
-# `compName.docs.md` rulebook
+# Story 文档指南
 
-## Best Practices
+组件说明位于 `packages/web/stories/<category>/compName.story.md`。读者应能理解组件解决什么问题、如何使用，以及哪些行为可以依赖；不需要知道当前任务的对话历史。
 
-- Story-driven, tells what this component can do, what can't do.
-- Every story should be an executable specification, not demo.
-- Maintain API (props, emits) in the code, not document.
-- Write for Coding Agents. Pay attention to Token Efficiency. Use simple and concise language.
+文档按实际复杂度组织，不要求每个组件都填写同一套章节。通常需要交代：
 
-## Scaffold
+- 适用场景，以及会影响选型的限制。
+- 对应 Story 的代表性用法和必要的操作步骤。
+- 值与事件、确认取消、异步和错误等可观察契约。
+- 组合时由组件或消费者分别负责的事项，以及有意义的非目标。
 
-The words in `>` is what you (agent) need to follow, do NOT includes in the final document.
+API 声明以源码和公开类型为准。说明中的参数、事件和示例必须与当前实现一致；不要另维护一份会与声明漂移的完整 API 表。行为发生变化时，同步修改现有说明、Story 和受影响的 Skill 输入。
 
-````md
-# CompName
+区分已经实现的行为与建议或已知限制。不要复制“永不回归”“不会抛异常”“完全支持受控和非受控”等未经验证的保证。计划、备选方案和执行证据放在任务工作包中，不冒充当前组件文档。
 
-> Simple description of the problem this component solves.
-
-## Rationale
-
-> Explain Why this component exists.
-
-> Define when to use and when not to use.
-
-## Design Semantics
-
-### Concepts
-
-> For example:
->
-> - `ConceptA`: one-sentence definition
-> - `ConceptB`
-
-### Visual / UX Meaning
-
-> The semantic differences between states / variants.
-> What changes the user is expected to perceive
-
-## Canonical Examples
-
-> The examples represent canonical usage, not an exhaustive combination of all parameters. For example:
->
-> - Subtle(default): Used as the normal/secondary action.
->   ```vue
->   <InkButton text="Save" theme="primary" />
->   ```
-
-## Behavioral Contract
-
-> Behavioral guarantees consumers can rely on. For example:
->
-> - In `loading` state:
->   - No primary events should be emitted
->   - No repeated submissions should occur
-> - In `disabled` state:
->   - No hover / active feedback
-> - State transitions should be idempotent
-> - No uncaught exceptions should be thrown
-
-## Extension & Composition
-
-> For example:
->
-> - Can be composed with `CompGroup` / `FormItem`
-> - Supports both controlled and uncontrolled usage
-> - Not recommended to nest inside high-frequency reflow containers
-
-## Non-Goals
-
-> Explicitly out of scope for this component. For example:
->
-> - Handling permissions or authorization logic
-> - Data persistence
-> - Business workflow orchestration
-
-## Implementation Notes
-
-> Notes for maintainers, for example:
->
-> - Internal state is managed via `useXXX`
-> - Relies on browser capabilities such as `ResizeObserver`
-> - Notes on handling SSR / non-DOM environments
->   Note do not repeat project level implementation notes.
-````
-
-## References
-
-- [Histoire Docs Guide](https://histoire.dev/guide/vue3/docs.html)
+优先复用现有 Story 示例，减少示例的重复维护。随包 Skill 的维护入口见[生成说明](../../../../scripts/build-agent-skills.md)，生成目录不能手改。

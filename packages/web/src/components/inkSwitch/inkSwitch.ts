@@ -14,10 +14,12 @@ export const inkSwitchProps = {
   showLabel: makeBooleanProp(true),
   offText: makeStringProp("OFF"),
   onText: makeStringProp("ON"),
+  disabled: makeBooleanProp(false),
   isSwitching: makeBooleanProp(false),
 } as const;
 
 // --- Emits ---
 export const inkSwitchEmits = {
+  error: (_error: unknown) => true,
   "update:modelValue": (_value: boolean) => true,
 } as const;

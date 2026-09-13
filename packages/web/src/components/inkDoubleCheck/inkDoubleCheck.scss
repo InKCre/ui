@@ -7,27 +7,33 @@
   }
 
   &__popup {
-    background: sys-var(color, surface, base);
-    padding: sys-var(space, lg);
-    min-width: 300px;
-    max-width: 400px;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   &__title {
-    @include apply-font(body-lg);
+    @include apply-font(title-sm);
     margin: 0 0 sys-var(space, md) 0;
-    color: sys-var(color, text, primary);
+    color: sys-var(color, text, base);
   }
 
   &__message {
-    @include apply-font(label-lg);
+    @include apply-font(body-sm);
     margin: 0 0 sys-var(space, lg) 0;
-    color: sys-var(color, text, secondary);
+    color: sys-var(color, text, subtle);
   }
 
   &__actions {
     display: flex;
+    flex-wrap: wrap;
     gap: sys-var(space, sm);
     justify-content: flex-end;
   }
+}
+
+// Popup teleports its dialog root, so the parent scoped attribute is not attached there.
+:global(.ink-double-check__dialog) {
+  width: min(400px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
 }

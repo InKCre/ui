@@ -1,47 +1,11 @@
-# `compName.story.vue` coding rulebook
+# Story 编写指南
 
-## Core Principle
+Story 位于 `packages/web/stories/<category>/`，分类与公开组件身份来自 `component-manifest.json`。选择代表性用法、重要状态转换和具体容易回归的边界，不枚举全部参数组合。
 
-- A Story is a visual and behavioral contract, not a parameter matrix.
-- Story exist to ensure that important states and behaviors never regress.
+每个公开组件至少有一个 Variant。Variant 标题说明用户能观察到的状态或操作；需要解释步骤、前置条件和预期结果时，在对应 Story 文档中写明。简单组件不为了满足数量规则虚构边界案例。
 
-A Story represents one of the following:
+Story 是可操作的示例和验收入口。`pnpm check:stories` 检查清单、文件、分类标题和 Variant 是否存在；`pnpm story` 检查展示构建。两者都不自动证明键盘、焦点、异步或视觉行为正确，这些变化需要实际操作验证。
 
-1. A canonical semantic state
-2. A state transition boundary
-3. An edge case likely to regress
-4. A design-forbidden or invalid state
+全局 router、i18n 和主题适配放在 [histoire.setup.ts](../../stories/histoire.setup.ts)。场景专用状态放在 Story 中；需要验证注入上下文时，使用负责该上下文的真实组件或明确的场景包装，不改变全局默认值来迁就一个案例。
 
-Stories must NOT be used for:
-
-- Exhaustive prop combinations
-- Demonstrating all possible values
-- Acting as a playground or sandbox
-- Replacing documentation text
-
-Stories must be readable without explanatory text. If a Story needs explanation, it likely belongs in the doc instead.
-
-## Best Practices
-
-Categorize variants into:
-
-- Cannonical: Stable, long-term design commitments (required).
-- State: Critical boundaries between internal states (recommended).
-- Edge: Scenarios most likely to break layout or behavior (recommended).
-- Invalid: States that must not be relied upon (optional).
-
-Titles must be descriptive, semantic, stable over time.
-
-## Minimal Checklist
-
-Before committing a `*.story.vue`, ensure:
-
-- [ ] At least one cannonical variant exists
-- [ ] At least one state or edge variant exists
-- [ ] No exhaustive prop combinations are present
-- [ ] All Story titles communicate intent
-- [ ] All Variants represent meaningful states
-
-## Other Notes
-
-- Cannot use provide/inject in story, use it in `histoire.setup.ts`
+从仓库根运行 `pnpm story:dev` 查看用例。修改完成后检查用例是否能稳定演示目标行为，说明是否与实际操作一致；只有当静态和现有黑盒证据不足且收益明确时，才按组织政策讨论新增自动化。

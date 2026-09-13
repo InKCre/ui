@@ -11,16 +11,88 @@ current generated API facts used to implement them.
 
 **Components:** `InkForm`, `InkField`, `InkInput`, `InkTextarea`, `InkDropdown`, `InkPicker`, `InkSwitch`, `InkButton`
 
-1. Use InkForm to establish the shared field layout.
-2. Choose one control per value intent: input, textarea, dropdown, picker, or switch.
-3. Use InkField for custom controls or explicit field structure not already supplied by form context.
-4. Keep validation, submission, and async error handling in application code.
-5. Use InkButton for submit or secondary commands.
+1. 使用 InkForm layout="col"，内置控件直接传 label、error，保留各自模型名称；自定义字段才包 InkField。
+2. 标题选择 title-lg，正文 body-md，说明和错误 body-sm；短元信息才选 label-md。页面留白和列数写在宿主 CSS 中。
+3. 主提交写 InkButton theme="primary" native-type="submit"，传 isLoading；业务代码处理校验、异步失败和防止重复提交。
+4. 成功／失败写明确文字，默认使用 surface.subtle 搭配 feedback.success／error；不要创建不存在的 success.surface 或 danger.light。
+
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import { InkForm, InkInput, InkButton } from "@inkcre/ui-web";
+// 宿主提供实际持久化函数，失败时 reject。
+const props = defineProps<{ save: (name: string) => Promise<void> }>();
+const name = ref(""),
+  error = ref(""),
+  result = ref(""),
+  pending = ref(false);
+async function submit() {
+  if (pending.value) return;
+  error.value = name.value.trim() ? "" : "请输入名称。";
+  result.value = "";
+  if (error.value) return;
+  pending.value = true;
+  try {
+    await props.save(name.value.trim());
+    result.value = "设置已保存。";
+  } catch {
+    error.value = "保存失败，请稍后重试。";
+  } finally {
+    pending.value = false;
+  }
+}
+</script>
+<template>
+  <section class="settings-form">
+    <h1 class="title">工作空间设置</h1>
+    <p class="copy">修改团队看到的工作空间名称。</p>
+    <InkForm layout="col" @submit="submit">
+      <InkInput
+        v-model="name"
+        label="名称"
+        name="workspace"
+        :error="error"
+        :disabled="pending"
+        required
+      />
+      <InkButton theme="primary" native-type="submit" text="保存设置" :is-loading="pending" />
+      <p v-if="result" role="status" class="feedback">{{ result }}</p>
+    </InkForm>
+  </section>
+</template>
+<style scoped>
+.settings-form {
+  font-family: var(--sys-typo-family-sans);
+  color: var(--sys-color-text-base);
+}
+.title {
+  font-size: var(--sys-font-title-lg-font-size);
+  line-height: var(--sys-font-title-lg-line-height);
+  font-weight: var(--sys-font-title-lg-font-weight);
+  letter-spacing: var(--sys-font-title-lg-letter-spacing);
+}
+.copy {
+  font-size: var(--sys-font-body-md-font-size);
+  line-height: var(--sys-font-body-md-line-height);
+  font-weight: var(--sys-font-body-md-font-weight);
+  letter-spacing: var(--sys-font-body-md-letter-spacing);
+}
+.feedback {
+  font-size: var(--sys-font-body-sm-font-size);
+  line-height: var(--sys-font-body-sm-line-height);
+  font-weight: var(--sys-font-body-sm-font-weight);
+  letter-spacing: var(--sys-font-body-sm-letter-spacing);
+  color: var(--sys-color-feedback-success);
+}
+</style>
+
+```
 
 **Caveats**
 
 - Do not normalize every control to the same model prop name; use each component's actual API.
 - Do not wrap controls in duplicate InkField labels when they already consume InkForm context.
+- 示例的文本和颜色工具类需要 presetInk；应用入口加载样式。未使用 Uno 时可用同名 Sass 角色和系统变量。
 
 ## Schema Configuration
 
@@ -30,8 +102,9 @@ current generated API facts used to implement them.
 
 1. Use InkAutoForm when a flat schema maps cleanly to ordinary primitive controls.
 2. Use InkJsonEditor when users must see or edit the raw JSON document.
-3. Keep parsing and persistence errors separate from schema validation feedback.
-4. Use InkPlaceholder for unrecoverable schema-loading or permission states.
+3. JsonEditor 保留字符串草稿，通过 validation.valid 和对应 text 控制保存，确认有效后再 JSON.parse。
+4. Keep parsing and persistence errors separate from schema validation feedback.
+5. Use InkPlaceholder for unrecoverable schema-loading or permission states.
 
 **Caveats**
 
@@ -44,7 +117,7 @@ current generated API facts used to implement them.
 
 **Components:** `InkDoubleCheck`, `InkDialog`, `InkButton`, `InkLoading`
 
-1. Use InkDoubleCheck when the consequence is already understood and a second deliberate click is enough.
+1. InkDoubleCheck 用于独立确认弹层，动作绑定 confirm；异步 pending 选择 InkDialog。
 2. Use InkDialog when the user needs explanation, choices, or a focused decision.
 3. Show pending state while the destructive request is running.
 4. Close or reset confirmation state only after the application lifecycle is explicit.
@@ -63,7 +136,7 @@ current generated API facts used to implement them.
 1. Use InkPopup as the controlled surface and choose its position deliberately.
 2. Use the popup's existing scrim behavior when it meets the interaction contract.
 3. Add InkScrim only when the custom composition has no backdrop owner.
-4. Provide explicit close controls and application-appropriate keyboard behavior.
+4. 提供可访问名称和可见关闭动作；原生 dialog 负责模态焦点，scrim=false 保留背景操作。
 
 **Caveats**
 
@@ -96,3 +169,141 @@ current generated API facts used to implement them.
 2. Enable expansion only when a useful larger asset or view exists.
 3. Use image loading and error events to align surrounding feedback.
 4. Use InkPlaceholder only when the surrounding media region needs recovery guidance.
+
+
+
+## Host Integration
+
+**Intent:** 通过公开适配器接入宿主路由与语言，并使用根级主题选择。
+
+**Components:** `InkHeader`, `InkDialog`, `InkButton`
+
+1. 把宿主路由与翻译函数传入此边界组件。
+2. 通过注入键提供响应式值，子组件读取该上下文。
+3. 应用入口加载样式；主题选择写入 html，由应用负责持久化偏好。
+
+```vue
+<script setup lang="ts">
+import { computed, provide, ref } from "vue";
+import {
+  INK_ROUTER_KEY,
+  INK_I18N_KEY,
+  InkHeader,
+  InkDialog,
+  InkButton,
+  type InkRouter,
+  type InkI18n,
+} from "@inkcre/ui-web";
+
+const props = defineProps<{
+  currentPath: string;
+  currentName: string | null;
+  locale: string;
+  translate: (key: string) => string;
+}>();
+provide<InkRouter>(INK_ROUTER_KEY, {
+  currentPath: computed(() => props.currentPath),
+  currentName: computed(() => props.currentName),
+});
+provide<InkI18n>(INK_I18N_KEY, {
+  t: (key) => props.translate(key),
+  locale: computed(() => props.locale),
+});
+const open = ref(false);
+function setTheme(event: Event) {
+  const value = (event.target as HTMLSelectElement).value;
+  document.documentElement.dataset.theme = value;
+}
+</script>
+
+<template>
+  <InkHeader />
+  <label>
+    主题
+    <select aria-label="主题" @change="setTheme">
+      <option value="system">跟随系统</option>
+      <option value="light">浅色</option>
+      <option value="dark">深色</option>
+    </select>
+  </label>
+  <InkButton text="查看设置说明" @click="open = true" />
+  <InkDialog v-model="open" title="设置说明" :show-cancel="false" @confirm="open = false">
+    当前页面：{{ currentName }}。弹层使用根级主题，按钮文案通过语言适配器读取。
+  </InkDialog>
+</template>
+
+```
+
+**Caveats**
+
+- 适配器不要求安装 vue-router 或 vue-i18n；示例父组件应把实际当前路由、locale 和翻译函数绑定到 props。
+
+## Raw JSON Configuration
+
+**Intent:** 保留原始 JSON 草稿，校验通过后解析并保存。
+
+**Components:** `InkForm`, `InkJsonEditor`, `InkButton`
+
+1. 把原始文字绑定到 v-model，另外保存 validation 状态。
+2. 只有当前草稿验证通过时才允许解析和持久化。
+3. 明确显示保存结果，失败后保留草稿。
+
+```vue
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { InkForm, InkJsonEditor, InkButton, type JsonEditorValidation } from "@inkcre/ui-web";
+
+const props = defineProps<{ save: (value: unknown) => Promise<void> }>();
+const draft = ref('{"name":"工作空间"}');
+const validation = ref<JsonEditorValidation | null>(null);
+const pending = ref(false);
+const message = ref("");
+const schema = { type: "object", properties: { name: { type: "string" } }, required: ["name"] };
+const canSave = computed(
+  () => validation.value?.status === "valid" && validation.value.text === draft.value,
+);
+
+watch(
+  draft,
+  () => {
+    validation.value = null;
+    message.value = "";
+  },
+  { flush: "sync" },
+);
+async function submit() {
+  if (pending.value || !canSave.value) return;
+  pending.value = true;
+  try {
+    await props.save(JSON.parse(draft.value));
+    message.value = "配置已保存。";
+  } catch {
+    message.value = "保存失败，请检查配置并重试。";
+  } finally {
+    pending.value = false;
+  }
+}
+</script>
+
+<template>
+  <InkForm @submit="submit">
+    <InkJsonEditor
+      v-model="draft"
+      label="配置 JSON"
+      :schema="schema"
+      :disabled="pending"
+      @validation="validation = $event"
+      @error="message = '校验暂不可用，请稍后重试。'"
+    />
+    <InkButton
+      text="保存配置"
+      theme="primary"
+      native-type="submit"
+      :is-loading="pending"
+      :disabled="!canSave"
+    />
+    <p v-if="message" role="status">{{ message }}</p>
+  </InkForm>
+</template>
+
+```

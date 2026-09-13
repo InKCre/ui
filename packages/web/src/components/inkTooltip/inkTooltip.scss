@@ -56,6 +56,6 @@
   }
 
   &__content {
-    @include apply-font(label-lg);
+    @include apply-font(body-sm);
   }
 }

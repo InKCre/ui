@@ -25,16 +25,71 @@
 ## Public API Facts
 
 - Import: `import { InkAutoForm } from "@inkcre/ui-web";`
-- Props: `formData`, `layout`, `schema`
-- Events: `update:formData`
-- Slots: None
-- Public types: `JSONSchema`, `JSONSchemaProperty`
-- Story variants: `Text Fields with Validation`, `Textarea (Long Text)`, `Boolean Switches`, `Dropdown (Enum Values)`, `Date and Time Pickers`, `Default Values from Schema`, `Validation Errors`, `Invalid Schema Handling`, `Complex Form (Mixed Field Types)`, `Inline Layout`, `Row Layout`
+
+### Models
+
+- `v-model:formData` → `update:formData` `[_value: Record<string, any>]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `formData` | `undefined \| Record<string, any>` | 否 | `() => ({})` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `"col"` |
+| `schema` | `JSONSchema` | 是 | `undefined` |
+
+### Events
+
+- `error`: `[_error: unknown]`
+- `update:formData`: `[_value: Record<string, any>]`
+- `validation`: `[_result: FormValidation]`
+
+### Slots
+
+- None.
+
+- Public types: `JSONSchema`, `JSONSchemaProperty`, `FormValidation`
+- Story variants: `Text Fields with Validation`, `Textarea (Long Text)`, `Boolean Switches`, `Dropdown (Enum Values)`, `Date and Time Pickers`, `Default Values from Schema`, `Validation Errors`, `Invalid Schema Handling`, `Complex Form (Mixed Field Types)`, `Inline Layout`, `Row Layout`, `Existing values, numeric and date boundaries`
+
+### Public type definitions
+
+```ts
+export interface JSONSchema {
+  type: "object";
+  properties: Record<string, JSONSchemaProperty>;
+  required?: string[];
+  [key: string]: any;
+}
+
+export interface JSONSchemaProperty {
+  type: "string" | "number" | "integer" | "boolean";
+  title?: string;
+  description?: string;
+  default?: any;
+  enum?: any[];
+  format?: "date" | "time" | "datetime" | "date-time";
+  maxLength?: number;
+  minimum?: number;
+  maximum?: number;
+  pattern?: string;
+  [key: string]: any;
+}
+
+export interface FormValidation {
+  valid: boolean;
+  status: "pending" | "valid" | "invalid" | "error";
+  errors: Record<string, string[]>;
+  rootErrors: string[];
+}
+```
 
 ## API Caveats
 
-- Treat the supported schema subset as a deliberate flat-form contract.
-- Supply custom component mappings only when the generated default control is insufficient.
+- 仅支持扁平 primitive schema，不提供自定义映射 prop。v-model:formData 保留已有值及额外属性，只为缺失值补默认值。
+- 数字为 number，空数字删除字段；日期保留 JSON 字符串，Picker 确认才序列化。
+- validation(FormValidation) 的 valid/status/errors/rootErrors 控制保存，pending/invalid/error 均不可保存。实例隔离，过期结果不应用。
 
 ## Common Mistakes
 

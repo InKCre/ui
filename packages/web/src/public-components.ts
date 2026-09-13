@@ -21,7 +21,29 @@ import InkSwitch from "./components/inkSwitch/inkSwitch.vue";
 import InkTextarea from "./components/inkTextarea/inkTextarea.vue";
 import InkTooltip from "./components/inkTooltip/inkTooltip.vue";
 
-export const publicComponents = {
+export const publicComponents: {
+  readonly InkAutoForm: typeof InkAutoForm;
+  readonly InkButton: typeof InkButton;
+  readonly InkDatetimePickerView: typeof InkDatetimePickerView;
+  readonly InkDialog: typeof InkDialog;
+  readonly InkDoubleCheck: typeof InkDoubleCheck;
+  readonly InkDropdown: typeof InkDropdown;
+  readonly InkField: typeof InkField;
+  readonly InkForm: typeof InkForm;
+  readonly InkHeader: typeof InkHeader;
+  readonly InkImage: typeof InkImage;
+  readonly InkInput: typeof InkInput;
+  readonly InkJsonEditor: typeof InkJsonEditor;
+  readonly InkLoading: typeof InkLoading;
+  readonly InkPagination: typeof InkPagination;
+  readonly InkPicker: typeof InkPicker;
+  readonly InkPlaceholder: typeof InkPlaceholder;
+  readonly InkPopup: typeof InkPopup;
+  readonly InkScrim: typeof InkScrim;
+  readonly InkSwitch: typeof InkSwitch;
+  readonly InkTextarea: typeof InkTextarea;
+  readonly InkTooltip: typeof InkTooltip;
+} = {
   InkAutoForm,
   InkButton,
   InkDatetimePickerView,
@@ -43,7 +65,7 @@ export const publicComponents = {
   InkSwitch,
   InkTextarea,
   InkTooltip,
-} as const;
+};
 
 export {
   InkAutoForm,

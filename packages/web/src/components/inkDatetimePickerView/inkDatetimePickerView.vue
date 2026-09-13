@@ -1,290 +1,141 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, nextTick } from "vue";
 import {
   inkDatetimePickerViewProps,
   inkDatetimePickerViewEmits,
-  MONTHS,
   getDaysInMonth,
   getYearRange,
   padZero,
-  formatHour,
-  getAmPm,
+  boundedDate,
 } from "./inkDatetimePickerView";
-
+import { useOptionalI18n } from "../../i18n";
 const props = defineProps(inkDatetimePickerViewProps);
 const emit = defineEmits(inkDatetimePickerViewEmits);
-
-// --- data ---
-const selectedWeekday = ref(props.modelValue.getDay());
-const selectedYear = ref(props.modelValue.getFullYear());
-const selectedMonth = ref(props.modelValue.getMonth());
-const selectedDay = ref(props.modelValue.getDate());
-const selectedHour = ref(props.modelValue.getHours());
-const selectedMinute = ref(props.modelValue.getMinutes());
-
-// --- computed ---
-const showDate = computed(() => {
-  return props.mode.includes("date") || props.mode === "datetime";
-});
-
-const showTime = computed(() => {
-  return props.mode === "time" || props.mode.includes("datetime");
-});
-
-const years = computed(() => {
-  return getYearRange(props.minDate, props.maxDate);
-});
-
-const months = computed(() => {
-  return MONTHS.map((month, index) => ({ label: month, value: index }));
-});
-
-const days = computed(() => {
-  const daysInMonth = getDaysInMonth(selectedYear.value, selectedMonth.value);
-  const dayList: number[] = [];
-  for (let i = 1; i <= daysInMonth; i++) {
-    dayList.push(i);
-  }
-  return dayList;
-});
-
-const hours = computed(() => {
-  const hourList: string[] = [];
-  const maxHour = props.hourFormat === "12" ? 12 : 23;
-  for (let i = 0; i <= maxHour; i++) {
-    if (props.hourFormat === "12") {
-      hourList.push(i === 0 ? "12" : padZero(i));
-    } else {
-      hourList.push(padZero(i));
-    }
-  }
-  return hourList;
-});
-
-const minutes = computed(() => {
-  const minuteList: string[] = [];
-  for (let i = 0; i < 60; i++) {
-    minuteList.push(padZero(i));
-  }
-  return minuteList;
-});
-
-const amPmOptions = computed(() => ["AM", "PM"]);
-
-const displayHour = computed(() => {
-  return formatHour(selectedHour.value, props.hourFormat);
-});
-
-const amPm = computed(() => {
-  return getAmPm(selectedHour.value);
-});
-
-// --- methods ---
-const updateModelValue = () => {
-  const newDate = new Date(
-    selectedYear.value,
-    selectedMonth.value,
-    selectedDay.value,
-    selectedHour.value,
-    selectedMinute.value,
-  );
-
-  const isWithinRange =
-    (!props.minDate || newDate >= props.minDate) && (!props.maxDate || newDate <= props.maxDate);
-
-  if (isWithinRange) {
-    emit("update:modelValue", newDate);
-  }
-};
-
-const onYearChange = (year: number) => {
-  selectedYear.value = year;
-  adjustDayIfNeeded();
-  updateModelValue();
-};
-
-const onMonthChange = (month: number) => {
-  selectedMonth.value = month;
-  adjustDayIfNeeded();
-  updateModelValue();
-};
-
-const onDayChange = (day: number) => {
-  selectedDay.value = day;
-  updateModelValue();
-};
-
-const onHourChange = (hour: string) => {
-  let hourValue = parseInt(hour, 10);
-  if (props.hourFormat === "12") {
-    const isPm = amPm.value === "PM";
-    if (hourValue === 12) {
-      hourValue = isPm ? 12 : 0;
-    } else {
-      hourValue = isPm ? hourValue + 12 : hourValue;
-    }
-  }
-  selectedHour.value = hourValue;
-  updateModelValue();
-};
-
-const onMinuteChange = (minute: string) => {
-  selectedMinute.value = parseInt(minute, 10);
-  updateModelValue();
-};
-
-const onAmPmChange = (period: string) => {
-  if (props.hourFormat === "12") {
-    const isPm = period === "PM";
-    const currentHour12 = selectedHour.value % 12 || 12;
-    selectedHour.value = isPm
-      ? currentHour12 === 12
-        ? 12
-        : currentHour12 + 12
-      : currentHour12 === 12
-        ? 0
-        : currentHour12;
-    updateModelValue();
-  }
-};
-
-const adjustDayIfNeeded = () => {
-  const maxDays = getDaysInMonth(selectedYear.value, selectedMonth.value);
-  if (selectedDay.value > maxDays) {
-    selectedDay.value = maxDays;
-  }
-};
-
-// --- watchers ---
+const i18n = useOptionalI18n();
+const root = ref<HTMLElement>();
+const date = computed(() => boundedDate(props.modelValue, props.minDate, props.maxDate));
+// The view can mount inside a closed dialog, before native selects have a scrollable layout.
 watch(
-  () => props.modelValue,
-  (newValue) => {
-    selectedWeekday.value = newValue.getDay();
-    selectedYear.value = newValue.getFullYear();
-    selectedMonth.value = newValue.getMonth();
-    selectedDay.value = newValue.getDate();
-    selectedHour.value = newValue.getHours();
-    selectedMinute.value = newValue.getMinutes();
+  date,
+  async () => {
+    await nextTick();
+    for (const select of root.value?.querySelectorAll("select") ?? []) {
+      const option = select.selectedOptions[0];
+      if (!option) continue;
+      // Scroll this column only; scrollIntoView also shifts the surrounding horizontal columns.
+      select.scrollTop +=
+        option.getBoundingClientRect().top -
+        select.getBoundingClientRect().top -
+        (select.clientHeight - option.offsetHeight) / 2;
+    }
   },
+  { immediate: true, flush: "post" },
 );
+const showDate = computed(() => props.mode.includes("date"));
+const showTime = computed(() => props.mode === "time" || props.mode.includes("datetime"));
+const locale = computed(() => props.locale || i18n?.locale.value || "en");
+const label = (key: string, fallback: string) => (i18n ? i18n.t(`datetime.${key}`) : fallback);
+const years = computed(() => {
+  const values = getYearRange(props.minDate, props.maxDate);
+  const year = date.value?.getFullYear();
+  if (year !== undefined && !values.includes(year)) values.push(year);
+  return values.sort((a, b) => a - b);
+});
+const months = computed(() =>
+  Array.from({ length: 12 }, (_, index) =>
+    new Intl.DateTimeFormat(locale.value, { month: "long" }).format(new Date(2024, index, 1)),
+  ),
+);
+const weekdays = computed(() =>
+  Array.from({ length: 7 }, (_, index) =>
+    new Intl.DateTimeFormat(locale.value, { weekday: "long" }).format(new Date(2024, 0, 7 + index)),
+  ),
+);
+const days = computed(() =>
+  date.value ? getDaysInMonth(date.value.getFullYear(), date.value.getMonth()) : 0,
+);
+const hours = computed(() =>
+  Array.from({ length: props.hourFormat === "12" ? 12 : 24 }, (_, index) =>
+    props.hourFormat === "12" ? index + 1 : index,
+  ),
+);
+type Part = "year" | "month" | "day" | "hour" | "minute" | "period" | "weekday";
+function update(part: Part, event: Event) {
+  if (!date.value) return;
+  const value = Number((event.target as HTMLSelectElement).value);
+  const next = new Date(date.value);
+  if (part === "year" || part === "month") {
+    const day = next.getDate();
+    next.setDate(1);
+    if (part === "year") next.setFullYear(value);
+    else next.setMonth(value);
+    next.setDate(Math.min(day, getDaysInMonth(next.getFullYear(), next.getMonth())));
+  } else if (part === "day") next.setDate(value);
+  else if (part === "weekday") next.setDate(next.getDate() + value - next.getDay());
+  else if (part === "hour")
+    next.setHours(
+      props.hourFormat === "12" ? (value % 12) + (next.getHours() >= 12 ? 12 : 0) : value,
+    );
+  else if (part === "minute") next.setMinutes(value);
+  else next.setHours((next.getHours() % 12) + value * 12);
+  const bounded = boundedDate(next, props.minDate, props.maxDate);
+  if (bounded) emit("update:modelValue", bounded);
+}
 </script>
-
 <template>
-  <div class="ink-datetime-picker-view">
-    <div class="ink-datetime-picker-view__columns">
-      <div v-if="showDate" class="ink-datetime-picker-view__column">
-        <div class="ink-datetime-picker-view__label">Year</div>
-        <div class="ink-datetime-picker-view__options">
-          <div
-            v-for="year in years"
-            :key="year"
-            :class="[
-              'ink-datetime-picker-view__option',
-              {
-                'ink-datetime-picker-view__option--selected': year === selectedYear,
-              },
-            ]"
-            @click="onYearChange(year)"
-          >
-            {{ year }}
-          </div>
-        </div>
-      </div>
-
-      <div v-if="showDate" class="ink-datetime-picker-view__column">
-        <div class="ink-datetime-picker-view__label">Month</div>
-        <div class="ink-datetime-picker-view__options">
-          <div
-            v-for="month in months"
-            :key="month.value"
-            :class="[
-              'ink-datetime-picker-view__option',
-              {
-                'ink-datetime-picker-view__option--selected': month.value === selectedMonth,
-              },
-            ]"
-            @click="onMonthChange(month.value)"
-          >
-            {{ month.label }}
-          </div>
-        </div>
-      </div>
-
-      <div v-if="showDate" class="ink-datetime-picker-view__column">
-        <div class="ink-datetime-picker-view__label">Day</div>
-        <div class="ink-datetime-picker-view__options">
-          <div
-            v-for="day in days"
-            :key="day"
-            :class="[
-              'ink-datetime-picker-view__option',
-              {
-                'ink-datetime-picker-view__option--selected': day === selectedDay,
-              },
-            ]"
-            @click="onDayChange(day)"
-          >
-            {{ day }}
-          </div>
-        </div>
-      </div>
-
-      <div v-if="showTime" class="ink-datetime-picker-view__column">
-        <div class="ink-datetime-picker-view__label">Hour</div>
-        <div class="ink-datetime-picker-view__options">
-          <div
-            v-for="hour in hours"
-            :key="hour"
-            :class="[
-              'ink-datetime-picker-view__option',
-              {
-                'ink-datetime-picker-view__option--selected': hour === displayHour,
-              },
-            ]"
-            @click="onHourChange(hour)"
-          >
-            {{ hour }}
-          </div>
-        </div>
-      </div>
-
-      <div v-if="showTime" class="ink-datetime-picker-view__column">
-        <div class="ink-datetime-picker-view__label">Minute</div>
-        <div class="ink-datetime-picker-view__options">
-          <div
-            v-for="minute in minutes"
-            :key="minute"
-            :class="[
-              'ink-datetime-picker-view__option',
-              {
-                'ink-datetime-picker-view__option--selected': minute === padZero(selectedMinute),
-              },
-            ]"
-            @click="onMinuteChange(minute)"
-          >
-            {{ minute }}
-          </div>
-        </div>
-      </div>
-
-      <div v-if="showTime && hourFormat === '12'" class="ink-datetime-picker-view__column">
-        <div class="ink-datetime-picker-view__label">Period</div>
-        <div class="ink-datetime-picker-view__options">
-          <div
-            v-for="period in amPmOptions"
-            :key="period"
-            :class="[
-              'ink-datetime-picker-view__option',
-              { 'ink-datetime-picker-view__option--selected': period === amPm },
-            ]"
-            @click="onAmPmChange(period)"
-          >
-            {{ period }}
-          </div>
-        </div>
-      </div>
+  <div ref="root" class="ink-datetime-picker-view">
+    <p v-if="!date" role="alert">Invalid date or date range</p>
+    <div v-else class="ink-datetime-picker-view__columns">
+      <label v-if="mode.includes('weekday')" class="ink-datetime-picker-view__column"
+        >{{ label("weekday", "Weekday") }}
+        <select :value="date.getDay()" :size="5" @change="update('weekday', $event)">
+          <option v-for="(day, index) in weekdays" :key="index" :value="index">{{ day }}</option>
+        </select>
+      </label>
+      <label v-if="showDate" class="ink-datetime-picker-view__column"
+        >{{ label("year", "Year") }}
+        <select :value="date.getFullYear()" :size="5" @change="update('year', $event)">
+          <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+        </select>
+      </label>
+      <label v-if="showDate" class="ink-datetime-picker-view__column"
+        >{{ label("month", "Month") }}
+        <select :value="date.getMonth()" :size="5" @change="update('month', $event)">
+          <option v-for="(month, index) in months" :key="index" :value="index">{{ month }}</option>
+        </select>
+      </label>
+      <label v-if="showDate" class="ink-datetime-picker-view__column"
+        >{{ label("day", "Day") }}
+        <select :value="date.getDate()" :size="5" @change="update('day', $event)">
+          <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
+        </select>
+      </label>
+      <label v-if="showTime" class="ink-datetime-picker-view__column"
+        >{{ label("hour", "Hour") }}
+        <select
+          :value="hourFormat === '12' ? date.getHours() % 12 || 12 : date.getHours()"
+          :size="5"
+          @change="update('hour', $event)"
+        >
+          <option v-for="hour in hours" :key="hour" :value="hour">{{ padZero(hour) }}</option>
+        </select>
+      </label>
+      <label v-if="showTime" class="ink-datetime-picker-view__column"
+        >{{ label("minute", "Minute") }}
+        <select :value="date.getMinutes()" :size="5" @change="update('minute', $event)">
+          <option v-for="minute in 60" :key="minute" :value="minute - 1">
+            {{ padZero(minute - 1) }}
+          </option>
+        </select>
+      </label>
+      <label v-if="showTime && hourFormat === '12'" class="ink-datetime-picker-view__column"
+        >{{ label("period", "Period") }}
+        <select :value="date.getHours() >= 12 ? 1 : 0" :size="2" @change="update('period', $event)">
+          <option :value="0">AM</option>
+          <option :value="1">PM</option>
+        </select>
+      </label>
     </div>
   </div>
 </template>
-
 <style lang="scss" scoped src="./inkDatetimePickerView.scss" />

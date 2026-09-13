@@ -25,15 +25,38 @@
 ## Public API Facts
 
 - Import: `import { InkScrim } from "@inkcre/ui-web";`
-- Props: `closeOnEscape`, `closeOnScrim`, `showCloseButton`
-- Events: `close`, `scrim-click`, `update:open`
-- Slots: `default`
+
+### Models
+
+- `v-model:open` → `update:open` `[value: boolean]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `closeOnScrim` | `undefined \| boolean` | 否 | `true` |
+| `closeOnEscape` | `undefined \| boolean` | 否 | `true` |
+| `showCloseButton` | `undefined \| boolean` | 否 | `false` |
+| `open` | `undefined \| boolean` | 否 | `false` |
+
+### Events
+
+- `update:open`: `[value: boolean]`
+
+### Slots
+
+- `default`: `{ close: () => void; }`
+
 - Public types: None
 - Story variants: `Open Scrim`, `Closed Scrim`, `Dismissible (closeOnScrim: true)`, `Non-Dismissible (closeOnScrim: false)`
 
+
 ## API Caveats
 
-- Keep open state and click-to-close behavior synchronized with the owning overlay.
+- 使用 v-model:open，全屏原生 dialog 负责模态、Escape 和焦点恢复。提供可访问名称。
+- closeOnScrim/closeOnEscape 默认 true，showCloseButton 可添加关闭按钮；槽获得 close，点击槽内容不关闭。
 
 ## Common Mistakes
 

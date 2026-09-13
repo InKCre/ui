@@ -1,5 +1,6 @@
 .ink-image {
   display: inline-block;
+  max-width: 100%;
 
   &__thumbnail {
     position: relative;
@@ -27,7 +28,8 @@
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: safe center;
+    overflow: auto;
     flex-direction: column;
     gap: sys-var(space, sm);
   }
@@ -35,19 +37,23 @@
   &__expanded-header {
     display: flex;
     flex-shrink: 0;
+    max-width: 100%;
   }
 
   &__expanded-title {
     @include apply-font(title-sm);
-    color: sys-var(color, text, scrim);
+    color: ref-var(color, neutral, 98);
     margin: 0;
     flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    background-color: ref-var(color, neutral, 2);
+    padding: sys-var(space, xs) sys-var(space, sm);
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   &__img-expanded {
+    min-height: 0;
+    flex-shrink: 1;
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
@@ -56,5 +62,18 @@
 
   &__expanded-footer {
     flex-shrink: 0;
+    max-width: 100%;
+  }
+}
+
+button.ink-image__thumbnail {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  &:focus-visible {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: 2px;
   }
 }

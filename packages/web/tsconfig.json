@@ -6,7 +6,8 @@
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "paths": {
-      "@vue/shared": ["./node_modules/@vue/shared"]
+      "@vue/shared": ["./node_modules/@vue/shared"],
+      "@inkcre/ui-web": ["./src/index.ts"]
     },
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,

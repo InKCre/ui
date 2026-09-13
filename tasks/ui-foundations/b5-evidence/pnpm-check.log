@@ -1,0 +1,648 @@
+$ pnpm format:check && pnpm lint && pnpm check:generated && pnpm check:skills && pnpm check:stories && pnpm check:token-workflow && pnpm type-check && pnpm build && pnpm check:package && pnpm story
+$ oxfmt --check .oxfmtrc.json package.json pnpm-workspace.yaml tsconfig.json scripts .github/workflows/*.yml README.md && pnpm --filter @inkcre/ui-web format:check
+Checking formatting...
+
+All matched files use the correct format.
+Finished in 159ms on 24 files using 10 threads.
+$ oxfmt --check --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js
+Checking formatting...
+
+All matched files use the correct format.
+Finished in 505ms on 149 files using 10 threads.
+$ oxlint --deny-warnings scripts && pnpm --filter @inkcre/ui-web lint
+$ oxlint --config .oxlintrc.json src stories histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js
+$ tsx scripts/check-generated.ts
+$ tsx scripts/build-tokens.ts
+🎨 Building design tokens...
+
+📖 Reading tokens from: /Volumes/WorkSSD/Development/InKCre/design/tokens/inkcre.tokens.json
+
+unocss
+✔︎ /Volumes/WorkSSD/Development/InKCre/design/packages/web/styles/uno/preset-ink.ts
+
+scss
+✔︎ /Volumes/WorkSSD/Development/InKCre/design/packages/web/styles/tokens/_ref.scss
+✔︎ /Volumes/WorkSSD/Development/InKCre/design/packages/web/styles/tokens/_sys.scss
+✔︎ /Volumes/WorkSSD/Development/InKCre/design/packages/web/styles/tokens/_comp.scss
+
+✅ Design tokens built successfully!
+
+📁 SCSS output: /Volumes/WorkSSD/Development/InKCre/design/packages/web/styles/tokens/
+  - _ref.scss
+  - _sys.scss
+  - _comp.scss
+
+📁 UnoCSS output: /Volumes/WorkSSD/Development/InKCre/design/packages/web/styles/uno/
+  - preset-ink.ts
+
+⏱️  Completed in 22ms
+$ tsx scripts/build-package-metadata.ts
+Generated registry, global types, and version for 21 public components.
+$ pnpm --filter @inkcre/ui-web skill:generate
+$ tsx ../../scripts/build-agent-skills.ts
+Generated 27 files for @inkcre/ui-web#ui-web.
+Generated files are current.
+$ pnpm --filter @inkcre/ui-web skill:generate:check && pnpm --filter @inkcre/ui-web skill:validate
+$ tsx ../../scripts/build-agent-skills.ts --check
+Generated @inkcre/ui-web#ui-web skill is current.
+$ intent validate
+✅ Validated 1 skill files — all passed
+$ tsx scripts/check-story-coverage.ts
+Story coverage is complete for 21 public components.
+$ tsx scripts/prepare-token-update.ts fixture
+🎨 Building design tokens...
+
+📖 Reading tokens from: /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-candidate-HM38Ck/tokens/inkcre.tokens.json
+
+unocss
+✔︎ /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-candidate-HM38Ck/packages/web/styles/uno/preset-ink.ts
+
+scss
+✔︎ /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-candidate-HM38Ck/packages/web/styles/tokens/_ref.scss
+✔︎ /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-candidate-HM38Ck/packages/web/styles/tokens/_sys.scss
+✔︎ /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-candidate-HM38Ck/packages/web/styles/tokens/_comp.scss
+
+✅ Design tokens built successfully!
+
+📁 SCSS output: /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-candidate-HM38Ck/packages/web/styles/tokens/
+  - _ref.scss
+  - _sys.scss
+  - _comp.scss
+
+📁 UnoCSS output: /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-candidate-HM38Ck/packages/web/styles/uno/
+  - preset-ink.ts
+
+⏱️  Completed in 29ms
+🎨 Building design tokens...
+
+📖 Reading tokens from: /var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-token-workflow-csmKxF/cycle/tokens/inkcre.tokens.json
+
+❌ Error building design tokens:
+Error:
+Reference Errors:
+Some token references (1) could not be found.
+Use log.verbosity "verbose" or use CLI option --verbose for more details.
+Refer to: https://styledictionary.com/reference/logging/
+
+Error:
+Reference Errors:
+Some token references (1) could not be found.
+Use log.verbosity "verbose" or use CLI option --verbose for more details.
+Refer to: https://styledictionary.com/reference/logging/
+
+    at StyleDictionary._exportPlatform (file:///Volumes/WorkSSD/Development/InKCre/design/node_modules/.pnpm/style-dictionary@5.1.1/node_modules/style-dictionary/lib/StyleDictionary.js:551:15)
+    at async StyleDictionary.getPlatformTokens (file:///Volumes/WorkSSD/Development/InKCre/design/node_modules/.pnpm/style-dictionary@5.1.1/node_modules/style-dictionary/lib/StyleDictionary.js:399:26)
+    at async StyleDictionary.buildPlatform (file:///Volumes/WorkSSD/Development/InKCre/design/node_modules/.pnpm/style-dictionary@5.1.1/node_modules/style-dictionary/lib/StyleDictionary.js:891:24)
+    at async Promise.all (index 0)
+    at async StyleDictionary.buildAllPlatforms (file:///Volumes/WorkSSD/Development/InKCre/design/node_modules/.pnpm/style-dictionary@5.1.1/node_modules/style-dictionary/lib/StyleDictionary.js:940:7)
+    at async main (/Volumes/WorkSSD/Development/InKCre/design/scripts/build-tokens.ts:867:5)
+Token import accepted a partial value update, preserved metadata, and rejected unsafe contract changes.
+$ pnpm type-check:root && pnpm --filter @inkcre/ui-web type-check
+$ tsc --noEmit
+
+┌─────────────────────────────────────────────────────────┐
+│  ✅  TNB ACTIVE — `typescript` is the tsgo-backed fork  │
+└─────────────────────────────────────────────────────────┘
+
+$ vue-tsc --noEmit -p tsconfig.check.json
+
+┌─────────────────────────────────────────────────────────┐
+│  ✅  TNB ACTIVE — `typescript` is the tsgo-backed fork  │
+└─────────────────────────────────────────────────────────┘
+
+$ pnpm --filter @inkcre/ui-web build
+$ pnpm run clean && pnpm run type-check && pnpm run build:js && pnpm run build:subpaths && pnpm run build:subpath-types && pnpm run build:finalize && pnpm run build:skills
+$ rimraf dist
+$ vue-tsc --noEmit -p tsconfig.check.json
+
+┌─────────────────────────────────────────────────────────┐
+│  ✅  TNB ACTIVE — `typescript` is the tsgo-backed fork  │
+└─────────────────────────────────────────────────────────┘
+
+$ vite build
+vite v7.2.7 building client environment for production...
+
+┌─────────────────────────────────────────────────────────┐
+│  ✅  TNB ACTIVE — `typescript` is the tsgo-backed fork  │
+└─────────────────────────────────────────────────────────┘
+
+transforming...
+✓ 98 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+dist/index.css   47.30 kB │ gzip:  6.80 kB
+dist/index.js   300.24 kB │ gzip: 84.66 kB │ map: 169.24 kB
+[vite:dts] Declaration files built in 591ms.
+
+✓ built in 1.39s
+$ vite build --config vite.subpaths.config.js
+vite v7.2.7 building client environment for production...
+transforming...
+✓ 7 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/locales/index.js   0.99 kB │ gzip: 0.50 kB
+dist/utils/index.js     1.10 kB │ gzip: 0.48 kB
+dist/uno/preset-ink.js  7.09 kB │ gzip: 1.50 kB
+✓ built in 38ms
+$ vue-tsc --declaration --emitDeclarationOnly --noEmit false --declarationMap false --composite false -p tsconfig.exports.json
+
+┌─────────────────────────────────────────────────────────┐
+│  ✅  TNB ACTIVE — `typescript` is the tsgo-backed fork  │
+└─────────────────────────────────────────────────────────┘
+
+$ tsx ../../scripts/finalize-package.ts
+Finalized package declarations and global components.
+$ pnpm run skill:generate:check
+$ tsx ../../scripts/build-agent-skills.ts --check
+Generated @inkcre/ui-web#ui-web skill is current.
+$ tsx scripts/check-package-contract.ts && tsx scripts/check-package-contract.ts @inkcre/web-design
+package: @inkcre/ui-web@1.4.0
+Tarball Contents
+dist/App.vue.d.ts
+dist/components.d.ts
+dist/components/inkAutoForm/inkAutoForm.d.ts
+dist/components/inkAutoForm/inkAutoForm.vue.d.ts
+dist/components/inkButton/inkButton.d.ts
+dist/components/inkButton/inkButton.vue.d.ts
+dist/components/inkDatetimePickerView/inkDatetimePickerView.d.ts
+dist/components/inkDatetimePickerView/inkDatetimePickerView.vue.d.ts
+dist/components/inkDialog/inkDialog.d.ts
+dist/components/inkDialog/inkDialog.vue.d.ts
+dist/components/inkDoubleCheck/inkDoubleCheck.d.ts
+dist/components/inkDoubleCheck/inkDoubleCheck.vue.d.ts
+dist/components/inkDropdown/inkDropdown.d.ts
+dist/components/inkDropdown/inkDropdown.vue.d.ts
+dist/components/inkField/inkField.d.ts
+dist/components/inkField/inkField.vue.d.ts
+dist/components/inkForm/inkForm.d.ts
+dist/components/inkForm/inkForm.vue.d.ts
+dist/components/inkHeader/inkHeader.d.ts
+dist/components/inkHeader/inkHeader.vue.d.ts
+dist/components/inkImage/inkImage.d.ts
+dist/components/inkImage/inkImage.vue.d.ts
+dist/components/inkInput/inkInput.d.ts
+dist/components/inkInput/inkInput.vue.d.ts
+dist/components/inkJsonEditor/inkJsonEditor.d.ts
+dist/components/inkJsonEditor/inkJsonEditor.vue.d.ts
+dist/components/inkJsonEditor/jsonSchemaService.d.ts
+dist/components/inkLoading/inkLoading.d.ts
+dist/components/inkLoading/inkLoading.vue.d.ts
+dist/components/inkPagination/inkPagination.d.ts
+dist/components/inkPagination/inkPagination.vue.d.ts
+dist/components/inkPicker/inkPicker.d.ts
+dist/components/inkPicker/inkPicker.vue.d.ts
+dist/components/inkPlaceholder/inkPlaceholder.d.ts
+dist/components/inkPlaceholder/inkPlaceholder.vue.d.ts
+dist/components/inkPopup/inkPopup.d.ts
+dist/components/inkPopup/inkPopup.vue.d.ts
+dist/components/inkScrim/inkScrim.d.ts
+dist/components/inkScrim/inkScrim.vue.d.ts
+dist/components/inkSwitch/inkSwitch.d.ts
+dist/components/inkSwitch/inkSwitch.vue.d.ts
+dist/components/inkTextarea/inkTextarea.d.ts
+dist/components/inkTextarea/inkTextarea.vue.d.ts
+dist/components/inkTooltip/inkTooltip.d.ts
+dist/components/inkTooltip/inkTooltip.vue.d.ts
+dist/composables/use-async-boolean.d.ts
+dist/composables/use-field-control.d.ts
+dist/composables/use-native-dialog.d.ts
+dist/composables/use-optional-model.d.ts
+dist/i18n.d.ts
+dist/index.css
+dist/index.d.ts
+dist/index.js
+dist/locales/en.d.ts
+dist/locales/index.d.ts
+dist/locales/index.js
+dist/locales/zh-CN.d.ts
+dist/main.d.ts
+dist/public-components.d.ts
+dist/router.d.ts
+dist/uno/preset-ink.d.ts
+dist/uno/preset-ink.js
+dist/utils/index.d.ts
+dist/utils/index.js
+dist/utils/json.d.ts
+dist/utils/token-types.d.ts
+dist/utils/vue-props.d.ts
+dist/version.d.ts
+MIGRATION.md
+package.json
+README.md
+skills/ui-web/references/common-mistakes.md
+skills/ui-web/references/component-map.md
+skills/ui-web/references/components/InkAutoForm.md
+skills/ui-web/references/components/InkButton.md
+skills/ui-web/references/components/InkDatetimePickerView.md
+skills/ui-web/references/components/InkDialog.md
+skills/ui-web/references/components/InkDoubleCheck.md
+skills/ui-web/references/components/InkDropdown.md
+skills/ui-web/references/components/InkField.md
+skills/ui-web/references/components/InkForm.md
+skills/ui-web/references/components/InkHeader.md
+skills/ui-web/references/components/InkImage.md
+skills/ui-web/references/components/InkInput.md
+skills/ui-web/references/components/InkJsonEditor.md
+skills/ui-web/references/components/InkLoading.md
+skills/ui-web/references/components/InkPagination.md
+skills/ui-web/references/components/InkPicker.md
+skills/ui-web/references/components/InkPlaceholder.md
+skills/ui-web/references/components/InkPopup.md
+skills/ui-web/references/components/InkScrim.md
+skills/ui-web/references/components/InkSwitch.md
+skills/ui-web/references/components/InkTextarea.md
+skills/ui-web/references/components/InkTooltip.md
+skills/ui-web/references/composition-recipes.md
+skills/ui-web/references/integration.md
+skills/ui-web/references/styling-and-themes.md
+skills/ui-web/SKILL.md
+styles/_functions.scss
+styles/_mixins.scss
+styles/index.scss
+styles/README.md
+styles/tokens/_comp.scss
+styles/tokens/_ref.scss
+styles/tokens/_sys.scss
+styles/uno/preset-ink.ts
+Tarball Details
+/var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-ui-contract-hUotyx/source-pack/inkcre-ui-web-1.4.0.tgz
+
+┌─────────────────────────────────────────────────────────┐
+│  ✅  TNB ACTIVE — `typescript` is the tsgo-backed fork  │
+└─────────────────────────────────────────────────────────┘
+
+Packed contract passed for @inkcre/ui-web@1.4.0.
+package: @inkcre/ui-web@1.4.0
+Tarball Contents
+dist/App.vue.d.ts
+dist/components.d.ts
+dist/components/inkAutoForm/inkAutoForm.d.ts
+dist/components/inkAutoForm/inkAutoForm.vue.d.ts
+dist/components/inkButton/inkButton.d.ts
+dist/components/inkButton/inkButton.vue.d.ts
+dist/components/inkDatetimePickerView/inkDatetimePickerView.d.ts
+dist/components/inkDatetimePickerView/inkDatetimePickerView.vue.d.ts
+dist/components/inkDialog/inkDialog.d.ts
+dist/components/inkDialog/inkDialog.vue.d.ts
+dist/components/inkDoubleCheck/inkDoubleCheck.d.ts
+dist/components/inkDoubleCheck/inkDoubleCheck.vue.d.ts
+dist/components/inkDropdown/inkDropdown.d.ts
+dist/components/inkDropdown/inkDropdown.vue.d.ts
+dist/components/inkField/inkField.d.ts
+dist/components/inkField/inkField.vue.d.ts
+dist/components/inkForm/inkForm.d.ts
+dist/components/inkForm/inkForm.vue.d.ts
+dist/components/inkHeader/inkHeader.d.ts
+dist/components/inkHeader/inkHeader.vue.d.ts
+dist/components/inkImage/inkImage.d.ts
+dist/components/inkImage/inkImage.vue.d.ts
+dist/components/inkInput/inkInput.d.ts
+dist/components/inkInput/inkInput.vue.d.ts
+dist/components/inkJsonEditor/inkJsonEditor.d.ts
+dist/components/inkJsonEditor/inkJsonEditor.vue.d.ts
+dist/components/inkJsonEditor/jsonSchemaService.d.ts
+dist/components/inkLoading/inkLoading.d.ts
+dist/components/inkLoading/inkLoading.vue.d.ts
+dist/components/inkPagination/inkPagination.d.ts
+dist/components/inkPagination/inkPagination.vue.d.ts
+dist/components/inkPicker/inkPicker.d.ts
+dist/components/inkPicker/inkPicker.vue.d.ts
+dist/components/inkPlaceholder/inkPlaceholder.d.ts
+dist/components/inkPlaceholder/inkPlaceholder.vue.d.ts
+dist/components/inkPopup/inkPopup.d.ts
+dist/components/inkPopup/inkPopup.vue.d.ts
+dist/components/inkScrim/inkScrim.d.ts
+dist/components/inkScrim/inkScrim.vue.d.ts
+dist/components/inkSwitch/inkSwitch.d.ts
+dist/components/inkSwitch/inkSwitch.vue.d.ts
+dist/components/inkTextarea/inkTextarea.d.ts
+dist/components/inkTextarea/inkTextarea.vue.d.ts
+dist/components/inkTooltip/inkTooltip.d.ts
+dist/components/inkTooltip/inkTooltip.vue.d.ts
+dist/composables/use-async-boolean.d.ts
+dist/composables/use-field-control.d.ts
+dist/composables/use-native-dialog.d.ts
+dist/composables/use-optional-model.d.ts
+dist/i18n.d.ts
+dist/index.css
+dist/index.d.ts
+dist/index.js
+dist/locales/en.d.ts
+dist/locales/index.d.ts
+dist/locales/index.js
+dist/locales/zh-CN.d.ts
+dist/main.d.ts
+dist/public-components.d.ts
+dist/router.d.ts
+dist/uno/preset-ink.d.ts
+dist/uno/preset-ink.js
+dist/utils/index.d.ts
+dist/utils/index.js
+dist/utils/json.d.ts
+dist/utils/token-types.d.ts
+dist/utils/vue-props.d.ts
+dist/version.d.ts
+MIGRATION.md
+package.json
+README.md
+skills/ui-web/references/common-mistakes.md
+skills/ui-web/references/component-map.md
+skills/ui-web/references/components/InkAutoForm.md
+skills/ui-web/references/components/InkButton.md
+skills/ui-web/references/components/InkDatetimePickerView.md
+skills/ui-web/references/components/InkDialog.md
+skills/ui-web/references/components/InkDoubleCheck.md
+skills/ui-web/references/components/InkDropdown.md
+skills/ui-web/references/components/InkField.md
+skills/ui-web/references/components/InkForm.md
+skills/ui-web/references/components/InkHeader.md
+skills/ui-web/references/components/InkImage.md
+skills/ui-web/references/components/InkInput.md
+skills/ui-web/references/components/InkJsonEditor.md
+skills/ui-web/references/components/InkLoading.md
+skills/ui-web/references/components/InkPagination.md
+skills/ui-web/references/components/InkPicker.md
+skills/ui-web/references/components/InkPlaceholder.md
+skills/ui-web/references/components/InkPopup.md
+skills/ui-web/references/components/InkScrim.md
+skills/ui-web/references/components/InkSwitch.md
+skills/ui-web/references/components/InkTextarea.md
+skills/ui-web/references/components/InkTooltip.md
+skills/ui-web/references/composition-recipes.md
+skills/ui-web/references/integration.md
+skills/ui-web/references/styling-and-themes.md
+skills/ui-web/SKILL.md
+styles/_functions.scss
+styles/_mixins.scss
+styles/index.scss
+styles/README.md
+styles/tokens/_comp.scss
+styles/tokens/_ref.scss
+styles/tokens/_sys.scss
+styles/uno/preset-ink.ts
+Tarball Details
+/var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-ui-contract-iktMMo/source-pack/inkcre-ui-web-1.4.0.tgz
+npm warn Unknown env config "manage-package-manager-versions". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice
+npm notice 📦  @inkcre/web-design@1.4.0
+npm notice Tarball Contents
+npm notice 9.2kB MIGRATION.md
+npm notice 3.2kB README.md
+npm notice 331B dist/App.vue.d.ts
+npm notice 1.4kB dist/components.d.ts
+npm notice 2.3kB dist/components/inkAutoForm/inkAutoForm.d.ts
+npm notice 1.8kB dist/components/inkAutoForm/inkAutoForm.vue.d.ts
+npm notice 1.4kB dist/components/inkButton/inkButton.d.ts
+npm notice 3.6kB dist/components/inkButton/inkButton.vue.d.ts
+npm notice 1.7kB dist/components/inkDatetimePickerView/inkDatetimePickerView.d.ts
+npm notice 2.6kB dist/components/inkDatetimePickerView/inkDatetimePickerView.vue.d.ts
+npm notice 1.4kB dist/components/inkDialog/inkDialog.d.ts
+npm notice 4.0kB dist/components/inkDialog/inkDialog.vue.d.ts
+npm notice 592B dist/components/inkDoubleCheck/inkDoubleCheck.d.ts
+npm notice 1.9kB dist/components/inkDoubleCheck/inkDoubleCheck.vue.d.ts
+npm notice 2.2kB dist/components/inkDropdown/inkDropdown.d.ts
+npm notice 5.0kB dist/components/inkDropdown/inkDropdown.vue.d.ts
+npm notice 1.0kB dist/components/inkField/inkField.d.ts
+npm notice 3.0kB dist/components/inkField/inkField.vue.d.ts
+npm notice 1.5kB dist/components/inkForm/inkForm.d.ts
+npm notice 1.3kB dist/components/inkForm/inkForm.vue.d.ts
+npm notice 496B dist/components/inkHeader/inkHeader.d.ts
+npm notice 1.7kB dist/components/inkHeader/inkHeader.vue.d.ts
+npm notice 1.3kB dist/components/inkImage/inkImage.d.ts
+npm notice 2.5kB dist/components/inkImage/inkImage.vue.d.ts
+npm notice 1.8kB dist/components/inkInput/inkInput.d.ts
+npm notice 4.9kB dist/components/inkInput/inkInput.vue.d.ts
+npm notice 2.2kB dist/components/inkJsonEditor/inkJsonEditor.d.ts
+npm notice 4.7kB dist/components/inkJsonEditor/inkJsonEditor.vue.d.ts
+npm notice 434B dist/components/inkJsonEditor/jsonSchemaService.d.ts
+npm notice 379B dist/components/inkLoading/inkLoading.d.ts
+npm notice 998B dist/components/inkLoading/inkLoading.vue.d.ts
+npm notice 513B dist/components/inkPagination/inkPagination.d.ts
+npm notice 1.3kB dist/components/inkPagination/inkPagination.vue.d.ts
+npm notice 2.0kB dist/components/inkPicker/inkPicker.d.ts
+npm notice 3.4kB dist/components/inkPicker/inkPicker.vue.d.ts
+npm notice 764B dist/components/inkPlaceholder/inkPlaceholder.d.ts
+npm notice 2.0kB dist/components/inkPlaceholder/inkPlaceholder.vue.d.ts
+npm notice 666B dist/components/inkPopup/inkPopup.d.ts
+npm notice 2.1kB dist/components/inkPopup/inkPopup.vue.d.ts
+npm notice 510B dist/components/inkScrim/inkScrim.d.ts
+npm notice 1.9kB dist/components/inkScrim/inkScrim.vue.d.ts
+npm notice 972B dist/components/inkSwitch/inkSwitch.d.ts
+npm notice 2.5kB dist/components/inkSwitch/inkSwitch.vue.d.ts
+npm notice 1.7kB dist/components/inkTextarea/inkTextarea.d.ts
+npm notice 3.9kB dist/components/inkTextarea/inkTextarea.vue.d.ts
+npm notice 403B dist/components/inkTooltip/inkTooltip.d.ts
+npm notice 1.5kB dist/components/inkTooltip/inkTooltip.vue.d.ts
+npm notice 221B dist/composables/use-async-boolean.d.ts
+npm notice 472B dist/composables/use-field-control.d.ts
+npm notice 161B dist/composables/use-native-dialog.d.ts
+npm notice 645B dist/composables/use-optional-model.d.ts
+npm notice 244B dist/i18n.d.ts
+npm notice 47.3kB dist/index.css
+npm notice 778B dist/index.d.ts
+npm notice 300.2kB dist/index.js
+npm notice 510B dist/locales/en.d.ts
+npm notice 1.3kB dist/locales/index.d.ts
+npm notice 988B dist/locales/index.js
+npm notice 510B dist/locales/zh-CN.d.ts
+npm notice 0B dist/main.d.ts
+npm notice 91.6kB dist/public-components.d.ts
+npm notice 357B dist/router.d.ts
+npm notice 119B dist/uno/preset-ink.d.ts
+npm notice 7.1kB dist/uno/preset-ink.js
+npm notice 29B dist/utils/index.d.ts
+npm notice 1.1kB dist/utils/index.js
+npm notice 66B dist/utils/json.d.ts
+npm notice 57B dist/utils/token-types.d.ts
+npm notice 1.4kB dist/utils/vue-props.d.ts
+npm notice 40B dist/version.d.ts
+npm notice 5.4kB package.json
+npm notice 3.4kB skills/ui-web/references/common-mistakes.md
+npm notice 2.4kB skills/ui-web/references/component-map.md
+npm notice 1.8kB skills/ui-web/references/components/InkAutoForm.md
+npm notice 1.6kB skills/ui-web/references/components/InkButton.md
+npm notice 1.2kB skills/ui-web/references/components/InkDatetimePickerView.md
+npm notice 1.6kB skills/ui-web/references/components/InkDialog.md
+npm notice 1.0kB skills/ui-web/references/components/InkDoubleCheck.md
+npm notice 1.5kB skills/ui-web/references/components/InkDropdown.md
+npm notice 1.2kB skills/ui-web/references/components/InkField.md
+npm notice 1.2kB skills/ui-web/references/components/InkForm.md
+npm notice 977B skills/ui-web/references/components/InkHeader.md
+npm notice 1.2kB skills/ui-web/references/components/InkImage.md
+npm notice 1.4kB skills/ui-web/references/components/InkInput.md
+npm notice 1.5kB skills/ui-web/references/components/InkJsonEditor.md
+npm notice 921B skills/ui-web/references/components/InkLoading.md
+npm notice 1.1kB skills/ui-web/references/components/InkPagination.md
+npm notice 1.5kB skills/ui-web/references/components/InkPicker.md
+npm notice 1.2kB skills/ui-web/references/components/InkPlaceholder.md
+npm notice 1.2kB skills/ui-web/references/components/InkPopup.md
+npm notice 1.2kB skills/ui-web/references/components/InkScrim.md
+npm notice 1.4kB skills/ui-web/references/components/InkSwitch.md
+npm notice 1.2kB skills/ui-web/references/components/InkTextarea.md
+npm notice 997B skills/ui-web/references/components/InkTooltip.md
+npm notice 5.9kB skills/ui-web/references/composition-recipes.md
+npm notice 1.5kB skills/ui-web/references/integration.md
+npm notice 2.7kB skills/ui-web/references/styling-and-themes.md
+npm notice 3.3kB skills/ui-web/SKILL.md
+npm notice 1.6kB styles/_functions.scss
+npm notice 1.8kB styles/_mixins.scss
+npm notice 836B styles/index.scss
+npm notice 6.4kB styles/README.md
+npm notice 605B styles/tokens/_comp.scss
+npm notice 3.7kB styles/tokens/_ref.scss
+npm notice 2.7kB styles/tokens/_sys.scss
+npm notice 8.2kB styles/uno/preset-ink.ts
+npm notice Tarball Details
+npm notice name: @inkcre/web-design
+npm notice version: 1.4.0
+npm notice filename: inkcre-web-design-1.4.0.tgz
+npm notice package size: 141.1 kB
+npm notice unpacked size: 629.9 kB
+npm notice shasum: a91de0717346217411f117544bee19fd43530fd5
+npm notice integrity: sha512-nMeYBHWkU2rR/[...]gpYg0jj0On3rg==
+npm notice total files: 106
+npm notice
+inkcre-web-design-1.4.0.tgz
+
+┌─────────────────────────────────────────────────────────┐
+│  ✅  TNB ACTIVE — `typescript` is the tsgo-backed fork  │
+└─────────────────────────────────────────────────────────┘
+
+Packed contract passed for @inkcre/web-design@1.4.0.
+$ pnpm --filter @inkcre/ui-web story:build
+$ histoire build
+Using 9 threads for story collection
+stories/feedback/inkLoading.story.vue 689ms (setup:34ms, execute:27ms, run:624ms)
+stories/controls/inkHeader.story.vue 689ms (setup:54ms, execute:6ms, run:626ms)
+stories/controls/inkSwitch.story.vue 691ms (setup:47ms, execute:13ms, run:627ms)
+stories/controls/inkButton.story.vue 694ms (setup:49ms, execute:13ms, run:626ms)
+stories/controls/inkPagination.story.vue 712ms (setup:42ms, execute:19ms, run:644ms)
+stories/feedback/inkDialog.story.vue 711ms (setup:36ms, execute:25ms, run:645ms)
+stories/feedback/inkPopup.story.vue 712ms (setup:42ms, execute:19ms, run:646ms)
+stories/feedback/inkPlaceholder.story.vue 741ms (setup:48ms, execute:13ms, run:647ms)
+stories/feedback/inkDoubleCheck.story.vue 745ms (setup:47ms, execute:14ms, run:661ms)
+stories/feedback/inkTooltip.story.vue 190ms (setup:5ms, execute:0ms, run:173ms)
+stories/forms/inkField.story.vue 198ms (setup:6ms, execute:0ms, run:190ms)
+stories/forms/inkDropdown.story.vue 239ms (setup:5ms, execute:0ms, run:232ms)
+stories/forms/inkTextarea.story.vue 176ms (setup:3ms, execute:0ms, run:169ms)
+stories/specialized/inkDatetimePickerView.story.vue 48ms (setup:3ms, execute:0ms, run:42ms)
+stories/forms/inkInput.story.vue 224ms (setup:6ms, execute:0ms, run:204ms)
+stories/forms/inkPicker.story.vue 224ms (setup:6ms, execute:1ms, run:216ms)
+stories/media/inkImage.story.vue 188ms (setup:3ms, execute:0ms, run:183ms)
+stories/overlays/inkScrim.story.vue 65ms (setup:4ms, execute:0ms, run:57ms)
+stories/forms/inkForm.story.vue 247ms (setup:6ms, execute:1ms, run:236ms)
+stories/specialized/inkJsonEditor.story.vue 122ms (setup:4ms, execute:0ms, run:117ms)
+stories/forms/inkAutoForm.story.vue 371ms (setup:8ms, execute:1ms, run:361ms)
+vite v7.2.7 building client environment for development...
+transforming...
+[Optimize Shiki] Blocking in build mode: shiki
+../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js (50:39): "setupVanilla" is not exported by "virtual:$histoire-generated-global-setup", imported by "../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js".
+../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js (51:37): "setupVanilla" is not exported by "virtual:$histoire-generated-global-setup", imported by "../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js".
+../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js (57:30): "setupVanilla" is not exported by "stories/histoire.setup.ts", imported by "../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js".
+../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js (58:28): "setupVanilla" is not exported by "stories/histoire.setup.ts", imported by "../../node_modules/.pnpm/histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94.2_supports-color@8.1.1_tsx@4.21.0_v_6ffa13b5e10dd25a067816d1ba21d51e/node_modules/histoire/dist/node/builtin-plugins/vanilla-support/RenderStory.js".
+../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/MountStory.js (47:20): "setupVue3" is not exported by "virtual:$histoire-generated-global-setup", imported by "../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/MountStory.js".
+../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/MountStory.js (48:20): "setupVue3" is not exported by "virtual:$histoire-generated-global-setup", imported by "../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/MountStory.js".
+../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/RenderStory.js (83:20): "setupVue3" is not exported by "virtual:$histoire-generated-global-setup", imported by "../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/RenderStory.js".
+../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/RenderStory.js (84:20): "setupVue3" is not exported by "virtual:$histoire-generated-global-setup", imported by "../../node_modules/.pnpm/@histoire+plugin-vue@1.0.0-alpha.5_histoire@1.0.0-alpha.5_@types+node@25.0.2_sass@1.94._4d2e557def6c1cf6b640ca73d2520565/node_modules/@histoire/plugin-vue/dist/bundled/client/app/RenderStory.js".
+✓ 392 modules transformed.
+rendering chunks...
+computing gzip size...
+.histoire/dist/assets/style-D9uc2JmO.css                                                                                  111.42 kB │ gzip:  17.10 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-feedback-inkloading-story-vue-GySdTfbS.js                    0.55 kB │ gzip:   0.32 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-specialized-inkdatetimepickerview-story-vue-D7GsV_KP.js      0.55 kB │ gzip:   0.30 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-feedback-inkloading-story-md-Cw1owKKA.js                               0.58 kB │ gzip:   0.47 kB
+.histoire/dist/assets/_plugin-vue_export-helper-Dx4B89mq.js                                                                 0.63 kB │ gzip:   0.26 kB
+.histoire/dist/assets/use-optional-model-BUZ9gOib.js                                                                        0.68 kB │ gzip:   0.33 kB
+.histoire/dist/assets/BaseEmpty.vue-qqKMlNFY.js                                                                             0.70 kB │ gzip:   0.42 kB
+.histoire/dist/assets/jsonSchemaService-CAqck9sz.js                                                                         0.73 kB │ gzip:   0.43 kB
+.histoire/dist/assets/use-async-boolean-BCmM9X7B.js                                                                         0.80 kB │ gzip:   0.37 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-controls-inkheader-story-vue-wR8gawbb.js                     0.85 kB │ gzip:   0.35 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-controls-inkheader-story-md-DiBCALvJ.js                                0.85 kB │ gzip:   0.66 kB
+.histoire/dist/assets/use-native-dialog-yFbYcFT3.js                                                                         0.90 kB │ gzip:   0.42 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-forms-inkpicker-story-vue-BBRMca5V.js                        0.96 kB │ gzip:   0.51 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-controls-inkpagination-story-md-BAcHG2Nm.js                            0.96 kB │ gzip:   0.71 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-forms-inkfield-story-md-CjJsgRm2.js                                    0.99 kB │ gzip:   0.71 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-feedback-inkdoublecheck-story-vue-4LbPaHdI.js                1.00 kB │ gzip:   0.50 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-media-inkimage-story-md-t1fmGsjf.js                                    1.06 kB │ gzip:   0.80 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-overlays-inkscrim-story-md-BN2-Wr3k.js                                 1.09 kB │ gzip:   0.81 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-forms-inkform-story-md-A70qYQVs.js                                     1.09 kB │ gzip:   0.84 kB
+.histoire/dist/assets/story-COqPwWTZ.js                                                                                     1.26 kB │ gzip:   0.51 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-controls-inkswitch-story-md-VtjZu42N.js                                1.29 kB │ gzip:   0.95 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-controls-inkbutton-story-md-6DSmE6X3.js                                1.30 kB │ gzip:   0.90 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-feedback-inkdialog-story-md-57_Z9tLA.js                                1.35 kB │ gzip:   0.97 kB
+.histoire/dist/assets/use-field-control-BJW0tbmO.js                                                                         1.41 kB │ gzip:   0.62 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-feedback-inkpopup-story-md-CUqUc-hH.js                                 1.44 kB │ gzip:   0.99 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-feedback-inkpopup-story-vue-ChF9hi-k.js                      1.45 kB │ gzip:   0.56 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-specialized-inkdatetimepickerview-story-md-DxjeAkJG.js                 1.47 kB │ gzip:   1.03 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-forms-inktextarea-story-vue-BvcRbGwg.js                      1.48 kB │ gzip:   0.53 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-forms-inkpicker-story-md-C_gFjNSZ.js                                   1.48 kB │ gzip:   1.06 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-forms-inkdropdown-story-md-Dqa6jKIx.js                                 1.52 kB │ gzip:   1.06 kB
+.histoire/dist/assets/inkForm-Dr6V89Lk.js                                                                                   1.53 kB │ gzip:   0.78 kB
+.histoire/dist/assets/inkDatetimePickerView.story-DAZxGQHK.js                                                               1.62 kB │ gzip:   0.73 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-specialized-inkjsoneditor-story-md-BHs3iUOS.js                         1.63 kB │ gzip:   1.13 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-forms-inkfield-story-vue-BFJH-FD3.js                         1.65 kB │ gzip:   0.63 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-controls-inkswitch-story-vue-CN9ElI4x.js                     1.78 kB │ gzip:   0.64 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-forms-inkautoform-story-md-BG7YvYVI.js                                 1.81 kB │ gzip:   1.24 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-forms-inkinput-story-vue-BmpNbX6X.js                         1.83 kB │ gzip:   0.75 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-feedback-inktooltip-story-md-C0ZbW892.js                               1.86 kB │ gzip:   0.95 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-overlays-inkscrim-story-vue-BsEXcYIe.js                      1.96 kB │ gzip:   0.66 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-forms-inktextarea-story-md-o-2fz2YM.js                                 2.11 kB │ gzip:   1.01 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-feedback-inkdoublecheck-story-md-Co22T3x0.js                           2.19 kB │ gzip:   1.09 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-feedback-inktooltip-story-vue-BcX4jIP4.js                    2.26 kB │ gzip:   0.59 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-controls-inkpagination-story-vue-DoQE01T0.js                 2.42 kB │ gzip:   0.62 kB
+.histoire/dist/assets/bundle-sandbox-DVUDWSV4.js                                                                            2.43 kB │ gzip:   0.97 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-controls-inkbutton-story-vue-CBFypKMM.js                     2.49 kB │ gzip:   0.82 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-feedback-inkdialog-story-vue-BCh5-P7m.js                     2.66 kB │ gzip:   0.89 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-media-inkimage-story-vue-CbKFUaKG.js                         2.81 kB │ gzip:   0.95 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-specialized-inkjsoneditor-story-vue-B90RM4sU.js              2.90 kB │ gzip:   1.10 kB
+.histoire/dist/assets/inkPicker.story-DXEDJ-ey.js                                                                           3.02 kB │ gzip:   1.19 kB
+.histoire/dist/assets/inkLoading.story-D61fZ0jd.js                                                                          3.35 kB │ gzip:   1.11 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-forms-inkinput-story-md-CIT-zRYz.js                                    3.37 kB │ gzip:   1.45 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-forms-inkform-story-vue-6f8ci32I.js                          3.41 kB │ gzip:   1.41 kB
+.histoire/dist/assets/state-Bi8zzTDU.js                                                                                     3.49 kB │ gzip:   1.36 kB
+.histoire/dist/assets/inkScrim-BSfPkyGI.js                                                                                  3.50 kB │ gzip:   1.35 kB
+.histoire/dist/assets/inkField-XPOg2psw.js                                                                                  3.63 kB │ gzip:   1.28 kB
+.histoire/dist/assets/inkTextarea.story-DWWAfczW.js                                                                         3.85 kB │ gzip:   1.08 kB
+.histoire/dist/assets/inkButton-B6XIRZMx.js                                                                                 3.91 kB │ gzip:   1.32 kB
+.histoire/dist/assets/inkField.story-CD7obLrT.js                                                                            3.99 kB │ gzip:   1.05 kB
+.histoire/dist/assets/inkSwitch-k63N3n-Y.js                                                                                 4.03 kB │ gzip:   1.43 kB
+.histoire/dist/assets/inkPopup-p8ig4ImW.js                                                                                  4.04 kB │ gzip:   1.57 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-forms-inkdropdown-story-vue-C_DGP0P_.js                      4.13 kB │ gzip:   1.22 kB
+.histoire/dist/assets/inkTextarea-DsGV_pU5.js                                                                               4.22 kB │ gzip:   1.56 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-feedback-inkplaceholder-story-vue-urlY-bsR.js                4.40 kB │ gzip:   1.33 kB
+.histoire/dist/assets/inkPopup.story-BWVSW2V4.js                                                                            4.57 kB │ gzip:   1.24 kB
+.histoire/dist/assets/inkInput.story-Tt5Sz8qQ.js                                                                            4.89 kB │ gzip:   1.40 kB
+.histoire/dist/assets/inkSwitch.story-DCco-sSf.js                                                                           5.00 kB │ gzip:   1.21 kB
+.histoire/dist/assets/inkScrim.story-B1Gu-Lic.js                                                                            5.14 kB │ gzip:   1.30 kB
+.histoire/dist/assets/HomeView.vue-1yGicRTZ.js                                                                              5.28 kB │ gzip:   1.89 kB
+.histoire/dist/assets/inkHeader.story-D1ALnmPf.js                                                                           5.30 kB │ gzip:   1.51 kB
+.histoire/dist/assets/inkDoubleCheck.story-C11aX-TH.js                                                                      5.81 kB │ gzip:   1.75 kB
+.histoire/dist/assets/inkButton.story-toqA5Y3D.js                                                                           6.43 kB │ gzip:   1.41 kB
+.histoire/dist/assets/inkInput-DTuK_jPX.js                                                                                  6.47 kB │ gzip:   2.07 kB
+.histoire/dist/assets/inkTooltip.story-BXfhmLZS.js                                                                          7.79 kB │ gzip:   1.84 kB
+.histoire/dist/assets/inkPicker-CUmtUXli.js                                                                                 8.06 kB │ gzip:   2.53 kB
+.histoire/dist/assets/__resolved__virtual_story-source_stories-forms-inkautoform-story-vue-KROePuiW.js                      8.33 kB │ gzip:   2.11 kB
+.histoire/dist/assets/inkDropdown.story-feJyTfKD.js                                                                         8.52 kB │ gzip:   1.94 kB
+.histoire/dist/assets/inkForm.story-pWPQH-eV.js                                                                             9.80 kB │ gzip:   2.54 kB
+.histoire/dist/assets/__resolved__virtual_md_stories-feedback-inkplaceholder-story-md-CFWfjqvB.js                          10.04 kB │ gzip:   2.35 kB
+.histoire/dist/assets/responsive-DsyTnMMQ.js                                                                               10.53 kB │ gzip:   3.08 kB
+.histoire/dist/assets/inkImage.story-CNgDApJe.js                                                                           11.64 kB │ gzip:   2.94 kB
+.histoire/dist/assets/inkPagination.story-Cy0UJFbt.js                                                                      12.30 kB │ gzip:   2.56 kB
+.histoire/dist/assets/inkPlaceholder.story-B5drTSAT.js                                                                     12.47 kB │ gzip:   2.78 kB
+.histoire/dist/assets/inkDialog.story-Bha4UXZG.js                                                                          12.67 kB │ gzip:   2.87 kB
+.histoire/dist/assets/inkDatetimePickerView-BSctoKht.js                                                                    13.80 kB │ gzip:   3.07 kB
+.histoire/dist/assets/inkDropdown-CcK3iAhV.js                                                                              16.63 kB │ gzip:   4.13 kB
+.histoire/dist/assets/inkJsonEditor.story-DS9u9sCv.js                                                                      17.09 kB │ gzip:   4.75 kB
+.histoire/dist/assets/search-docs-data-J3VkiPnV.js                                                                         24.32 kB │ gzip:  10.75 kB
+.histoire/dist/assets/inkAutoForm.story-CBAq1XBG.js                                                                        30.52 kB │ gzip:   6.46 kB
+.histoire/dist/assets/mapping-BqO_2syL.js                                                                                  36.83 kB │ gzip:   7.85 kB
+.histoire/dist/assets/SearchPane.vue-CcOn7fht.js                                                                           37.56 kB │ gzip:   7.09 kB
+.histoire/dist/assets/bundle-main-C4UeWsb0.js                                                                              52.15 kB │ gzip:  14.10 kB
+.histoire/dist/assets/StoryView.vue-BPAALruW.js                                                                           113.36 kB │ gzip:  20.08 kB
+.histoire/dist/assets/vendor-KvnOnrwH.js                                                                                1,409.21 kB │ gzip: 353.95 kB
+✓ built in 1.63s
+✅ Built 21 stories (117 variants) in 9s
+[CDN] Added import map to HTML

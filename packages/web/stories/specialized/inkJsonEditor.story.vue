@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import InkButton from "../../src/components/inkButton/inkButton.vue";
+import type { JsonEditorValidation } from "../../src/index";
 import { ref } from "vue";
 import InkJsonEditor from "../../src/components/inkJsonEditor/inkJsonEditor.vue";
 import InkPopup from "../../src/components/inkPopup/inkPopup.vue";
@@ -29,6 +31,24 @@ const jsonSchema = ref({
   },
   required: ["name", "version", "components"],
 });
+const firstSchema = {
+  type: "object",
+  properties: { count: { type: "integer" } },
+  required: ["count"],
+};
+const secondSchema = {
+  type: "object",
+  properties: { name: { type: "string" } },
+  required: ["name"],
+};
+const firstDraft = ref('{"count":0}');
+const secondDraft = ref('{"name":"existing"}');
+const result = ref<JsonEditorValidation>();
+const saved = ref("尚未保存");
+function saveDraft() {
+  if (result.value?.valid && result.value.text === firstDraft.value)
+    saved.value = JSON.stringify(JSON.parse(firstDraft.value));
+}
 </script>
 
 <template>
@@ -49,6 +69,21 @@ const jsonSchema = ref({
         </div>
         <button @click="show = false">Close</button>
       </InkPopup>
+    </Variant>
+    <Variant title="Validated save and isolated editors">
+      <InkJsonEditor
+        v-model="firstDraft"
+        label="数字配置"
+        :schema="firstSchema"
+        @validation="result = $event"
+      />
+      <InkJsonEditor v-model="secondDraft" label="名称配置" :schema="secondSchema" />
+      <InkButton
+        text="保存数字配置"
+        :disabled="!result?.valid || result.text !== firstDraft"
+        @click="saveDraft"
+      />
+      <p>状态：{{ result?.status }}；已保存：{{ saved }}</p>
     </Variant>
   </Story>
 </template>

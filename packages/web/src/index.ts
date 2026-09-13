@@ -2,6 +2,7 @@ import type { App } from "vue";
 import type {} from "./components";
 
 import "../styles/index.scss";
+import "virtual:uno.css";
 
 import { publicComponents } from "./public-components";
 
@@ -31,3 +32,6 @@ import type { InkI18n } from "./i18n";
 export { INK_ROUTER_KEY, INK_I18N_KEY };
 
 export type { DropdownOption, JSONSchema, JSONSchemaProperty, InkRouter, InkI18n };
+
+export type { JsonEditorValidation } from "./components/inkJsonEditor/jsonSchemaService";
+export type { FormValidation } from "./components/inkAutoForm/inkAutoForm";

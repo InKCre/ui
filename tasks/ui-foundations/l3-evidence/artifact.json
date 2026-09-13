@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-13",
+  "producerBase": "c67cc885dff33d3585f208ff7b116ca1a594df94",
+  "localUnpublished": true,
+  "packageName": "@inkcre/ui-web",
+  "manifestVersion": "1.4.0",
+  "tarballSha256": "56a7dd35d32ad8c6bee00a45108ccceecb3d445fddf6bf19c73a35c976cb21b0",
+  "tarballBytes": 146077,
+  "consumerRoot": "/var/folders/rk/8_krr0y14p9g5plk8n77lgyr0000gn/T/inkcre-ui-contract-z8yzyA/consumer",
+  "checks": {
+    "pnpm check": 0,
+    "check-package-contract --keep": 0
+  },
+  "artifactFiles": {
+    "DESIGN.md": "c93c9e8aee83e71e62a1a44359864edcdac03f6b68e907952a196b11890cc06a",
+    "dist/index.js": "37352f1aa257548c1d2677fd9527d21fdc8bd44090deb0281557a47c1aefbbe4",
+    "dist/index.css": "bb1a39e0392fce3f8fdae2ea68cb2b92af0806f873522f3e120b142717ef2a0b",
+    "dist/index.d.ts": "d5484e8eab90dc2b43811586c41339c5e32965e00210cc6abd447844d444effe",
+    "dist/uno/preset-ink.d.ts": "f02e3fa534aaff1c45dcfe429e656fa5d2fcd30e716f8b1b2487c20135bccc2a",
+    "skills/ui-web/references/composition-recipes.md": "d1f627c46e3f8d646d654ef2f4cca773ce84f5f9fc9f47538be252e7d1937a2c"
+  },
+  "rootDesignSha256": "c93c9e8aee83e71e62a1a44359864edcdac03f6b68e907952a196b11890cc06a"
+}

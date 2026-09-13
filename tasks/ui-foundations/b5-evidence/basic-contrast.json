@@ -1,0 +1,216 @@
+[
+  {
+    "theme": "light",
+    "kind": "selected-keyboard",
+    "ratio": 8.113620607925712
+  },
+  {
+    "theme": "light",
+    "kind": "selected-hover",
+    "ratio": 8.113620607925712
+  },
+  {
+    "theme": "light",
+    "kind": "confirmation",
+    "ratio": 20.144005124323062
+  },
+  {
+    "theme": "light",
+    "kind": "primary",
+    "state": "normal",
+    "ratio": 17.12380689767856
+  },
+  {
+    "theme": "light",
+    "kind": "primary",
+    "state": "hover",
+    "ratio": 8.113620607925712
+  },
+  {
+    "theme": "light",
+    "kind": "primary",
+    "state": "pressed",
+    "ratio": 8.113620607925712
+  },
+  {
+    "theme": "light",
+    "kind": "primary",
+    "state": "loading",
+    "ratio": 17.12380689767856
+  },
+  {
+    "theme": "light",
+    "kind": "subtle",
+    "state": "normal",
+    "ratio": 19.13309332045187
+  },
+  {
+    "theme": "light",
+    "kind": "subtle",
+    "state": "hover",
+    "ratio": 17.362072129075298
+  },
+  {
+    "theme": "light",
+    "kind": "subtle",
+    "state": "pressed",
+    "ratio": 17.362072129075298
+  },
+  {
+    "theme": "light",
+    "kind": "subtle",
+    "state": "loading",
+    "ratio": 19.13309332045187
+  },
+  {
+    "theme": "light",
+    "kind": "danger",
+    "state": "normal",
+    "ratio": 7.406063158378641
+  },
+  {
+    "theme": "light",
+    "kind": "danger",
+    "state": "hover",
+    "ratio": 8.934637991735775
+  },
+  {
+    "theme": "light",
+    "kind": "danger",
+    "state": "pressed",
+    "ratio": 8.934637991735775
+  },
+  {
+    "theme": "light",
+    "kind": "danger",
+    "state": "loading",
+    "ratio": 7.406063158378641
+  },
+  {
+    "theme": "light",
+    "kind": "feedback success",
+    "ratio": 6.235911147345033
+  },
+  {
+    "theme": "light",
+    "kind": "feedback warning",
+    "ratio": 7.038289358454834
+  },
+  {
+    "theme": "light",
+    "kind": "feedback info",
+    "ratio": 6.883069374989896
+  },
+  {
+    "theme": "light",
+    "kind": "feedback error",
+    "ratio": 6.150599744790077
+  },
+  {
+    "theme": "dark",
+    "kind": "selected-keyboard",
+    "ratio": 6.500442902817579
+  },
+  {
+    "theme": "dark",
+    "kind": "selected-hover",
+    "ratio": 6.500442902817579
+  },
+  {
+    "theme": "dark",
+    "kind": "confirmation",
+    "ratio": 8.824939217282258
+  },
+  {
+    "theme": "dark",
+    "kind": "primary",
+    "state": "normal",
+    "ratio": 11.941421919984299
+  },
+  {
+    "theme": "dark",
+    "kind": "primary",
+    "state": "hover",
+    "ratio": 6.500442902817579
+  },
+  {
+    "theme": "dark",
+    "kind": "primary",
+    "state": "pressed",
+    "ratio": 6.500442902817579
+  },
+  {
+    "theme": "dark",
+    "kind": "primary",
+    "state": "loading",
+    "ratio": 11.941421919984299
+  },
+  {
+    "theme": "dark",
+    "kind": "subtle",
+    "state": "normal",
+    "ratio": 15.655791600925236
+  },
+  {
+    "theme": "dark",
+    "kind": "subtle",
+    "state": "hover",
+    "ratio": 6.158782092353131
+  },
+  {
+    "theme": "dark",
+    "kind": "subtle",
+    "state": "pressed",
+    "ratio": 6.158782092353131
+  },
+  {
+    "theme": "dark",
+    "kind": "subtle",
+    "state": "loading",
+    "ratio": 15.655791600925236
+  },
+  {
+    "theme": "dark",
+    "kind": "danger",
+    "state": "normal",
+    "ratio": 6.17400739521085
+  },
+  {
+    "theme": "dark",
+    "kind": "danger",
+    "state": "hover",
+    "ratio": 7.406063158378641
+  },
+  {
+    "theme": "dark",
+    "kind": "danger",
+    "state": "pressed",
+    "ratio": 7.406063158378641
+  },
+  {
+    "theme": "dark",
+    "kind": "danger",
+    "state": "loading",
+    "ratio": 6.17400739521085
+  },
+  {
+    "theme": "dark",
+    "kind": "feedback success",
+    "ratio": 9.294536920443825
+  },
+  {
+    "theme": "dark",
+    "kind": "feedback warning",
+    "ratio": 11.578636688468917
+  },
+  {
+    "theme": "dark",
+    "kind": "feedback info",
+    "ratio": 9.709506791394972
+  },
+  {
+    "theme": "dark",
+    "kind": "feedback error",
+    "ratio": 9.68171228214573
+  }
+]

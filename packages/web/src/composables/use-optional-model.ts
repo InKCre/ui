@@ -20,7 +20,7 @@ export function useOptionalModel<T>(options: {
 }) {
   const { props, emit, modelName, defaultValue } = options;
 
-  const inner = ref<T>((props[modelName] ?? defaultValue) as T);
+  const inner = ref<T>((props[modelName] !== undefined ? props[modelName] : defaultValue) as T);
 
   const isControlled = computed(() => props[modelName] !== undefined);
 

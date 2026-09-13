@@ -6,10 +6,10 @@
     "quickSelection": {
       "Application navigation and branding": "InkHeader",
       "Single action": "InkButton",
-      "Structured form": "InkForm with InkField and the matching form control",
+      "Structured form": "InkForm layout=\"col\" 搭配有 label/error 的内置控件；自定义字段才使用 InkField",
       "Schema-driven primitive form": "InkAutoForm",
       "JSON configuration editing": "InkJsonEditor",
-      "Destructive confirmation": "InkDoubleCheck for a compact guard; InkDialog for a focused modal decision",
+      "Destructive confirmation": "InkDoubleCheck 提供确认弹层；InkDialog 支持异步等待和较复杂决策",
       "Custom or positioned overlay": "InkPopup; add InkScrim only when the composition does not already own one",
       "Loading state": "InkLoading",
       "Empty or error state": "InkPlaceholder",
@@ -20,7 +20,7 @@
       "Choose components by product intent and interaction semantics, not only visual resemblance.",
       "Prefer package components over local substitutes when the public component contract fits.",
       "Use public package exports and documented subpaths; never import src/components files.",
-      "Keep form labels, controls, and layout context explicit through InkForm and InkField.",
+      "普通表单从 InkForm layout=\"col\" 和内置 label/error 开始，页面布局由宿主 CSS 负责。",
       "Distinguish loading, empty, error, and confirmation states instead of using one generic feedback surface.",
       "Read only the component references needed for the current task."
     ],
@@ -44,14 +44,15 @@
       ],
       "composeWith": ["InkForm", "InkInput", "InkSwitch"],
       "apiCaveats": [
-        "Treat the supported schema subset as a deliberate flat-form contract.",
-        "Supply custom component mappings only when the generated default control is insufficient."
+        "仅支持扁平 primitive schema，不提供自定义映射 prop。v-model:formData 保留已有值及额外属性，只为缺失值补默认值。",
+        "数字为 number，空数字删除字段；日期保留 JSON 字符串，Picker 确认才序列化。",
+        "validation(FormValidation) 的 valid/status/errors/rootErrors 控制保存，pending/invalid/error 均不可保存。实例隔离，过期结果不应用。"
       ],
       "commonMistakes": [
         "Do not assume complete JSON Schema coverage.",
         "Do not use it merely to avoid designing a workflow-specific form."
       ],
-      "publicTypes": ["JSONSchema", "JSONSchemaProperty"]
+      "publicTypes": ["JSONSchema", "JSONSchemaProperty", "FormValidation"]
     },
     "InkButton": {
       "intent": ["button", "single-click action", "icon or text command"],
@@ -65,8 +66,9 @@
       ],
       "composeWith": ["InkDialog", "InkDoubleCheck", "InkHeader", "InkTooltip"],
       "apiCaveats": [
-        "Choose theme from the component's actual public values; do not borrow variant names from another library.",
-        "Keep icon-only commands accessible with surrounding context or a tooltip."
+        "type 控制 default/square 外形；nativeType 控制 button/submit/reset，默认 button。提交必须使用 nativeType=\"submit\"。",
+        "click 传出 MouseEvent；disabled、isLoading 或 Dialog 的 pending 禁用动作。图标按钮必须提供 aria-label。",
+        "默认 theme=\"subtle\"；主动作显式 primary。文字可换行，最小高度 md=36px、sm=24px；pending 保留标签与相邻 spinner，不使用遮盖标签的覆盖层。"
       ],
       "commonMistakes": [
         "Do not replace a destructive confirmation flow with a danger-colored button alone."
@@ -84,8 +86,8 @@
       ],
       "composeWith": ["InkPicker", "InkPopup"],
       "apiCaveats": [
-        "Use Date values for date/time modes and preserve the selected mode contract.",
-        "Treat this as a view primitive, not the complete labelled form control."
+        "Date 模型从不原地修改；原生 select 提供键盘交互，12 小时为 1—12，weekday 选择同一周内日期。",
+        "minDate/maxDate 夹取显示和候选值，无效 Date/倒置范围显示错误；外部变化不自动提交。locale 或 i18n.locale 控制日期名称。"
       ],
       "commonMistakes": [
         "Do not duplicate popup, formatting, and field responsibilities already owned by InkPicker."
@@ -99,12 +101,13 @@
       ],
       "avoidWhen": [
         "Only a low-level positioned surface is needed; use InkPopup.",
-        "A compact second-click guard is enough; use InkDoubleCheck."
+        "A compact confirmation popup attached to one trigger is enough; use InkDoubleCheck."
       ],
       "composeWith": ["InkButton", "InkForm", "InkLoading", "InkPopup"],
       "apiCaveats": [
-        "Use the actual model event contract and slots documented in the generated API facts.",
-        "Keep destructive consequences visible in the dialog content before confirmation."
+        "modelValue 为 boolean 或 Promise<boolean>；也支持布尔模型配合 isLoading。只应用最新 Promise，拒绝发出 error。",
+        "pending 阻止确认、取消、遮罩和 Escape；confirm 只发事件，取消发出 cancel 和 update:modelValue(false)。",
+        "title 提供名称；自定义 header 或无 title 时提供 aria-label/aria-labelledby。默认槽获得 cancel/confirm/isLoading。"
       ],
       "commonMistakes": [
         "Do not nest a second independently controlled scrim beneath the dialog.",
@@ -112,24 +115,18 @@
       ]
     },
     "InkDoubleCheck": {
-      "intent": ["two-step confirmation", "accidental-click guard", "compact destructive action"],
-      "preferWhen": [
-        "A nearby action needs one additional deliberate click without opening a modal.",
-        "The consequence is already understood and only accidental activation must be prevented."
-      ],
+      "intent": ["确认弹层", "破坏性操作确认"],
+      "preferWhen": ["一个按钮动作需要用户在独立弹层中明确确认。"],
       "avoidWhen": [
         "The user needs explanatory content, input, or multiple choices; use InkDialog.",
         "The action is harmless and the extra confirmation would add friction."
       ],
       "composeWith": ["InkButton", "InkTooltip"],
       "apiCaveats": [
-        "Make the second state visually and textually clear.",
-        "Reset confirmation state when the surrounding workflow changes."
+        "显示独立确认弹层；默认槽必须是可聚焦按钮，原始 click 在捕获阶段被阻止。业务动作只绑定 confirm。",
+        "取消不发 confirm；需要异步等待/失败重试时使用 InkDialog。"
       ],
-      "commonMistakes": [
-        "Do not use a two-click guard for every action.",
-        "Do not hide the destructive meaning behind an unlabeled icon."
-      ]
+      "commonMistakes": ["业务动作绑定 confirm，不绑定触发按钮的 click。"]
     },
     "InkDropdown": {
       "intent": ["single selection", "dropdown options", "lazy-loaded choice"],
@@ -143,9 +140,9 @@
       ],
       "composeWith": ["InkField", "InkForm"],
       "apiCaveats": [
-        "Use DropdownOption for public option values.",
-        "Choose either static options or the refresher lifecycle deliberately.",
-        "Editable state controls whether selection interactions are available."
+        "options 省略时保存内部选项；传入时由父级接收 update:options，refresher 失败显示提示并发出 error。",
+        "Enter/Space/方向键打开，上下/Home/End 导航，Enter 选择，输入搜索，Escape/Tab/离开关闭。",
+        "label 关联触发按钮；required 是 aria-required，消费者仍需验证必选值。"
       ],
       "commonMistakes": [
         "Do not assume an empty model triggers lazy loading.",
@@ -165,7 +162,7 @@
       ],
       "composeWith": ["InkDropdown", "InkInput", "InkJsonEditor", "InkPicker", "InkTextarea"],
       "apiCaveats": [
-        "Keep field layout consistent with the surrounding InkForm unless an intentional local override is needed."
+        "自定义控件用 for/id 关联标签，error/errorId 配合控件 aria-invalid/aria-describedby；required 在 Field 上只是提示。"
       ],
       "commonMistakes": [
         "Do not create nested duplicate labels around controls that already consume form context."
@@ -192,8 +189,8 @@
         "InkTextarea"
       ],
       "apiCaveats": [
-        "InkForm primarily owns layout context; application validation and submission remain explicit.",
-        "Use the emitted native submit event rather than relying on browser navigation."
+        "layout 响应式传给子字段，控件自身 layout 优先；submit 传出 Event 并阻止默认导航。",
+        "不要嵌套 form，InkAutoForm 已拥有一个 form。"
       ],
       "commonMistakes": [
         "Do not infer full validation orchestration from the form wrapper.",
@@ -212,7 +209,7 @@
       ],
       "composeWith": ["InkButton", "InkTooltip"],
       "apiCaveats": [
-        "Router integration is adapter-based and optional; the component does not import the consuming router."
+        "品牌和菜单都是可键盘操作的按钮，分别发出 title-click/menu-click。自定义 right-icon 负责名称和动作。"
       ],
       "commonMistakes": ["Do not use the application header as a generic card or section title."]
     },
@@ -228,8 +225,8 @@
       ],
       "composeWith": ["InkLoading", "InkPlaceholder", "InkPopup"],
       "apiCaveats": [
-        "Always provide meaningful alt text for informative images.",
-        "Handle the public error payload instead of relying on internal image state."
+        "缩略图为原生按钮，alt/title 提供名称。v-model:expanded 可受控，省略则内部管理。",
+        "InkScrim 提供模态、Escape 和焦点恢复；槽内容点击不关闭。"
       ],
       "commonMistakes": [
         "Do not enable expansion when the source cannot provide a useful larger view."
@@ -247,8 +244,9 @@
       ],
       "composeWith": ["InkField", "InkForm"],
       "apiCaveats": [
-        "Use the component's value event contract rather than assuming modelValue naming.",
-        "When used inside InkForm, let form context own the default field layout."
+        "默认模式 update:modelValue 传出字符串，包括 nativeType=\"number\"。nativeType 控制原生输入类型。",
+        "inline 模式 Enter 先更新模型再发出 confirm(string)，Escape/失焦发出 cancel 并丢弃草稿，IME Enter 不确认。",
+        "label 自动关联 id；name、required、disabled、error 及原生输入属性可用。editable=false 不允许内联编辑。"
       ],
       "commonMistakes": [
         "Do not use the inline visual mode as a substitute for explicit edit permissions."
@@ -270,13 +268,15 @@
       ],
       "composeWith": ["InkField", "InkForm", "InkPlaceholder"],
       "apiCaveats": [
-        "The model is JSON text, not an automatically parsed application object.",
-        "The CodeMirror and VS Code language-service packages remain part of the declared peer contract."
+        "v-model 是原始文本，包括无效 JSON；禁止在模型 setter 中直接 JSON.parse。",
+        "validation(JsonEditorValidation) 含 text/status/valid/messages。只有 valid=true 且 text 等于当前草稿才解析和保存，pending/invalid/error 禁止保存。",
+        "无 schema 也校验语法；实例配置和缓存隔离，schema/schemaUri 改变重新校验，过期结果不覆盖新文本。"
       ],
       "commonMistakes": [
         "Do not silently coerce invalid JSON into a different value.",
         "Do not use it for ordinary multiline text."
-      ]
+      ],
+      "publicTypes": ["JsonEditorValidation"]
     },
     "InkLoading": {
       "intent": ["loading indicator", "async progress feedback", "pending state"],
@@ -290,7 +290,7 @@
       ],
       "composeWith": ["InkButton", "InkDialog", "InkImage"],
       "apiCaveats": [
-        "Choose size and density for the surrounding context instead of scaling with local CSS."
+        "提供 role=status 和默认 Loading 名称，可透传 aria-label；不管理请求和相邻按钮状态。"
       ],
       "commonMistakes": [
         "Do not leave a loading indicator active after the operation reaches an empty or error state."
@@ -308,8 +308,7 @@
       ],
       "composeWith": ["InkLoading", "InkPlaceholder"],
       "apiCaveats": [
-        "Keep the controlled page value aligned with the data request lifecycle.",
-        "Use the text mode only when numbered page affordances are intentionally unnecessary."
+        "currentPage/totalPages 受控；page-change 传出目标页。非有限总页数视为 0，页数截断并限制范围，显示修正不主动发事件。"
       ],
       "commonMistakes": ["Do not render inaccessible or clickable pages outside the valid range."]
     },
@@ -325,8 +324,9 @@
       ],
       "composeWith": ["InkDatetimePickerView", "InkField", "InkForm", "InkPopup"],
       "apiCaveats": [
-        "The generic value type must stay consistent across formatter, model value, and emitted update.",
-        "Custom picker content uses the default slot and owns its own value interaction."
+        "内置 type=date/time/datetime 必须使用 Date，null/undefined 表示空值。showPopup 省略时内部管理，也支持 v-model:showPopup。",
+        "打开创建草稿，Confirm 才更新模型，Cancel/Escape/遮罩关闭丢弃草稿；外部值/范围更新重置草稿。",
+        "minDate/maxDate 限制时间戳；无效日期/范围显示错误。自定义默认槽保留 modelValue/closePopup，由消费者负责提交。"
       ],
       "commonMistakes": [
         "Do not assume every picker value is a Date.",
@@ -361,8 +361,8 @@
       ],
       "composeWith": ["InkButton", "InkPicker", "InkScrim"],
       "apiCaveats": [
-        "Treat open state as controlled through the component's public model contract.",
-        "Decide explicitly whether scrim click should close the popup."
+        "使用 v-model:open。默认 scrim=true 通过原生 dialog 提供模态和焦点生命周期；scrim=false 为非模态。",
+        "提供 aria-label/aria-labelledby 和可见关闭操作；autofocus 指定初始焦点。closeOnEscape/closeOnScrim 控制用户关闭。"
       ],
       "commonMistakes": [
         "Do not stack multiple scrims for one overlay.",
@@ -381,7 +381,8 @@
       ],
       "composeWith": ["InkPopup"],
       "apiCaveats": [
-        "Keep open state and click-to-close behavior synchronized with the owning overlay."
+        "使用 v-model:open，全屏原生 dialog 负责模态、Escape 和焦点恢复。提供可访问名称。",
+        "closeOnScrim/closeOnEscape 默认 true，showCloseButton 可添加关闭按钮；槽获得 close，点击槽内容不关闭。"
       ],
       "commonMistakes": [
         "Do not render an orphan scrim without an overlay lifecycle.",
@@ -400,8 +401,9 @@
       ],
       "composeWith": ["InkField", "InkForm", "InkLoading"],
       "apiCaveats": [
-        "Keep the controlled boolean or promised state consistent with the async update lifecycle.",
-        "Provide a visible label whenever context is not otherwise explicit."
+        "boolean 或 Promise<boolean> 模型；最新 Promise 才能更新显示，拒绝发出 error，保留旧值并结束 pending。",
+        "推荐布尔模型配合 isSwitching；disabled 或 pending 阻止操作。必须提供稳定标签或 aria-label。",
+        "两种状态文案共同决定轨道宽度；xs 最小 60×24px，文字放大可增长。给状态文字留空间，不为固定旧高度裁切。"
       ],
       "commonMistakes": [
         "Do not optimistically show a successful state when the async change can still fail."
@@ -419,8 +421,8 @@
       ],
       "composeWith": ["InkField", "InkForm"],
       "apiCaveats": [
-        "The public value contract uses value/update:value rather than modelValue.",
-        "Use rows to communicate expected input scale without forcing fixed-height local CSS."
+        "使用 v-model:value；label/id、name、required、disabled、error 及原生 textarea 属性有明确关联。",
+        "普通文本默认使用系统 UI 字体；代码或固定宽度内容显式设置 mono，JsonEditor 始终使用系统等宽字体。"
       ],
       "commonMistakes": [
         "Do not assume v-model without checking the argument used by the value contract."
@@ -437,7 +439,9 @@
         "The interaction is touch-only with no dependable hover or focus path."
       ],
       "composeWith": ["InkButton", "InkHeader"],
-      "apiCaveats": ["Keep tooltip content concise and preserve keyboard access to the trigger."],
+      "apiCaveats": [
+        "悬停和焦点进入显示，Escape 关闭；默认槽参数 describedby 必须传到触发控件 aria-describedby。"
+      ],
       "commonMistakes": [
         "Do not hide validation errors, destructive consequences, or required instructions in a tooltip."
       ]
@@ -458,16 +462,17 @@
         "InkButton"
       ],
       "steps": [
-        "Use InkForm to establish the shared field layout.",
-        "Choose one control per value intent: input, textarea, dropdown, picker, or switch.",
-        "Use InkField for custom controls or explicit field structure not already supplied by form context.",
-        "Keep validation, submission, and async error handling in application code.",
-        "Use InkButton for submit or secondary commands."
+        "使用 InkForm layout=\"col\"，内置控件直接传 label、error，保留各自模型名称；自定义字段才包 InkField。",
+        "标题选择 title-lg，正文 body-md，说明和错误 body-sm；短元信息才选 label-md。页面留白和列数写在宿主 CSS 中。",
+        "主提交写 InkButton theme=\"primary\" native-type=\"submit\"，传 isLoading；业务代码处理校验、异步失败和防止重复提交。",
+        "成功／失败写明确文字，默认使用 surface.subtle 搭配 feedback.success／error；不要创建不存在的 success.surface 或 danger.light。"
       ],
       "caveats": [
         "Do not normalize every control to the same model prop name; use each component's actual API.",
-        "Do not wrap controls in duplicate InkField labels when they already consume InkForm context."
-      ]
+        "Do not wrap controls in duplicate InkField labels when they already consume InkForm context.",
+        "示例的文本和颜色工具类需要 presetInk；应用入口加载样式。未使用 Uno 时可用同名 Sass 角色和系统变量。"
+      ],
+      "exampleFile": "SettingsForm.vue"
     },
     {
       "name": "Schema Configuration",
@@ -476,6 +481,7 @@
       "steps": [
         "Use InkAutoForm when a flat schema maps cleanly to ordinary primitive controls.",
         "Use InkJsonEditor when users must see or edit the raw JSON document.",
+        "JsonEditor 保留字符串草稿，通过 validation.valid 和对应 text 控制保存，确认有效后再 JSON.parse。",
         "Keep parsing and persistence errors separate from schema validation feedback.",
         "Use InkPlaceholder for unrecoverable schema-loading or permission states."
       ],
@@ -489,7 +495,7 @@
       "intent": "Prevent accidental irreversible actions with the least disruptive accurate confirmation.",
       "components": ["InkDoubleCheck", "InkDialog", "InkButton", "InkLoading"],
       "steps": [
-        "Use InkDoubleCheck when the consequence is already understood and a second deliberate click is enough.",
+        "InkDoubleCheck 用于独立确认弹层，动作绑定 confirm；异步 pending 选择 InkDialog。",
         "Use InkDialog when the user needs explanation, choices, or a focused decision.",
         "Show pending state while the destructive request is running.",
         "Close or reset confirmation state only after the application lifecycle is explicit."
@@ -507,7 +513,7 @@
         "Use InkPopup as the controlled surface and choose its position deliberately.",
         "Use the popup's existing scrim behavior when it meets the interaction contract.",
         "Add InkScrim only when the custom composition has no backdrop owner.",
-        "Provide explicit close controls and application-appropriate keyboard behavior."
+        "提供可访问名称和可见关闭动作；原生 dialog 负责模态焦点，scrim=false 保留背景操作。"
       ],
       "caveats": [
         "Prefer InkDialog when the composition is semantically a standard dialog.",
@@ -539,14 +545,40 @@
         "Use image loading and error events to align surrounding feedback.",
         "Use InkPlaceholder only when the surrounding media region needs recovery guidance."
       ]
+    },
+    {
+      "name": "Host Integration",
+      "intent": "通过公开适配器接入宿主路由与语言，并使用根级主题选择。",
+      "components": ["InkHeader", "InkDialog", "InkButton"],
+      "steps": [
+        "把宿主路由与翻译函数传入此边界组件。",
+        "通过注入键提供响应式值，子组件读取该上下文。",
+        "应用入口加载样式；主题选择写入 html，由应用负责持久化偏好。"
+      ],
+      "exampleFile": "HostIntegration.vue",
+      "caveats": [
+        "适配器不要求安装 vue-router 或 vue-i18n；示例父组件应把实际当前路由、locale 和翻译函数绑定到 props。"
+      ]
+    },
+    {
+      "name": "Raw JSON Configuration",
+      "intent": "保留原始 JSON 草稿，校验通过后解析并保存。",
+      "components": ["InkForm", "InkJsonEditor", "InkButton"],
+      "steps": [
+        "把原始文字绑定到 v-model，另外保存 validation 状态。",
+        "只有当前草稿验证通过时才允许解析和持久化。",
+        "明确显示保存结果，失败后保留草稿。"
+      ],
+      "exampleFile": "JsonConfiguration.vue"
     }
   ],
   "integration": {
     "rules": [
       "Load @inkcre/ui-web/styles once in the application style entry unless the Sass entry is intentionally compiled instead.",
       "Use the package root for components and public types, /utils for utilities, /locales for locale bundles, and /uno for presetInk.",
-      "Keep declared peer dependencies resolvable in the consumer installation graph.",
-      "Do not alias raw package source or dist internals in the registry-backed production contract."
+      "Do not alias raw package source or dist internals in the registry-backed production contract.",
+      "运行时需要 Vue ^3.5.25（公开声明按此版本生成）和支持原生 dialog 的浏览器。",
+      "Vue 是共享运行时 peer；CodeMirror、JSON 语言服务、VueUse 与 dayjs 由包自行声明安装。UnoCSS 只在使用 /uno 时需要。"
     ],
     "router": [
       "Adapt the consuming router to reactive currentPath and currentName values.",
@@ -561,11 +593,14 @@
   },
   "styling": {
     "rules": [
-      "Prefer system and component tokens over hard-coded visual values.",
-      "Use exported Sass functions and mixins rather than importing package files by filesystem path.",
-      "Keep ref, sys, and comp token output generated from tokens/inkcre.tokens.json.",
-      "Use CSS custom properties and the package theme contract instead of duplicating token maps in application code.",
-      "Import presetInk from @inkcre/ui-web/uno when the consuming UnoCSS setup needs the package preset."
+      "应用加载一次 @inkcre/ui-web/styles；Sass 使用公开 /styles/functions、/styles/mixins 和 /tokens/ref|sys|comp。",
+      "设计角色的选择、配色关系、状态与布局责任见包内 DESIGN.md；CSS/Sass/Uno 调用与覆盖细节见 styles/README.md。",
+      "apply-font(body-md) 输出四个度量、系统 UI 字体和 none 装饰；代码加 $mono: true，下划线加 $underlined: true。apply-font(title, lg) 无效，应使用 title-lg。",
+      "Uno 将 presetInk 放在 presetWind3 后；font-body-md、font-label-lg font-mono underline、p-md 使用同一公开角色。none 不能消除祖先绘制的下划线。",
+      "html[data-theme=\"light|dark\"] 优先于系统；省略 data-theme 或设 system 时跟随系统。主题覆盖 CSS 放在库之后并匹配选择器。",
+      "根级 sys 颜色、typo.family.sans/mono、font 角色四属性、space/radius 在 CSS/Sass 变量和 Uno 对应规则之间传播。Sass maps 与 Uno 尺寸／图标／断点／阴影是构建值；任意 ref 变化不保证带动 sys/comp。",
+      "Popup/Scrim Teleport 到 body，只保证根级覆盖，局部 wrapper 的主题或字体不能自动跟随。库不设置 html 字号，不下载字体。",
+      "构建 CSS 自带组件内部静态图标和工具类，不含 preflight；应用动态 icon 仍需自身 Uno 提取或 safelist。"
     ],
     "tokenLayers": [
       "Reference tokens (ref) are primitive values such as color, space, typography, radius, elevation, breakpoint, and opacity.",
@@ -580,7 +615,7 @@
     "Treating InkForm as a complete validation framework rather than a layout/context owner.",
     "Using InkPopup where InkDialog already provides the required confirmation structure.",
     "Showing InkLoading for empty or failed content after the request has completed.",
-    "Hard-coding design values that already exist in the ref, sys, or comp token layers.",
+    "仅因数值相同就选择某个 Token，或为补齐规则自行创造不存在的 Token；应按用途选择共享角色，页面局部布局可以使用普通 CSS。",
     "Loading every component reference when progressive disclosure only requires a few."
   ]
 }

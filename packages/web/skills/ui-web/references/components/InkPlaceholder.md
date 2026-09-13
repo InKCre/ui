@@ -25,11 +25,36 @@
 ## Public API Facts
 
 - Import: `import { InkPlaceholder } from "@inkcre/ui-web";`
-- Props: `description`, `illustration`, `state`, `title`
-- Events: None
-- Slots: `actions`, `description`, `illustration`, `title`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `state` | `undefined \| "empty" \| "error"` | 否 | `"empty"` |
+| `illustration` | `undefined \| string` | 否 | `""` |
+| `title` | `undefined \| string` | 否 | `""` |
+| `description` | `undefined \| string` | 否 | `""` |
+
+### Events
+
+- None.
+
+### Slots
+
+- `illustration`: `{}`
+- `title`: `{}`
+- `description`: `{}`
+- `actions`: `{}`
+
 - Public types: None
 - Story variants: `Empty State - Default`, `Empty State - Custom Text`, `Empty State - Custom Illustration`, `Error State - Default`, `Error State - Custom Text`, `Empty State - With Actions`, `Error State - With Retry Action`, `Custom Illustration Slot`, `Custom Title Slot`, `Fully Custom Content`, `Long Description`
+
 
 ## API Caveats
 

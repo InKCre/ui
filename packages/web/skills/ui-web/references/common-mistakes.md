@@ -8,7 +8,7 @@
 - Treating InkForm as a complete validation framework rather than a layout/context owner.
 - Using InkPopup where InkDialog already provides the required confirmation structure.
 - Showing InkLoading for empty or failed content after the request has completed.
-- Hard-coding design values that already exist in the ref, sys, or comp token layers.
+- 仅因数值相同就选择某个 Token，或为补齐规则自行创造不存在的 Token；应按用途选择共享角色，页面局部布局可以使用普通 CSS。
 - Loading every component reference when progressive disclosure only requires a few.
 
 ## InkAutoForm
@@ -31,8 +31,7 @@
 
 ## InkDoubleCheck
 
-- Do not use a two-click guard for every action.
-- Do not hide the destructive meaning behind an unlabeled icon.
+- 业务动作绑定 confirm，不绑定触发按钮的 click。
 
 ## InkDropdown
 

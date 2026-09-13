@@ -1,0 +1,26 @@
+[
+  {
+    "name": "web",
+    "directory": "apps/client-web",
+    "exit": 2,
+    "vue": "3.5.40",
+    "errors": [
+      "src/views/info-base/graph/graph.vue(396,68): error TS2322: Type 'ZoomInOut' is not assignable to type '(_event: MouseEvent) => any'.",
+      "src/views/info-base/graph/graph.vue(397,69): error TS2322: Type 'ZoomInOut' is not assignable to type '(_event: MouseEvent) => any'."
+    ]
+  },
+  {
+    "name": "mail",
+    "directory": "extensions/mail",
+    "exit": 0,
+    "vue": "3.5.40",
+    "errors": []
+  },
+  {
+    "name": "twitter",
+    "directory": "extensions/twitter",
+    "exit": 0,
+    "vue": "3.5.40",
+    "errors": []
+  }
+]

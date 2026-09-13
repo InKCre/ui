@@ -1,31 +1,7 @@
-# InkForm
+# inkForm
 
-## Rationale
+InkForm 渲染原生 form，阻止浏览器默认导航，再发出 `submit(Event)`。原生必填约束仍由浏览器检查。使用 `InkButton nativeType="submit"` 提交；普通按钮默认不提交。
 
-A form container component that provides consistent layout context for form controls.
+`layout` 通过响应式上下文传给子字段，运行时切换布局立即生效。控件自己的 layout 优先。标签无需依赖 Form 才能显示。不要嵌套 form；InkAutoForm 已经拥有自己的 InkForm。
 
-## Goals
-
-Provide a form wrapper that automatically configures child form controls (InkInput, InkTextarea, InkPicker) to use InkField for consistent field layouts.
-
-## Specification
-
-A form container that uses Vue's provide/inject API to communicate layout preferences to child form controls. Form controls inside InkForm will automatically wrap themselves with InkField.
-
-## Implementation
-
-### Props
-
-- `layout` (`"inline" | "col" | "row"`, `"col"`): The default layout for all form fields inside this form
-
-### Events
-
-- `submit(e: Event)`: Emitted when the form is submitted
-
-### Slots
-
-- `default`: The form content (form controls, buttons, etc.)
-
-### Context
-
-The component provides `INK_FORM_CONTEXT_KEY` context that child form controls can inject to detect they are inside a form and access the default layout.
+“长标签、错误与窄容器”支持调节 280—800px 容器。以浏览器根字体或文字缩放至 200%，检查标签／错误换行、控件增长、字段之间无覆盖、提交仍可触发。页面负责容器宽度；字段内部默认 4px、组间 16px。示例中的错误是固定展示，提交只记录演示状态。

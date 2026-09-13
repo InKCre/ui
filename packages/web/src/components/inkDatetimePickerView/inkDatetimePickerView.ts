@@ -39,6 +39,7 @@ export const inkDatetimePickerViewProps = {
     type: Date as PropType<Date>,
     default: () => new Date(),
   },
+  locale: makeStringProp(),
   mode: makeStringProp<InkDatetimePickerMode>("datetime"),
   minDate: {
     type: Date as PropType<Date>,
@@ -87,4 +88,16 @@ export function formatHour(hour: number, format: HourFormat): string {
 
 export function getAmPm(hour: number): string {
   return hour < 12 ? "AM" : "PM";
+}
+
+/** Clone and clamp a valid Date without changing the caller's object. */
+export function boundedDate(value: unknown, min?: Date, max?: Date): Date | null {
+  const valid = (date: unknown): date is Date =>
+    date instanceof Date && Number.isFinite(date.getTime());
+  if (!valid(value) || (min !== undefined && !valid(min)) || (max !== undefined && !valid(max)))
+    return null;
+  if (min && max && min > max) return null;
+  return new Date(
+    Math.min(max?.getTime() ?? Infinity, Math.max(min?.getTime() ?? -Infinity, value.getTime())),
+  );
 }

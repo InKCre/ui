@@ -1,42 +1,21 @@
-# `compName.ts` guide
+# 组件 TypeScript 指南
 
-`compName.ts` holds component props, emits, models, constants, types and utils. Read this file will enable the user to use this component.
+`compName.ts` 维护 props、emits、公开类型和与该组件内聚的必要辅助逻辑。`defineModel` 若在 Vue 文件中声明，也是 API 的一部分；修改模型时必须同时检查这两个文件和消费者说明。
 
-## Scaffold
+复用已有 prop helper 时，从实际存在的 `../../utils/vue-props` 导入。下面展示声明形式，不要求为每个组件复制空的类型、常量或工具分区：
 
 ```typescript
-import type { PropType } from "vue";
-import { makeStringProp } from "@/utils/props";  // use utils/vue-props.ts
+import { makeStringProp } from "../../utils/vue-props";
 
-// --- Types ---
-
-// --- Constants ---
-
-// --- Props ---
 export const compNameProps = {
-  /** Key notes */
-  propName: makeStringProp<"option1" | "option2">("option1"),
-  /** Key notes */
-  requiredProp: {
-    type: Object as PropType<SomeInterface>,
-    required: true,
-  }
-};
+  text: makeStringProp(""),
+} as const;
 
-// --- Emits ---
 export const compNameEmits = {
-  /** Key notes */
-  eventName: (param: ParamType) => true;
-};
-
-// --- Utilities ---
-/** Key notes */
-export function helperFunction() {
-  // ...
-}
+  "update:text": (_value: string) => true,
+} as const;
 ```
 
-## Best Practices
+明确可选值、默认值与事件载荷；props 类型必须匹配真实运行时值。对象和数组也可以参与模型契约，是否使用模型取决于状态所有权，而不是是否为可变类型。不要直接修改父级拥有的对象。
 
-- If model is mutable (eg. object, array), AND the component tends to be state-less, use prop rather than a model.
-- It's suggested to use `defineModel` is `compName.vue`.
+外部未知数据先用 `unknown`，经过验证后再使用。源码定义新增公开类型时检查包入口是否需要导出；内部 helper 不因存在于组件文件中就自动成为公开 API。

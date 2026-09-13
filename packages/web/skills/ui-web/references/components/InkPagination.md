@@ -25,16 +25,36 @@
 ## Public API Facts
 
 - Import: `import { InkPagination } from "@inkcre/ui-web";`
-- Props: `currentPage`, `totalPages`, `type`
-- Events: `page-change`
-- Slots: None
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `currentPage` | `undefined \| number` | 否 | `1` |
+| `totalPages` | `undefined \| number` | 否 | `1` |
+| `type` | `undefined \| "default" \| "text"` | 否 | `"default"` |
+
+### Events
+
+- `page-change`: `[_page: number]`
+
+### Slots
+
+- None.
+
 - Public types: None
 - Story variants: `Few Pages (1-5)`, `Many Pages (1-20)`, `First Page`, `Last Page`, `Single Page Only`, `Text Type - Few Pages`, `Text Type - Many Pages`
 
+
 ## API Caveats
 
-- Keep the controlled page value aligned with the data request lifecycle.
-- Use the text mode only when numbered page affordances are intentionally unnecessary.
+- currentPage/totalPages 受控；page-change 传出目标页。非有限总页数视为 0，页数截断并限制范围，显示修正不主动发事件。
 
 ## Common Mistakes
 

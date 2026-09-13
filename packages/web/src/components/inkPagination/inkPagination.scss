@@ -1,5 +1,6 @@
 .ink-pagination {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: sys-var(space, xs);
 
@@ -7,8 +8,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: sys-var(size, icon, lg);
-    height: sys-var(size, icon, lg);
+    min-width: 36px;
+    min-height: 36px;
     border: 1px solid sys-var(color, border, base);
     background-color: sys-var(color, surface, subtle);
     color: sys-var(color, text, base);
@@ -29,8 +30,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: sys-var(size, md);
-    height: sys-var(size, md);
+    min-width: 36px;
+    padding: 0.25em;
+    min-height: 36px;
     border: 1px solid transparent;
     background-color: transparent;
     color: sys-var(color, text, base);
@@ -48,7 +50,7 @@
     &--active {
       border-color: sys-var(color, surface, primary);
       background-color: sys-var(color, surface, primary);
-      color: sys-var(color, text, primary);
+      color: sys-var(color, text, on-primary);
       cursor: default;
     }
 
@@ -63,4 +65,9 @@
     padding: 0 sys-var(space, md);
     @include apply-font(label-md);
   }
+}
+
+.ink-pagination :is(button):focus-visible {
+  outline: 2px solid sys-var(color, border, strong);
+  outline-offset: 2px;
 }

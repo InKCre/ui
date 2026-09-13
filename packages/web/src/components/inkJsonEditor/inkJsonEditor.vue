@@ -1,246 +1,244 @@
 <script setup lang="ts">
-import { ref, inject, computed, onMounted, onUnmounted, watch } from "vue";
-import { createReusableTemplate } from "@vueuse/core";
+import { ref, computed, onMounted, onBeforeUnmount, watch, useAttrs } from "vue";
 import { inkJsonEditorProps, inkJsonEditorEmits } from "./inkJsonEditor";
 import InkField from "../inkField/inkField.vue";
-import { INK_FORM_CONTEXT_KEY } from "../inkForm/inkForm";
+import { useFieldControl } from "../../composables/use-field-control";
 import { EditorView, keymap, placeholder } from "@codemirror/view";
 import { EditorState, Compartment } from "@codemirror/state";
 import { json } from "@codemirror/lang-json";
 import { defaultKeymap, indentWithTab } from "@codemirror/commands";
-import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
-import { jsonService } from "./jsonSchemaService";
-import { linter } from "@codemirror/lint";
-import { autocompletion } from "@codemirror/autocomplete";
+import { closeBrackets, closeBracketsKeymap, autocompletion } from "@codemirror/autocomplete";
+import {
+  createJsonService,
+  SCHEMA_RESOLVE_ERROR,
+  type JsonEditorValidation,
+} from "./jsonSchemaService";
+import { setDiagnostics, type Diagnostic } from "@codemirror/lint";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { isJsonValid } from "../../utils/json";
 
+defineOptions({ inheritAttrs: false });
 const props = defineProps(inkJsonEditorProps);
 const emit = defineEmits(inkJsonEditorEmits);
-
-const formContext = inject(INK_FORM_CONTEXT_KEY, null);
-
-const useField = computed(() => formContext !== null && props.label);
-const fieldLayout = computed(() => props.layout || formContext?.layout);
-
-// --- data ---
+const attrs = useAttrs();
+const { controlId, errorId, describedBy, fieldLayout } = useFieldControl(props);
 const editorRef = ref<HTMLDivElement>();
-let editorView: EditorView | null = null;
-const editableCompartment = new Compartment();
-
-function diagnosticMessage(message: unknown): string {
-  if (typeof message === "string") return message;
-  if (
-    message &&
-    typeof message === "object" &&
-    "value" in message &&
-    typeof message.value === "string"
-  ) {
-    return message.value;
-  }
-  return String(message);
-}
-
-const jsonSchemaLinter = linter(async (view) => {
-  if (!props.schema) return [];
-
-  const text = view.state.doc.toString();
-
-  const doc = TextDocument.create(props.schemaUri, "json", 0, text);
-  const jsonDocument = jsonService.parseJSONDocument(doc);
-
-  const diagnostics = await jsonService.doValidation(doc, jsonDocument);
-
-  return diagnostics.map((d) => {
-    const from = view.state.doc.line(d.range.start.line + 1).from;
-    const to = view.state.doc.line(d.range.end.line + 1).to;
-
-    return {
-      from,
-      to,
-      severity: d.severity === 1 ? "error" : "warning",
-      message: diagnosticMessage(d.message),
-    };
-  });
+const validation = ref<JsonEditorValidation>({
+  text: props.modelValue,
+  status: "pending",
+  valid: false,
+  messages: [],
 });
+const message = computed(() =>
+  [props.error, ...validation.value.messages].filter(Boolean).join("\n"),
+);
+const rootStyles = computed(() => ({
+  height: `calc(${Math.max(1, props.rows) * 1.2}em + var(--sys-space-sm) * 2)`,
+}));
+let editorView: EditorView | undefined;
+let service = createJsonService();
+let request = 0;
+let externalUpdate = false;
+const settings = new Compartment();
+function editorSettings() {
+  return [
+    EditorView.editable.of(props.editable && !props.disabled),
+    EditorState.readOnly.of(!props.editable || props.disabled),
+    placeholder(props.placeholder),
+    EditorView.contentAttributes.of({
+      id: controlId.value,
+      role: "textbox",
+      "aria-multiline": "true",
+      "aria-label": String(attrs["aria-label"] || props.label || "JSON"),
+      "aria-required": String(props.required),
+      "aria-invalid": String(!!message.value),
+      "aria-describedby": [describedBy.value, message.value && errorId.value]
+        .filter(Boolean)
+        .join(" "),
+      ...(attrs["aria-labelledby"] ? { "aria-labelledby": String(attrs["aria-labelledby"]) } : {}),
+    }),
+  ];
+}
+function report(result: JsonEditorValidation) {
+  validation.value = result;
+  emit("validation", result);
+}
+async function validate(text: string) {
+  const identity = ++request;
+  report({ text, status: "pending", valid: false, messages: [] });
+  const doc = TextDocument.create(
+    `inkcre://document/${controlId.value}.json`,
+    "json",
+    identity,
+    text,
+  );
+  const jsonDoc = service.parseJSONDocument(doc);
+  try {
+    const results = await service.doValidation(doc, jsonDoc);
+    if (identity !== request || !editorView) return;
+    const diagnostics: Diagnostic[] = results.map((result) => ({
+      from: doc.offsetAt(result.range.start),
+      to: doc.offsetAt(result.range.end),
+      severity: result.severity === 1 ? "error" : "warning",
+      message: result.message,
+    }));
+    // Keep valid=true safe to JSON.parse, even if a schema opts into JSON-with-comments.
+    try {
+      JSON.parse(text);
+    } catch (error) {
+      if (!diagnostics.length)
+        diagnostics.push({
+          from: 0,
+          to: text.length,
+          severity: "error",
+          message: error instanceof Error ? error.message : String(error),
+        });
+    }
+    const schemaFailure = results.find((result) => result.code === SCHEMA_RESOLVE_ERROR);
 
-const jsonSchemaCompletion = autocompletion({
+    editorView.dispatch(setDiagnostics(editorView.state, diagnostics));
+    report({
+      text,
+      status: schemaFailure ? "error" : diagnostics.length ? "invalid" : "valid",
+      valid: diagnostics.length === 0,
+      messages: diagnostics.map((item) => item.message),
+    });
+    if (schemaFailure) emit("error", new Error(schemaFailure.message));
+  } catch (error) {
+    if (identity !== request || !editorView) return;
+    report({
+      text,
+      status: "error",
+      valid: false,
+      messages: [error instanceof Error ? error.message : String(error)],
+    });
+    emit("error", error);
+  }
+}
+function configureSchema() {
+  service = createJsonService(props.schema, props.schemaUri);
+}
+const completion = autocompletion({
   override: [
-    // @ts-ignore
-    async (ctx) => {
+    async (context) => {
       if (!props.schema) return null;
-
+      const currentService = service;
+      const doc = TextDocument.create(
+        `inkcre://document/${controlId.value}.json`,
+        "json",
+        0,
+        context.state.doc.toString(),
+      );
       try {
-        const text = ctx.state.doc.toString();
-
-        const textDocument = TextDocument.create(props.schemaUri, "json", 0, text);
-
-        const jsonDocument = jsonService.parseJSONDocument(textDocument);
-
-        const position = textDocument.positionAt(ctx.pos);
-
-        const completion = await jsonService.doComplete(textDocument, position, jsonDocument);
-
+        const result = await currentService.doComplete(
+          doc,
+          doc.positionAt(context.pos),
+          currentService.parseJSONDocument(doc),
+        );
+        if (currentService !== service || context.aborted) return null;
         return {
-          from: ctx.pos,
-          options: completion
-            ? completion.items.map((item) => ({
-                label: item.label,
-                type: item.kind === 10 ? "property" : item.kind === 12 ? "enum" : "value",
-                detail: item.detail,
-                info: item.documentation,
-              }))
-            : [],
+          from: context.pos,
+          options:
+            result?.items.map((item) => ({
+              label: item.label,
+              detail: item.detail,
+              type: item.kind === 10 ? "property" : "value",
+            })) ?? [],
         };
-      } catch (err) {
-        console.warn("[InkJsonEditor] JSON Schema completion error", err);
+      } catch (error) {
+        emit("error", error);
         return null;
       }
     },
   ],
 });
-
-// computed
-
-const rootStyles = computed(() => {
-  return {
-    height: `calc(${props.rows * 1.2}em + var(--sys-space-sm) * 2)`,
-  };
-});
-
-// --- methods ---
-const forceLintRefresh = () => {
-  if (editorView) {
-    // Trigger lint refresh by dispatching an empty change
-    editorView.dispatch({
-      changes: { from: 0, insert: "" },
-    });
-  }
-};
-
-const configureSchema = () => {
-  if (!props.schema) {
-    jsonService.configure({
-      schemas: [],
-    });
-    return;
-  }
-
-  jsonService.configure({
-    schemas: [
-      {
-        uri: props.schemaUri,
-        fileMatch: ["*"],
-        schema: props.schema,
-      },
-    ],
-  });
-};
-
-const createEditor = () => {
-  if (!editorRef.value) return;
-
-  const state = EditorState.create({
-    doc: props.modelValue,
-    extensions: [
-      json(),
-      // JSON Schema support
-      jsonSchemaLinter,
-      jsonSchemaCompletion,
-      // JSON Schema support end
-      closeBrackets(),
-      keymap.of(closeBracketsKeymap),
-      keymap.of([...defaultKeymap, indentWithTab]),
-      editableCompartment.of(EditorView.editable.of(props.editable)),
-      placeholder(props.placeholder),
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          const newValue = update.state.doc.toString();
-          const isValid = isJsonValid(newValue);
-          if (isValid) {
-            emit("update:modelValue", newValue);
-          }
-        }
-      }),
-    ],
-  });
-
-  editorView = new EditorView({
-    state,
-    parent: editorRef.value,
-  });
-};
-
-const updateEditorValue = (newValue: string) => {
-  if (editorView) {
-    editorView.dispatch({
-      changes: {
-        from: 0,
-        to: editorView.state.doc.length,
-        insert: newValue,
-      },
-    });
-  }
-};
-
 onMounted(() => {
   configureSchema();
-  createEditor();
+  editorView = new EditorView({
+    parent: editorRef.value,
+    state: EditorState.create({
+      doc: props.modelValue,
+      extensions: [
+        json(),
+        completion,
+        closeBrackets(),
+        keymap.of([...closeBracketsKeymap, ...defaultKeymap, indentWithTab]),
+        settings.of(editorSettings()),
+        EditorView.updateListener.of((update) => {
+          if (!update.docChanged) return;
+          const text = update.state.doc.toString();
+          if (!externalUpdate) emit("update:modelValue", text);
+          void validate(text);
+        }),
+      ],
+    }),
+  });
+  void validate(props.modelValue);
 });
-
-onUnmounted(() => {
+onBeforeUnmount(() => {
+  request++;
   editorView?.destroy();
+  editorView = undefined;
 });
-
 watch(
   () => props.modelValue,
-  (newValue) => {
-    if (editorView && editorView.state.doc.toString() !== newValue) {
-      updateEditorValue(newValue);
+  (text) => {
+    if (!editorView || editorView.state.doc.toString() === text) return;
+    externalUpdate = true;
+    try {
+      editorView.dispatch({ changes: { from: 0, to: editorView.state.doc.length, insert: text } });
+    } finally {
+      externalUpdate = false;
     }
   },
 );
-
 watch(
-  () => props.editable,
-  (newEditable) => {
-    if (editorView) {
-      editorView.dispatch({
-        effects: editableCompartment.reconfigure(EditorView.editable.of(newEditable)),
-      });
-    }
-  },
-);
-
-watch(
-  () => props.schema,
+  [() => props.schema, () => props.schemaUri],
   () => {
     configureSchema();
-    forceLintRefresh();
+    if (editorView) void validate(editorView.state.doc.toString());
   },
   { deep: true },
 );
-
-const [DefineJsonEditor, ReuseJsonEditor] = createReusableTemplate();
+watch(
+  [
+    () => props.editable,
+    () => props.disabled,
+    () => props.placeholder,
+    () => props.label,
+    () => props.required,
+    controlId,
+    describedBy,
+    message,
+  ],
+  () => {
+    editorView?.dispatch({ effects: settings.reconfigure(editorSettings()) });
+  },
+);
 </script>
-
 <template>
-  <DefineJsonEditor>
-    <div class="ink-json-editor" :style="rootStyles">
+  <InkField
+    :for="controlId"
+    :label="label || ''"
+    :layout="fieldLayout"
+    :required="required"
+    :error="message"
+    :error-id="errorId"
+    :class="$attrs.class"
+    :style="$attrs.style"
+  >
+    <div
+      class="ink-json-editor"
+      :style="rootStyles"
+      :aria-busy="validation.status === 'pending' || undefined"
+    >
       <div
         ref="editorRef"
-        :class="['ink-json-editor__editor', { 'ink-json-editor__editor--readonly': !editable }]"
+        :class="[
+          'ink-json-editor__editor',
+          { 'ink-json-editor__editor--readonly': !editable || disabled },
+        ]"
       />
     </div>
-  </DefineJsonEditor>
-
-  <InkField v-if="useField" :label="label" :layout="fieldLayout" :required="required">
-    <ReuseJsonEditor />
   </InkField>
-
-  <template v-else>
-    <ReuseJsonEditor />
-  </template>
 </template>
-
 <style lang="scss" scoped src="./inkJsonEditor.scss" />

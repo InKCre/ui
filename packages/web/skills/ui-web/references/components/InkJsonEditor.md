@@ -25,16 +25,61 @@
 ## Public API Facts
 
 - Import: `import { InkJsonEditor } from "@inkcre/ui-web";`
-- Props: `editable`, `label`, `layout`, `modelValue`, `placeholder`, `prop`, `required`, `rows`, `schema`, `schemaUri`
-- Events: `update:modelValue`
-- Slots: None
-- Public types: None
-- Story variants: `Basic`, `JSON Schema`, `In popup`
+
+### Models
+
+- `v-model` → `update:modelValue` `[_value: string]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `id` | `undefined \| string` | 否 | `undefined` |
+| `name` | `undefined \| string` | 否 | `undefined` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `prop` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `undefined` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `undefined` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+| `modelValue` | `undefined \| string` | 否 | `""` |
+| `placeholder` | `undefined \| string` | 否 | `""` |
+| `rows` | `undefined \| number` | 否 | `5` |
+| `schema` | `JSONSchema \| undefined` | 否 | `() => (undefined)` |
+| `schemaUri` | `undefined \| string` | 否 | `"inkcre://schema.json"` |
+
+### Events
+
+- `error`: `[_error: unknown]`
+- `update:modelValue`: `[_value: string]`
+- `validation`: `[_result: JsonEditorValidation]`
+
+### Slots
+
+- None.
+
+- Public types: `JsonEditorValidation`
+- Story variants: `Basic`, `JSON Schema`, `In popup`, `Validated save and isolated editors`
+
+### Public type definitions
+
+```ts
+export interface JsonEditorValidation {
+  text: string;
+  status: "pending" | "valid" | "invalid" | "error";
+  valid: boolean;
+  messages: string[];
+}
+```
 
 ## API Caveats
 
-- The model is JSON text, not an automatically parsed application object.
-- The CodeMirror and VS Code language-service packages remain part of the declared peer contract.
+- v-model 是原始文本，包括无效 JSON；禁止在模型 setter 中直接 JSON.parse。
+- validation(JsonEditorValidation) 含 text/status/valid/messages。只有 valid=true 且 text 等于当前草稿才解析和保存，pending/invalid/error 禁止保存。
+- 无 schema 也校验语法；实例配置和缓存隔离，schema/schemaUri 改变重新校验，过期结果不覆盖新文本。
 
 ## Common Mistakes
 

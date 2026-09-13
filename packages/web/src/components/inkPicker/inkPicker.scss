@@ -8,18 +8,27 @@
 }
 
 .ink-picker {
+  @include apply-font(label-lg);
+  max-width: 100%;
+  &:focus-visible {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: 2px;
+  }
   &--box {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-width: 120px;
-    height: sys-var(size, md);
-    padding: 0 sys-var(space, sm);
-    border: 1px solid sys-var(color, border, subtle);
+    min-width: 0;
+    width: 100%;
+    gap: sys-var(space, sm);
+    min-height: 36px;
+    padding: sys-var(space, xs) sys-var(space, sm);
+    border: 1px solid sys-var(color, border, base);
     box-sizing: border-box;
+    background-color: sys-var(color, surface, base);
 
     &.ink-picker--active {
-      border-color: sys-var(color, border, primary);
+      border-color: sys-var(color, border, strong);
     }
 
     .ink-picker__icon {
@@ -34,12 +43,17 @@
     gap: sys-var(space, xs);
   }
 
+  &[aria-invalid="true"] {
+    border-color: sys-var(color, feedback, error);
+  }
+
   &__value {
     @include apply-font(label-lg);
     color: sys-var(color, text, base);
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    min-width: 0;
     user-select: none;
-    overflow-x: scroll;
     flex: 1;
   }
 }
@@ -47,8 +61,18 @@
 .ink-picker-popup {
   &__actions {
     display: flex;
+    flex-wrap: wrap;
     gap: sys-var(space, sm);
     justify-content: flex-end;
     margin-top: sys-var(space, md);
   }
+}
+
+button.ink-picker {
+  text-align: start;
+}
+button.ink-picker--inline-text {
+  padding: 0;
+  border: 0;
+  background: none;
 }

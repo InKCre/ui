@@ -25,16 +25,54 @@
 ## Public API Facts
 
 - Import: `import { InkPicker } from "@inkcre/ui-web";`
-- Props: `displayValueAs`, `editable`, `formatter`, `label`, `layout`, `modelValue`, `prop`, `required`, `showPopup`, `type`
-- Events: `pick`, `update:modelValue`, `update:showPopup`
-- Slots: `default`
+
+### Models
+
+- `v-model` → `update:modelValue` `[_value: T]`
+- `v-model:showPopup` → `update:showPopup` `[_value: boolean]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `id` | `undefined \| string` | 否 | `undefined` |
+| `name` | `undefined \| string` | 否 | `undefined` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `prop` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `undefined` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `undefined` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+| `modelValue` | `undefined \| [{ readonly type: PropType<T>; }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : { readonly type: PropType<T>; }` | 否 | `undefined` |
+| `minDate` | `Date \| undefined` | 否 | `undefined` |
+| `maxDate` | `Date \| undefined` | 否 | `undefined` |
+| `type` | `undefined \| "date" \| "datetime" \| "time"` | 否 | `undefined` |
+| `displayValueAs` | `undefined \| "box" \| "inline-text"` | 否 | `"inline-text"` |
+| `formatter` | `((value: T) => string) \| undefined` | 否 | `undefined` |
+| `showPopup` | `undefined \| boolean` | 否 | `undefined` |
+
+### Events
+
+- `pick`: `[]`
+- `update:modelValue`: `[_value: T]`
+- `update:showPopup`: `[_value: boolean]`
+
+### Slots
+
+- `default`: `{ closePopup: () => void; modelValue: ([{ readonly type: PropType<T>; }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : { readonly type: PropType<T>; }) | undefined; }`
+
 - Public types: None
 - Story variants: `Date Picker`, `Required Field`
 
+
 ## API Caveats
 
-- The generic value type must stay consistent across formatter, model value, and emitted update.
-- Custom picker content uses the default slot and owns its own value interaction.
+- 内置 type=date/time/datetime 必须使用 Date，null/undefined 表示空值。showPopup 省略时内部管理，也支持 v-model:showPopup。
+- 打开创建草稿，Confirm 才更新模型，Cancel/Escape/遮罩关闭丢弃草稿；外部值/范围更新重置草稿。
+- minDate/maxDate 限制时间戳；无效日期/范围显示错误。自定义默认槽保留 modelValue/closePopup，由消费者负责提交。
 
 ## Common Mistakes
 

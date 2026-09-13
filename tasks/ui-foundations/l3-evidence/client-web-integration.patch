@@ -1,0 +1,60 @@
+--- a/apps/client-web/src/views/info-base/graph/graph.vue
++++ b/apps/client-web/src/views/info-base/graph/graph.vue
+@@ -393,8 +393,8 @@
+       </template>
+       <Background :gap="24" pattern-color="var(--ink-border-subtle, #d9dde3)" />
+       <div class="graph-view__viewport-controls">
+-        <InkButton icon="i-mdi-plus" type="square" theme="subtle" @click="zoomIn" />
+-        <InkButton icon="i-mdi-minus" type="square" theme="subtle" @click="zoomOut" />
++        <InkButton icon="i-mdi-plus" type="square" theme="subtle" @click="zoomIn()" />
++        <InkButton icon="i-mdi-minus" type="square" theme="subtle" @click="zoomOut()" />
+         <InkButton icon="i-mdi-crosshairs-gps" type="square" theme="subtle" @click="refocus" />
+       </div>
+     </VueFlow>
+--- a/extensions/mail/src/components/contentMimePart/contentMimePart.vue
++++ b/extensions/mail/src/components/contentMimePart/contentMimePart.vue
+@@ -48,7 +48,7 @@
+       rel="noopener noreferrer"
+       >Open</a
+     >
+-    <InkButton v-else text="Download content" :loading="loading" @click="materialize" />
++    <InkButton v-else text="Download content" :is-loading="loading" @click="materialize" />
+     <p v-if="error">{{ error.message }}</p>
+   </div>
+ </template>
+--- a/extensions/mail/src/components/contentEmail/contentEmail.vue
++++ b/extensions/mail/src/components/contentEmail/contentEmail.vue
+@@ -156,7 +156,7 @@
+         <InkButton
+           v-else
+           text="Download"
+-          :loading="materializing.has(part.block.id)"
++          :is-loading="materializing.has(part.block.id)"
+           @click="materialize(part.block.id)"
+         />
+         <p v-if="materializeErrors.get(part.block.id)">
+--- a/scripts/ui-source.mjs
++++ b/scripts/ui-source.mjs
+@@ -17,21 +17,7 @@
+   ['@inkcre/ui-web/uno', 'styles/uno/preset-ink.ts'],
+ ]
+
+-export const uiSourceDedupe = [
+-  '@codemirror/autocomplete',
+-  '@codemirror/commands',
+-  '@codemirror/lang-json',
+-  '@codemirror/lint',
+-  '@codemirror/state',
+-  '@codemirror/view',
+-  '@vueuse/core',
+-  'dayjs',
+-  'unocss',
+-  'vscode-json-languageservice',
+-  'vscode-languageserver-textdocument',
+-  'vue',
+-  'vue-router',
+-]
++export const uiSourceDedupe = ['unocss', 'vue']
+
+ function exactSpecifier(specifier) {
+   const escaped = specifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

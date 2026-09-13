@@ -2,9 +2,12 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 import packageJson from "./package.json" with { type: "json" };
 
-const peerDependencies = Object.keys(packageJson.peerDependencies);
-const isPeerDependency = (id) =>
-  peerDependencies.some((dependency) => id === dependency || id.startsWith(`${dependency}/`));
+const externalDependencies = Object.keys({
+  ...packageJson.dependencies,
+  ...packageJson.peerDependencies,
+});
+const isExternalDependency = (id) =>
+  externalDependencies.some((dependency) => id === dependency || id.startsWith(`${dependency}/`));
 
 export default defineConfig({
   build: {
@@ -20,7 +23,7 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: false,
     rollupOptions: {
-      external: isPeerDependency,
+      external: isExternalDependency,
     },
   },
 });

@@ -5,60 +5,66 @@
 $color-light: (
   "text": (
     "base": fn.map-deep-get(ref.$color, "neutral", "2"),
-    "muted": fn.map-deep-get(ref.$color, "neutral", "60"),
-    "danger-on": fn.map-deep-get(ref.$color, "danger", "98"),
-    "primary": fn.map-deep-get(ref.$color, "brand", "98"),
-    "subtle": fn.map-deep-get(ref.$color, "neutral", "40")
+    "subtle": fn.map-deep-get(ref.$color, "neutral", "40"),
+    "on-primary": fn.map-deep-get(ref.$color, "brand", "98"),
+    "on-danger": fn.map-deep-get(ref.$color, "danger", "98")
   ),
   "surface": (
     "base": fn.map-deep-get(ref.$color, "neutral", "100"),
-    "muted": fn.map-deep-get(ref.$color, "neutral", "90"),
     "subtle": fn.map-deep-get(ref.$color, "neutral", "98"),
     "primary": fn.map-deep-get(ref.$color, "brand", "6"),
     "primary-hover": fn.map-deep-get(ref.$color, "brand", "30"),
     "subtle-hover": fn.map-deep-get(ref.$color, "neutral", "94"),
     "danger": fn.map-deep-get(ref.$color, "danger", "35"),
-    "danger-hover": fn.map-deep-get(ref.$color, "danger", "65"),
+    "danger-hover": fn.map-deep-get(ref.$color, "danger", "30"),
     "base-hover": fn.map-deep-get(ref.$color, "neutral", "94")
   ),
   "border": (
-    "base": fn.map-deep-get(ref.$color, "neutral", "20"),
+    "base": fn.map-deep-get(ref.$color, "neutral", "50"),
     "strong": fn.map-deep-get(ref.$color, "neutral", "2"),
-    "subtle": fn.map-deep-get(ref.$color, "neutral", "80"),
-    "muted": fn.map-deep-get(ref.$color, "neutral", "60")
+    "subtle": fn.map-deep-get(ref.$color, "neutral", "80")
   ),
   "feedback": (
-    "error": fn.map-deep-get(ref.$color, "danger", "40")
+    "error": fn.map-deep-get(ref.$color, "danger", "40"),
+    "success": #176b39,
+    "warning": #7a4b00,
+    "info": #005c8a
+  ),
+  "overlay": (
+    "scrim": rgba(0, 0, 0, 0.5)
   )
 );
 
 $color-dark: (
   "text": (
     "base": fn.map-deep-get(ref.$color, "neutral", "98"),
-    "muted": fn.map-deep-get(ref.$color, "neutral", "98"),
-    "danger-on": fn.map-deep-get(ref.$color, "danger", "98"),
-    "primary": fn.map-deep-get(ref.$color, "brand", "2"),
-    "subtle": fn.map-deep-get(ref.$color, "neutral", "80")
+    "subtle": fn.map-deep-get(ref.$color, "neutral", "80"),
+    "on-primary": fn.map-deep-get(ref.$color, "brand", "2"),
+    "on-danger": fn.map-deep-get(ref.$color, "danger", "98")
   ),
   "surface": (
     "base": fn.map-deep-get(ref.$color, "neutral", "30"),
-    "muted": fn.map-deep-get(ref.$color, "neutral", "6"),
     "subtle": fn.map-deep-get(ref.$color, "neutral", "12"),
     "primary": fn.map-deep-get(ref.$color, "brand", "90"),
     "primary-hover": fn.map-deep-get(ref.$color, "brand", "60"),
     "subtle-hover": fn.map-deep-get(ref.$color, "neutral", "40"),
     "danger": fn.map-deep-get(ref.$color, "danger", "40"),
-    "danger-hover": fn.map-deep-get(ref.$color, "danger", "40"),
-    "base-hover": fn.map-deep-get(ref.$color, "neutral", "30")
+    "danger-hover": fn.map-deep-get(ref.$color, "danger", "35"),
+    "base-hover": fn.map-deep-get(ref.$color, "neutral", "40")
   ),
   "border": (
-    "base": fn.map-deep-get(ref.$color, "neutral", "40"),
+    "base": fn.map-deep-get(ref.$color, "neutral", "70"),
     "strong": fn.map-deep-get(ref.$color, "neutral", "80"),
-    "subtle": fn.map-deep-get(ref.$color, "neutral", "40"),
-    "muted": fn.map-deep-get(ref.$color, "neutral", "40")
+    "subtle": fn.map-deep-get(ref.$color, "neutral", "40")
   ),
   "feedback": (
-    "error": fn.map-deep-get(ref.$color, "danger", "60")
+    "error": fn.map-deep-get(ref.$color, "danger", "80"),
+    "success": #75d69a,
+    "warning": #ffd27a,
+    "info": #8bceff
+  ),
+  "overlay": (
+    "scrim": rgba(0, 0, 0, 0.5)
   )
 );
 

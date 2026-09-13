@@ -8,13 +8,15 @@ Reason in English. Communicate with humans in Chinese.
 
 - `packages/web/`: `@inkcre/ui-web`, its public components, styles, stories,
   generated consumer skill, and package-local instructions.
-- `tokens/inkcre.tokens.json`: W3C DTCG design-token source.
+- `tokens/inkcre.tokens.json`: 仓库维护的设计 Token 规范源，使用 `type/value`；Figma 仅提议已有路径的值更新，格式与维护入口见 [Token 指南](tokens/tokens.md)。
 - `scripts/`: deterministic token, package-metadata, Agent Skill, contract, and
   release preparation commands.
 - `docs/index.md`: durable documentation navigation.
 - `tasks/`: volatile task packets retained only while their parent task is active.
 
 ## Knowledge Owners
+
+UI 设计、组件、Token 或视觉审视工作先读取 [DESIGN.md](DESIGN.md)，再按任务读取具体实现与指南。纯构建和非 UI 工作不需要加载全部设计上下文。DESIGN.md 拥有共同设计判断，具体值与 API 仍由下面的源头负责。
 
 - Repository and package entry points: `README.md` and `packages/web/README.md`.
 - Public package API: package exports, component manifest, TypeScript source,
@@ -29,7 +31,7 @@ Reason in English. Communicate with humans in Chinese.
 
 ## Coding Guidelines
 
-- [Coding for Human](/.github/instructions/coding-for-human.instructions.md)
+- [Coding for Human](.github/instructions/coding-for-human.instructions.md)
 
 ## Development Workflow
 
@@ -51,6 +53,8 @@ Reason in English. Communicate with humans in Chinese.
   consuming-page review; it currently admits no automated unit/component suite.
 - Require explicit Human authorization before commit, push, publication, or
   external repository/settings mutation.
+
+当前任务的范围、决策与验证记录保存在 [UI 基础能力工作包](tasks/ui-foundations/packet.md)。继续本任务时先读取工作包和当前组；它不替代上述长期知识入口，也不将尚未启动的组视为实现授权。
 
 <!-- svc:begin -->
 ## SVC

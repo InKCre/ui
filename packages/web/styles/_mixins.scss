@@ -1,19 +1,34 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:string";
 @use "./tokens/ref" as ref;
 @use "./functions" as fn;
 
-@mixin apply-font($token, $mono: false) {
-  font-size: fn.sys-var("font", $token, "font-size");
-  font-weight: fn.sys-var("font", $token, "font-weight");
-  line-height: fn.sys-var("font", $token, "line-height");
-  letter-spacing: fn.sys-var("font", $token, "letter-spacing");
-
-  @if $mono {
-    font-family: fn.ref-var("typo", "family", "mono");
+// Role metrics remain runtime reads; family and decoration are explicit choices.
+@mixin apply-font($token, $mono: false, $underlined: false) {
+  $parts: string.split($token, "-");
+  @if list.length($parts) != 2 {
+    @error "Use a base font role and explicit $mono/$underlined options: #{$token}";
   }
+  @if not map.has-key(ref.$font, list.nth($parts, 1), list.nth($parts, 2)) {
+    @error "Unknown font role: #{$token}";
+  }
+  @if $mono != false and $mono != true and $mono != mono {
+    @error "$mono must be false, true, or mono; use a complete role such as title-lg";
+  }
+  @if $underlined != false and $underlined != true {
+    @error "$underlined must be a boolean";
+  }
+  font-family: fn.sys-var(typo, family, if($mono, mono, sans));
+  font-size: fn.sys-var(font, $token, font-size);
+  font-weight: fn.sys-var(font, $token, font-weight);
+  line-height: fn.sys-var(font, $token, line-height);
+  letter-spacing: fn.sys-var(font, $token, letter-spacing);
+  text-decoration: if($underlined, underline, none);
 }
 
 @mixin font-mono {
-  font-family: fn.ref-var("typo", "family", "mono");
+  font-family: fn.sys-var(typo, family, mono);
 }
 
 @mixin apply-icon($size, $centered: false) {

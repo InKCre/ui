@@ -29,11 +29,16 @@ const onCancel = () => {
 
 <template>
   <div class="ink-double-check">
-    <div class="ink-double-check__trigger" @click="onSlotClick">
+    <div class="ink-double-check__trigger" @click.capture="onSlotClick">
       <slot></slot>
     </div>
 
-    <InkPopup v-model:open="popupOpen" position="center">
+    <InkPopup
+      class="ink-double-check__dialog"
+      v-model:open="popupOpen"
+      position="center"
+      :aria-label="title"
+    >
       <div class="ink-double-check__popup">
         <h3 class="ink-double-check__title">{{ title }}</h3>
         <p class="ink-double-check__message">{{ message }}</p>

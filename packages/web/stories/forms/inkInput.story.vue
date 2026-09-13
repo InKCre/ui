@@ -4,6 +4,8 @@ import InkInput from "../../src/components/inkInput/inkInput.vue";
 
 const basicValue = ref("");
 const requiredValue = ref("");
+const inlineName = ref("原名称");
+const savedName = ref("尚未保存");
 </script>
 
 <template>
@@ -46,6 +48,10 @@ const requiredValue = ref("");
     <!-- [Edge] Inline Edit Type -->
     <Variant title="Inline Editable">
       <InkInput modelValue="Click to edit this text" type="inline" placeholder="Enter text" />
+    </Variant>
+    <Variant title="Inline confirmation and cancellation">
+      <InkInput v-model="inlineName" type="inline" label="名称" @confirm="savedName = $event" />
+      <p>Enter 保存，Escape 或失焦取消。持久化入口收到：{{ savedName }}</p>
     </Variant>
   </Story>
 </template>

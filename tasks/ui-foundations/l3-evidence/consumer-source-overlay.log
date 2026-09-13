@@ -1,0 +1,20 @@
+$ node scripts/type-check-ui.mjs --ui-source /Volumes/WorkSSD/Development/InKCre/design/packages/web
+src/views/info-base/graph/graph.vue(396,68): error TS2322: Type 'ZoomInOut' is not assignable to type '(_event: MouseEvent) => any'.
+  Types of parameters 'options' and '_event' are incompatible.
+    Type 'MouseEvent' has no properties in common with type 'TransitionOptions'.
+src/views/info-base/graph/graph.vue(397,69): error TS2322: Type 'ZoomInOut' is not assignable to type '(_event: MouseEvent) => any'.
+  Types of parameters 'options' and '_event' are incompatible.
+    Type 'MouseEvent' has no properties in common with type 'TransitionOptions'.
+../../../design/packages/web/src/components/inkAutoForm/inkAutoForm.ts(156,77): error TS2345: Argument of type 'string | MarkupContent' is not assignable to parameter of type 'string'.
+  Type 'MarkupContent' is not assignable to type 'string'.
+../../../design/packages/web/src/components/inkAutoForm/inkAutoForm.ts(157,26): error TS2345: Argument of type 'string | MarkupContent' is not assignable to parameter of type 'string'.
+  Type 'MarkupContent' is not assignable to type 'string'.
+../../../design/packages/web/src/components/inkJsonEditor/inkJsonEditor.vue(78,11): error TS2322: Type '{ from: number; to: number; severity: "error" | "warning"; message: string | MarkupContent; }[]' is not assignable to type 'Diagnostic[]'.
+  Type '{ from: number; to: number; severity: "error" | "warning"; message: string | MarkupContent; }' is not assignable to type 'Diagnostic'.
+    Types of property 'message' are incompatible.
+      Type 'string | MarkupContent' is not assignable to type 'string'.
+        Type 'MarkupContent' is not assignable to type 'string'.
+../../../design/packages/web/src/components/inkJsonEditor/inkJsonEditor.vue(105,48): error TS2345: Argument of type 'string | MarkupContent' is not assignable to parameter of type 'string | undefined'.
+  Type 'MarkupContent' is not assignable to type 'string'.
+../../../design/packages/web/src/components/inkJsonEditor/jsonSchemaService.ts(37,14): error TS2322: Type '768' is not assignable to type 'ErrorCode.SchemaResolveError'.
+[ELIFECYCLE] Command failed with exit code 2.

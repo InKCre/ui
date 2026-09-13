@@ -2,34 +2,49 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  border: 1px solid sys-var(color, border, subtle);
+  min-width: 0;
+  border: 1px solid sys-var(color, border, base);
   box-sizing: border-box;
+
+  &__input,
+  &__value {
+    @include apply-font(label-lg);
+    padding: sys-var(space, sm);
+    color: sys-var(color, text, base);
+    min-height: 100px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
 
   &__input {
     flex: 1;
-    padding: sys-var(space, sm);
     border: none;
     outline: none;
     background: transparent;
-    @include apply-font(label-lg);
-    color: sys-var(color, text, base);
     resize: vertical;
-    min-height: 100px;
-    font-family: "Monaco", "Courier New", monospace;
-
-    &:focus {
-      border-color: sys-var(color, border, active);
+    &::placeholder {
+      color: sys-var(color, text, subtle);
+      opacity: 1;
     }
   }
 
   &__value {
-    padding: sys-var(space, sm);
-    color: sys-var(color, text, base);
     white-space: pre-wrap;
-    word-break: break-word;
-    @include apply-font(label-lg);
-    font-family: "Monaco", "Courier New", monospace;
-    background: sys-var(color, background, secondary);
-    min-height: 100px;
+    overflow-wrap: anywhere;
+    background: sys-var(color, surface, subtle);
+  }
+
+  &--mono &__input,
+  &--mono &__value {
+    @include font-mono;
+  }
+
+  &:has([aria-invalid="true"]) {
+    border-color: sys-var(color, feedback, error);
+  }
+  &:has(:focus-visible) {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: 2px;
   }
 }

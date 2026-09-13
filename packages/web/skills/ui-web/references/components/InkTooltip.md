@@ -25,15 +25,35 @@
 ## Public API Facts
 
 - Import: `import { InkTooltip } from "@inkcre/ui-web";`
-- Props: `content`, `position`
-- Events: None
-- Slots: `default`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `content` | `undefined \| string` | 否 | `""` |
+| `position` | `undefined \| "bottom" \| "left" \| "right" \| "top"` | 否 | `"top"` |
+
+### Events
+
+- None.
+
+### Slots
+
+- `default`: `{ describedby: string | undefined; }`
+
 - Public types: None
 - Story variants: `Top`, `Bottom`, `Left`, `Right`, `Long Text`
 
+
 ## API Caveats
 
-- Keep tooltip content concise and preserve keyboard access to the trigger.
+- 悬停和焦点进入显示，Escape 关闭；默认槽参数 describedby 必须传到触发控件 aria-describedby。
 
 ## Common Mistakes
 

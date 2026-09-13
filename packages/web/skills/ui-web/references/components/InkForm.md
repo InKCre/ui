@@ -25,16 +25,35 @@
 ## Public API Facts
 
 - Import: `import { InkForm } from "@inkcre/ui-web";`
-- Props: `layout`
-- Events: `submit`
-- Slots: `default`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `"col"` |
+
+### Events
+
+- `submit`: `[_event: Event]`
+
+### Slots
+
+- `default`: `{}`
+
 - Public types: None
-- Story variants: `Column Layout`, `Inline Layout`
+- Story variants: `完整设置表单与保存失败`, `宿主路由语言和主题适配`, `JSON 草稿与验证后保存`, `Column Layout`, `Inline Layout`, `Reactive layout`, `长标签、错误与窄容器`
+
 
 ## API Caveats
 
-- InkForm primarily owns layout context; application validation and submission remain explicit.
-- Use the emitted native submit event rather than relying on browser navigation.
+- layout 响应式传给子字段，控件自身 layout 优先；submit 传出 Event 并阻止默认导航。
+- 不要嵌套 form，InkAutoForm 已拥有一个 form。
 
 ## Common Mistakes
 

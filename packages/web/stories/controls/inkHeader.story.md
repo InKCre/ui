@@ -1,63 +1,7 @@
-# InkHeader
+# inkHeader
 
-A header component for application navigation and branding.
+InkHeader 展示品牌和当前页面。品牌触发区域与菜单使用原生按钮，可以通过键盘操作；分别发出 title-click 和 menu-click。pageTitle 优先于注入路由的当前名称。
 
-## Rationale
+默认菜单有 Menu 可访问名称；自定义 right-icon 槽时由消费者提供按钮名称和操作。品牌触发是命令而非链接；需要浏览器链接语义时应自行组合链接。
 
-InkHeader exists to provide a consistent top navigation bar with logo, title, and menu options.
-
-Use it for app headers where branding and navigation are needed; avoid using it for content headers or footers.
-
-## Design Semantics
-
-### Concepts
-
-- `title`: main app or page title.
-- `pageTitle`: current page or section title.
-- `logoSrc`: image for branding.
-
-### Visual / UX Meaning
-
-- Logo and title on the left for branding.
-- Page title and menu on the right for context and actions.
-
-## Canonical Examples
-
-- Basic header: With title and menu.
-
-  ```vue
-  <InkHeader title="My App" />
-  ```
-
-- With logo: For branded apps.
-
-  ```vue
-  <InkHeader title="InKCre" logoSrc="/logo.png" />
-  ```
-
-- With page title: Showing current section.
-
-  ```vue
-  <InkHeader title="Dashboard" pageTitle="Overview" />
-  ```
-
-## Behavioral Contract
-
-- Clicking title or logo emits 'title-click'.
-- Clicking menu emits 'menu-click'.
-- Page title displays current route name if available.
-
-## Extension & Composition
-
-- Supports slot for custom right icon.
-- Integrates with vue-router for automatic page titles.
-
-## Non-Goals
-
-- Handling routing or menu logic.
-- Footer or sidebar functionality.
-
-## Implementation Notes
-
-- Uses vue-router if available for page title.
-- Emits events for parent handling.
+标题采用统一系统字体角色，品牌文字显式等宽。长内容可换行，菜单保持独立操作区域；底部分隔是装饰边界。

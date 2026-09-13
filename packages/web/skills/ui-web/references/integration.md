@@ -5,7 +5,7 @@
 ## Package Boundary
 
 ```sh
-pnpm add @inkcre/ui-web
+pnpm add @inkcre/ui-web vue@^3.5.25
 ```
 
 Import runtime components and the plugin from `@inkcre/ui-web`. Import
@@ -14,8 +14,9 @@ package exports.
 
 - Load @inkcre/ui-web/styles once in the application style entry unless the Sass entry is intentionally compiled instead.
 - Use the package root for components and public types, /utils for utilities, /locales for locale bundles, and /uno for presetInk.
-- Keep declared peer dependencies resolvable in the consumer installation graph.
 - Do not alias raw package source or dist internals in the registry-backed production contract.
+- 运行时需要 Vue ^3.5.25（公开声明按此版本生成）和支持原生 dialog 的浏览器。
+- Vue 是共享运行时 peer；CodeMirror、JSON 语言服务、VueUse 与 dayjs 由包自行声明安装。UnoCSS 只在使用 /uno 时需要。
 
 ## Router Adapter
 

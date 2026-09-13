@@ -1,83 +1,11 @@
-# InkPopup
+# inkPopup
 
-A flexible popup component with support for multiple positions, scrim overlay, and v-model control.
+InkPopup 是定位内容容器，使用 `v-model:open` 控制打开状态。默认 scrim=true，以原生 dialog.showModal 打开：背景不可操作，浏览器约束焦点并管理嵌套模态层级。关闭后恢复打开前的焦点。为弹层传 aria-label 或 aria-labelledby，内容可以用 autofocus 指定初始焦点。
 
-## Features
+scrim=false 使用非模态 dialog.show，背景仍可操作，不限制背景焦点。position 继续支持 center、四个边和四元组像素定位。
 
-- **Flexible Positioning**: Support for predefined positions (`center`, `left`, `right`, `top`, `bottom`) or custom coordinates
-- **Scrim Control**: Optional overlay that can close the popup on click
-- **V-Model Support**: Easy open/close state management
-- **Transitions**: Smooth fade and slide animations
-- **Teleport**: Renders at the document root to avoid z-index stacking issues
+closeOnScrim 控制点击遮罩关闭，closeOnEscape 控制 Escape 关闭。scrim-click 报告遮罩点击；业务待处理时应关闭这两个关闭入口。程序更新 open=false 始终可以关闭。组件没有内置关闭按钮，自定义内容应提供可见的关闭动作。
 
-## Usage
+需要标准标题、确认取消和异步等待时使用 InkDialog；全屏图片预览使用 InkScrim。浏览器需要支持原生 dialog，不附带 polyfill。
 
-### Basic Example
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import InkPopup from "@/components/common/InkPopup/InkPopup.vue";
-
-const isOpen = ref(false);
-</script>
-
-<template>
-  <button @click="isOpen = true">Open Popup</button>
-
-  <InkPopup v-model:open="isOpen">
-    <div>Popup content here</div>
-  </InkPopup>
-</template>
-```
-
-### Positioned Popup
-
-```vue
-<InkPopup v-model:open="isOpen" position="top">
-  <div>Popup content</div>
-</InkPopup>
-```
-
-### Custom Position
-
-```vue
-<InkPopup v-model:open="isOpen" :position="[10, 20, 30, 40]">
-  <div>Popup content</div>
-</InkPopup>
-```
-
-### Disable Scrim Close
-
-```vue
-<InkPopup v-model:open="isOpen" :close-on-scrim="false">
-  <div>Popup content</div>
-</InkPopup>
-```
-
-### Modeless Popup
-
-Use `scrim="false"` when the popup is a modeless outlet and the surrounding navigation host
-must remain pointer-accessible. `closeOnScrim` has no effect while the scrim is absent.
-
-```vue
-<InkPopup v-model:open="isOpen" :scrim="false" position="right">
-  <div>Modeless content</div>
-</InkPopup>
-```
-
-## Props
-
-| Prop           | Type            | Default    | Description                                                                                                        |
-| -------------- | --------------- | ---------- | ------------------------------------------------------------------------------------------------------------------ |
-| `open`         | `boolean`       | `false`    | Controls popup visibility (supports v-model)                                                                       |
-| `position`     | `PopupPosition` | `'center'` | Position of the popup: `'center'`, `'left'`, `'right'`, `'top'`, `'bottom'`, or array `[top, right, bottom, left]` |
-| `closeOnScrim` | `boolean`       | `true`     | Whether clicking the scrim closes the popup                                                                        |
-| `scrim`        | `boolean`       | `true`     | Whether the popup renders a page-covering scrim                                                                    |
-
-## Types
-
-```typescript
-type PopupPosition =
-  "center" | "left" | "right" | "bottom" | "top" | [number, number, number, number]; // [top, right, bottom, left]
-```
+遮罩读取根级 overlay.scrim。内容受视口最大尺寸约束并在弹层内滚动，盒尺寸包含内边距；Teleport 到 body，只保证根级主题／字体覆盖。

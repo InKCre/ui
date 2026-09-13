@@ -25,17 +25,64 @@
 ## Public API Facts
 
 - Import: `import { InkDropdown } from "@inkcre/ui-web";`
-- Props: `displayAs`, `editable`, `enableStepping`, `label`, `layout`, `modelValue`, `options`, `placeholder`, `prop`, `refresher`, `required`
-- Events: `change`, `update:modelValue`, `update:options`
-- Slots: None
+
+### Models
+
+- `v-model` → `update:modelValue` `[_value: string | number]`
+- `v-model:options` → `update:options` `[_options: DropdownOption[]]`
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `id` | `undefined \| string` | 否 | `undefined` |
+| `name` | `undefined \| string` | 否 | `undefined` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `error` | `undefined \| string` | 否 | `""` |
+| `prop` | `undefined \| string` | 否 | `undefined` |
+| `label` | `undefined \| string` | 否 | `undefined` |
+| `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `undefined` |
+| `editable` | `undefined \| boolean` | 否 | `true` |
+| `required` | `undefined \| boolean` | 否 | `false` |
+| `modelValue` | `undefined \| null \| string \| number` | 否 | `""` |
+| `placeholder` | `undefined \| string` | 否 | `"Select an option"` |
+| `displayAs` | `undefined \| "box"` | 否 | `"box"` |
+| `enableStepping` | `undefined \| boolean` | 否 | `false` |
+| `options` | `DropdownOption[] \| undefined` | 否 | `undefined` |
+| `refresher` | `(() => Promise<DropdownOption[]>) \| undefined` | 否 | `undefined` |
+
+### Events
+
+- `change`: `[_value: string | number]`
+- `error`: `[_error: unknown]`
+- `update:modelValue`: `[_value: string | number]`
+- `update:options`: `[_options: DropdownOption[]]`
+
+### Slots
+
+- None.
+
 - Public types: `DropdownOption`
 - Story variants: `Basic`, `With Refresh`, `Async Options`, `With Descriptions`, `Preselected Async Value`, `With Stepping`, `Stepping & Refresh`, `Keyboard Navigation`
 
+### Public type definitions
+
+```ts
+export interface DropdownOption {
+  label: string;
+  value: string | number;
+  description?: string;
+  [key: string]: any;
+}
+```
+
 ## API Caveats
 
-- Use DropdownOption for public option values.
-- Choose either static options or the refresher lifecycle deliberately.
-- Editable state controls whether selection interactions are available.
+- options 省略时保存内部选项；传入时由父级接收 update:options，refresher 失败显示提示并发出 error。
+- Enter/Space/方向键打开，上下/Home/End 导航，Enter 选择，输入搜索，Escape/Tab/离开关闭。
+- label 关联触发按钮；required 是 aria-required，消费者仍需验证必选值。
 
 ## Common Mistakes
 

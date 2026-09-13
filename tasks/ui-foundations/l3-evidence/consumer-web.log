@@ -1,0 +1,6 @@
+src/views/info-base/graph/graph.vue(396,68): error TS2322: Type 'ZoomInOut' is not assignable to type '(_event: MouseEvent) => any'.
+  Types of parameters 'options' and '_event' are incompatible.
+    Type 'MouseEvent' has no properties in common with type 'TransitionOptions'.
+src/views/info-base/graph/graph.vue(397,69): error TS2322: Type 'ZoomInOut' is not assignable to type '(_event: MouseEvent) => any'.
+  Types of parameters 'options' and '_event' are incompatible.
+    Type 'MouseEvent' has no properties in common with type 'TransitionOptions'.

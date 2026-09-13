@@ -16,7 +16,7 @@ matches a product task.
 ## Workflow
 
 1. Identify the product intent and interaction state.
-2. Read `references/component-map.md` to shortlist components.
+2. Read [DESIGN.md](../../DESIGN.md) for design decisions, defaults, and extension boundaries; then read `references/component-map.md` to shortlist components.
 3. For multi-component work, read `references/composition-recipes.md`.
 4. Load only the selected files under `references/components/`.
 5. Check integration, styling, and common-mistake references only when relevant.
@@ -26,10 +26,10 @@ matches a product task.
 
 - Application navigation and branding: InkHeader
 - Single action: InkButton
-- Structured form: InkForm with InkField and the matching form control
+- Structured form: InkForm layout="col" 搭配有 label/error 的内置控件；自定义字段才使用 InkField
 - Schema-driven primitive form: InkAutoForm
 - JSON configuration editing: InkJsonEditor
-- Destructive confirmation: InkDoubleCheck for a compact guard; InkDialog for a focused modal decision
+- Destructive confirmation: InkDoubleCheck 提供确认弹层；InkDialog 支持异步等待和较复杂决策
 - Custom or positioned overlay: InkPopup; add InkScrim only when the composition does not already own one
 - Loading state: InkLoading
 - Empty or error state: InkPlaceholder
@@ -58,12 +58,13 @@ app.use(InKCreUiWeb);
 - Choose components by product intent and interaction semantics, not only visual resemblance.
 - Prefer package components over local substitutes when the public component contract fits.
 - Use public package exports and documented subpaths; never import src/components files.
-- Keep form labels, controls, and layout context explicit through InkForm and InkField.
+- 普通表单从 InkForm layout="col" 和内置 label/error 开始，页面布局由宿主 CSS 负责。
 - Distinguish loading, empty, error, and confirmation states instead of using one generic feedback surface.
 - Read only the component references needed for the current task.
 
 ## References
 
+- [DESIGN.md](../../DESIGN.md): shared design decisions for consumers and maintainers.
 - `references/component-map.md`: intent-to-component routing.
 - `references/composition-recipes.md`: reviewed multi-component workflows.
 - `references/integration.md`: installation, router, and i18n boundaries.

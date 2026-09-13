@@ -25,16 +25,46 @@
 ## Public API Facts
 
 - Import: `import { InkButton } from "@inkcre/ui-web";`
-- Props: `icon`, `iconPlacement`, `isLoading`, `size`, `text`, `theme`, `type`
-- Events: `click`
-- Slots: `default`, `prefix-icon`, `suffix-icon`
+
+### Models
+
+- None.
+
+### Props
+
+默认列是声明的值或表达式；默认工厂按组件实例求值。组件内的显示回退见 API Caveats。
+
+| 名称 | 类型 | 必需 | 默认表达式 |
+| --- | --- | --- | --- |
+| `nativeType` | `undefined \| "button" \| "reset" \| "submit"` | 否 | `"button"` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
+| `text` | `undefined \| string` | 否 | `undefined` |
+| `icon` | `undefined \| string` | 否 | `undefined` |
+| `iconPlacement` | `undefined \| "prefix" \| "suffix"` | 否 | `"prefix"` |
+| `type` | `undefined \| "default" \| "square"` | 否 | `"default"` |
+| `theme` | `undefined \| "danger" \| "primary" \| "subtle"` | 否 | `"subtle"` |
+| `size` | `undefined \| "md" \| "sm"` | 否 | `"md"` |
+| `isLoading` | `undefined \| boolean` | 否 | `false` |
+
+### Events
+
+- `click`: `[_event: MouseEvent]`
+
+### Slots
+
+- `prefix-icon`: `{}`
+- `default`: `{}`
+- `suffix-icon`: `{}`
+
 - Public types: None
-- Story variants: `Subtle`, `Primary`, `Danger`, `Medium (Default)`, `Small`, `Loading State - Subtle`, `Loading State - Primary`, `Loading State - Danger`, `Very Long Text`, `Short Text`, `Icon Prefix`, `Icon Suffix`, `Icon Only (Square)`
+- Story variants: `Subtle`, `Primary`, `Danger`, `Medium (Default)`, `Small`, `Loading State - Subtle`, `Loading State - Primary`, `Loading State - Danger`, `Very Long Text`, `Short Text`, `Icon Prefix`, `Icon Suffix`, `Icon Only (Square)`, `Explicit form submission`
+
 
 ## API Caveats
 
-- Choose theme from the component's actual public values; do not borrow variant names from another library.
-- Keep icon-only commands accessible with surrounding context or a tooltip.
+- type 控制 default/square 外形；nativeType 控制 button/submit/reset，默认 button。提交必须使用 nativeType="submit"。
+- click 传出 MouseEvent；disabled、isLoading 或 Dialog 的 pending 禁用动作。图标按钮必须提供 aria-label。
+- 默认 theme="subtle"；主动作显式 primary。文字可换行，最小高度 md=36px、sm=24px；pending 保留标签与相邻 spinner，不使用遮盖标签的覆盖层。
 
 ## Common Mistakes
 

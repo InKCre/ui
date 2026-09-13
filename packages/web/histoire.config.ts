@@ -237,6 +237,9 @@ export default defineConfig({
         }
       : undefined, // Dev mode: Use Histoire's default with our optimized Shiki
   vite: {
+    resolve: {
+      alias: [{ find: /^@inkcre\/ui-web$/, replacement: resolve(__dirname, "src/index.ts") }],
+    },
     plugins: [optimizeShikiPlugin(), cdnExternalsPlugin()],
     build: {
       sourcemap: false,

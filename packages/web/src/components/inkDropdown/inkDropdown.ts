@@ -33,6 +33,7 @@ export const inkDropdownProps = {
 // --- Emits ---
 export const inkDropdownEmits = {
   "update:modelValue": (_value: DropdownOption["value"]) => true,
+  error: (_error: unknown) => true,
   change: (_value: DropdownOption["value"]) => true,
   "update:options": (_options: DropdownOption[]) => true,
 } as const;

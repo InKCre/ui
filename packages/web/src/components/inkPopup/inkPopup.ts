@@ -16,6 +16,7 @@ export const inkPopupProps = {
     type: [String, Array] as PropType<PopupPosition>,
     default: "center",
   },
+  closeOnEscape: makeBooleanProp(true),
   closeOnScrim: makeBooleanProp(true),
   scrim: makeBooleanProp(true),
 } as const;
