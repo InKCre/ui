@@ -33,9 +33,11 @@ const onTitleClick = () => {
         <button
           type="button"
           aria-label="Menu"
-          class="i-mdi-menu ink-header__menu-icon"
+          class="ink-header__menu-button"
           @click="onMenuClick"
-        ></button>
+        >
+          <span class="i-mdi-menu ink-header__menu-icon" aria-hidden="true" />
+        </button>
       </slot>
     </div>
   </header>

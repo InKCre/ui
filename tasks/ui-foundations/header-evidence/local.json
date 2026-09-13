@@ -1,0 +1,59 @@
+{
+  "origin": "http://127.0.0.1:5210",
+  "browser": "149.0.7827.55",
+  "checks": [
+    {
+      "theme": "light",
+      "width": 375,
+      "foreground": "rgb(31, 31, 31)",
+      "bounds": {
+        "x": 319,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    },
+    {
+      "theme": "light",
+      "width": 1280,
+      "foreground": "rgb(31, 31, 31)",
+      "bounds": {
+        "x": 1224,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    },
+    {
+      "theme": "dark",
+      "width": 375,
+      "foreground": "rgb(226, 226, 226)",
+      "bounds": {
+        "x": 319,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    },
+    {
+      "theme": "dark",
+      "width": 1280,
+      "foreground": "rgb(226, 226, 226)",
+      "bounds": {
+        "x": 1224,
+        "y": 18,
+        "width": 24,
+        "height": 24
+      },
+      "menuEvents": 3,
+      "mask": "visible child glyph; unmasked button and focus outline"
+    }
+  ],
+  "errors": []
+}
