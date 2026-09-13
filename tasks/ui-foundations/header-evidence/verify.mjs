@@ -25,6 +25,8 @@ try {
       const glyph = menu.locator('[aria-hidden="true"]');
       await expect(glyph).toBeVisible();
       await expect(glyph).not.toHaveCSS("mask-image", "none");
+      await expect(glyph).toHaveCSS("width", "24px");
+      await expect(glyph).toHaveCSS("height", "24px");
       const foreground = await menu.evaluate((e) => getComputedStyle(e).color);
       await expect(glyph).toHaveCSS("background-color", foreground);
       await expect(glyph).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
