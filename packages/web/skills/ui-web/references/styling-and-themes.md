@@ -16,7 +16,7 @@ use only the exported functions, mixins, and token subpaths.
 ## Rules
 
 - 应用加载一次 @inkcre/ui-web/styles；Sass 使用公开 /styles/functions、/styles/mixins 和 /tokens/ref|sys|comp。
-- 设计角色的选择、配色关系、状态与布局责任见包内 DESIGN.md；CSS/Sass/Uno 调用与覆盖细节见 styles/README.md。
+- 包内 DESIGN.md 提供总纲；按任务读取 docs/design 中的视觉语言或页面组合，比较方案时再读判断依据。CSS/Sass/Uno 调用与覆盖细节见 styles/README.md。
 - apply-font(body-md) 输出四个度量、系统 UI 字体和 none 装饰；代码加 $mono: true，下划线加 $underlined: true。apply-font(title, lg) 无效，应使用 title-lg。
 - Uno 将 presetInk 放在 presetWind3 后；font-body-md、font-label-lg font-mono underline、p-md 使用同一公开角色。none 不能消除祖先绘制的下划线。
 - html[data-theme="light|dark"] 优先于系统；省略 data-theme 或设 system 时跟随系统。主题覆盖 CSS 放在库之后并匹配选择器。

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InKCre · 色调对照</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; color: #252525; background: #eaeaea; font: 16px/1.6 system-ui, sans-serif; }
+main { max-width: 1440px; margin: auto; padding: 32px; }
+h1 { margin: 0; font-size: 26px; font-weight: 600; }
+.intro { max-width: 900px; margin: 8px 0 20px; color: #505050; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.controls button { font: inherit; border: 1px solid #777; padding: 6px 16px; color: #333; background: transparent; cursor: pointer; }
+.controls button[aria-pressed="true"] { background: #333; color: #fff; }
+button:focus-visible { outline: 3px solid #555; outline-offset: 3px; }
+.comparison { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.caption { color: #505050; font-size: 14px; margin: 4px 0 16px; }
+.sample { background: var(--bg); color: var(--fg); margin-bottom: 20px; }
+.neutral .light { --bg: #f6f6f6; --surface: #fff; --fg: #292929; --secondary: #626262; --border: #b1b1b1; }
+.cool .light { --bg: #f2f5f7; --surface: #fbfdfe; --fg: #28323b; --secondary: #576674; --border: #acb9c3; }
+.warm .light { --bg: #f7f4ef; --surface: #fffdf7; --fg: #373028; --secondary: #6c6154; --border: #beb4a6; }
+.neutral .dark { --bg: #202020; --surface: #292929; --fg: #e8e8e8; --secondary: #b5b5b5; --border: #707070; }
+.cool .dark { --bg: #1e2429; --surface: #273039; --fg: #e3eaf0; --secondary: #afbdc8; --border: #647786; }
+.warm .dark { --bg: #28241f; --surface: #322c25; --fg: #eee7dd; --secondary: #c1b6a6; --border: #827665; }
+.light { --blue: #586f87; --green: #566d60; --red: #8e6461; }
+.dark { --blue: #a1b3c8; --green: #a3b5a8; --red: #c8a19d; }
+.sample-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.brand { font: 600 17px/1.4 ui-monospace, monospace; }
+.theme-label { color: var(--secondary); font-size: 13px; }
+.content { padding: 24px 20px; }
+h3 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+.description { font-size: 15px; color: var(--secondary); margin: 0 0 22px; }
+.row { padding: 14px 0; border-top: 1px solid var(--border); }
+.row-title { margin: 0 0 4px; font-size: 16px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--secondary); }
+.success { color: var(--green); }
+.info { color: var(--blue); }
+.warning { color: var(--red); font-size: 14px; margin: 18px 0; }
+.sample-action { display: inline-block; padding: 7px 14px; color: var(--surface); background: var(--fg); font-size: 14px; }
+.palette { display: flex; gap: 8px; margin-top: 24px; }
+.swatch { flex: 1; height: 24px; border: 1px solid var(--border); }
+.palette-note { color: var(--secondary); font-size: 12px; margin: 8px 0 0; }
+footer { font-size: 13px; color: #505050; margin-top: 8px; }
+main[data-mode="light"] .dark, main[data-mode="dark"] .light { display: none; }
+@media (max-width: 850px) { main { padding: 24px 16px; } .comparison { grid-template-columns: 1fr; } }
+</style>
+<main data-mode="both">
+<h1>InKCre · 色调对照</h1>
+<p class="intro">这次只比较黑白灰底色的冷暖。三组使用相同的排版、布局和灰调彩色，便于看清底色如何改变整体感受。色值仅用于本次讨论。</p>
+<div class="controls" role="group" aria-label="选择浅深主题视图">
+<button type="button" data-mode="both" aria-pressed="true">浅深并看</button>
+<button type="button" data-mode="light" aria-pressed="false">只看浅色</button>
+<button type="button" data-mode="dark" aria-pressed="false">只看深色</button>
+</div>
+<div class="comparison"></div>
+<footer>底部色条依次为表面、文字、灰蓝、灰绿、灰红。示意中的“添加来源”为静态样式样本。</footer>
+</main>
+<script>
+const samples = [
+  ['neutral', 'A · 中性灰', '底色接近无色，彩色保留自己的色相。'],
+  ['cool', 'B · 偏冷灰', '底色略带蓝灰，整体感受更清冷。'],
+  ['warm', 'C · 偏暖灰', '底色略带米灰，整体感受更温和。'],
+];
+const palette = ['surface', 'fg', 'blue', 'green', 'red'];
+document.querySelector('.comparison').innerHTML = samples.map(([name, title, caption]) => `
+<section class="${name}" aria-label="${title}">
+<h2>${title}</h2><p class="caption">${caption}</p>
+${['light', 'dark'].map(theme => `
+<article class="sample ${theme}" aria-label="${title} · ${theme === 'light' ? '浅色' : '深色'}">
+<header class="sample-header"><span class="brand">InKCre</span><span class="theme-label">${theme === 'light' ? '浅色背景' : '深色背景'}</span></header>
+<div class="content">
+<h3>阅读与记录</h3>
+<p class="description">收集值得保留的内容，继续上次的阅读。</p>
+<div class="row"><p class="row-title">设计与日常观察</p><div class="meta"><span>12 篇记录</span><span class="success">已同步</span></div></div>
+<div class="row"><p class="row-title">Typography notes</p><div class="meta"><span>今天更新</span><span class="info">正在整理</span></div></div>
+<p class="warning">1 个来源需要重新连接</p>
+<span class="sample-action">添加来源</span>
+<div class="palette" aria-hidden="true">${palette.map(role => `<span class="swatch" style="background:var(--${role})"></span>`).join('')}</div>
+<p class="palette-note">表面 · 文字 · 灰蓝 · 灰绿 · 灰红</p>
+</div></article>`).join('')}
+</section>`).join('');
+for (const button of document.querySelectorAll('.controls button')) {
+  button.addEventListener('click', () => {
+    document.querySelector('main').dataset.mode = button.dataset.mode;
+    for (const sibling of document.querySelectorAll('.controls button')) {
+      sibling.setAttribute('aria-pressed', String(sibling === button));
+    }
+  });
+}
+</script>
+</html>

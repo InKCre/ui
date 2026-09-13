@@ -1,4 +1,12 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { createChecker, type ComponentMeta } from "vue-component-meta";
 import { propDefault, propType, typeDeclarations } from "./lib/component-api.js";
@@ -6,6 +14,7 @@ import {
   repositoryRoot,
   readComponentManifest,
   readPackageManifest,
+  listDesignFiles,
   resolveWebPackageRoot,
   type PublicComponent,
 } from "./lib/ui-package.js";
@@ -247,7 +256,7 @@ matches a product task.
 ## Workflow
 
 1. Identify the product intent and interaction state.
-2. Read [DESIGN.md](../../DESIGN.md) for design decisions, defaults, and extension boundaries; then read \`references/component-map.md\` to shortlist components.
+2. 从 [DESIGN.md](../../DESIGN.md) 的总纲按当前任务读取设计正文；无需加载全部文件，再用 \`references/component-map.md\` 选择组件。
 3. For multi-component work, read \`references/composition-recipes.md\`.
 4. Load only the selected files under \`references/components/\`.
 5. Check integration, styling, and common-mistake references only when relevant.
@@ -280,7 +289,7 @@ ${bullets(model.skill.rules)}
 
 ## References
 
-- [DESIGN.md](../../DESIGN.md): shared design decisions for consumers and maintainers.
+- [DESIGN.md](../../DESIGN.md): 设计总纲与按任务阅读的路径；正文分别说明立场、视觉、组合和判断依据。
 - \`references/component-map.md\`: intent-to-component routing.
 - \`references/composition-recipes.md\`: reviewed multi-component workflows.
 - \`references/integration.md\`: installation, router, and i18n boundaries.
@@ -572,13 +581,30 @@ function writeOutputs(outputs: Map<string, string>): void {
 try {
   const model = buildModel();
   const outputs = buildOutputs(model);
-  const designSource = readText(resolve(repositoryRoot, "DESIGN.md"));
-  const designTarget = resolve(packageRoot, "DESIGN.md");
+  const designFiles = listDesignFiles();
   if (checkMode) {
-    if (readTextIfPresent(designTarget) !== designSource)
-      throw new Error("Packaged DESIGN.md is stale");
+    const packagedFiles = existsSync(resolve(packageRoot, "docs/design"))
+      ? listDesignFiles(packageRoot)
+      : ["DESIGN.md"];
+    if (JSON.stringify(packagedFiles) !== JSON.stringify(designFiles)) {
+      throw new Error("Packaged design document file set is stale");
+    }
+    for (const file of designFiles) {
+      const target = resolve(packageRoot, file);
+      if (
+        !existsSync(target) ||
+        !readFileSync(target).equals(readFileSync(resolve(repositoryRoot, file)))
+      ) {
+        throw new Error(`Packaged design document is stale: ${file}`);
+      }
+    }
   } else {
-    writeFileSync(designTarget, designSource, "utf8");
+    rmSync(resolve(packageRoot, "docs/design"), { recursive: true, force: true });
+    for (const file of designFiles) {
+      const target = resolve(packageRoot, file);
+      mkdirSync(dirname(target), { recursive: true });
+      copyFileSync(resolve(repositoryRoot, file), target);
+    }
   }
 
   if (checkMode) {

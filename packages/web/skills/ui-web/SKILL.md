@@ -16,7 +16,7 @@ matches a product task.
 ## Workflow
 
 1. Identify the product intent and interaction state.
-2. Read [DESIGN.md](../../DESIGN.md) for design decisions, defaults, and extension boundaries; then read `references/component-map.md` to shortlist components.
+2. 从 [DESIGN.md](../../DESIGN.md) 的总纲按当前任务读取设计正文；无需加载全部文件，再用 `references/component-map.md` 选择组件。
 3. For multi-component work, read `references/composition-recipes.md`.
 4. Load only the selected files under `references/components/`.
 5. Check integration, styling, and common-mistake references only when relevant.
@@ -64,7 +64,7 @@ app.use(InKCreUiWeb);
 
 ## References
 
-- [DESIGN.md](../../DESIGN.md): shared design decisions for consumers and maintainers.
+- [DESIGN.md](../../DESIGN.md): 设计总纲与按任务阅读的路径；正文分别说明立场、视觉、组合和判断依据。
 - `references/component-map.md`: intent-to-component routing.
 - `references/composition-recipes.md`: reviewed multi-component workflows.
 - `references/integration.md`: installation, router, and i18n boundaries.

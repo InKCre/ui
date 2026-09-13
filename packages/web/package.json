@@ -20,7 +20,8 @@
     "styles/",
     "skills",
     "MIGRATION.md",
-    "DESIGN.md"
+    "DESIGN.md",
+    "docs/design/"
   ],
   "type": "module",
   "sideEffects": [
@@ -85,8 +86,8 @@
     "build:skills": "pnpm run skill:generate:check",
     "clean": "rimraf dist",
     "preview": "vite preview",
-    "format": "oxfmt --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json DESIGN.md skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json tsconfig.uno.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
-    "format:check": "oxfmt --check --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json DESIGN.md skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json tsconfig.uno.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
+    "format": "oxfmt --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json DESIGN.md docs/design skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json tsconfig.uno.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
+    "format:check": "oxfmt --check --config .oxfmtrc.json src stories styles .oxfmtrc.json .oxlintrc.json package.json DESIGN.md docs/design skill.seed.json component-manifest.json component-manifest.schema.json tsconfig.json tsconfig.build.json tsconfig.check.json tsconfig.exports.json tsconfig.uno.json env.d.ts histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
     "lint": "oxlint --config .oxlintrc.json src stories histoire.config.ts uno.config.ts vite.config.js vite.subpaths.config.js",
     "lint:fix": "pnpm run lint --fix",
     "skill:generate": "tsx ../../scripts/build-agent-skills.ts",

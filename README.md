@@ -5,7 +5,7 @@ renderer is published as `@inkcre/ui-web`.
 
 ## Single Source of Truth
 
-设计判断由 [DESIGN.md](DESIGN.md) 维护。`tokens/inkcre.tokens.json` 是 Token 规范源，
+[DESIGN.md](DESIGN.md) 提供设计总纲和按任务阅读的路径；设计立场、视觉语言、页面组合和判断依据由 `docs/design/` 分别维护。`tokens/inkcre.tokens.json` 是 Token 规范源，
 Figma 仅提议已有路径的值更新；生成物通过生成器更新。
 当前输入格式与维护入口见 [Token 指南](tokens/tokens.md)，生成命令与输出见
 [Token 生成说明](scripts/build-tokens.md)。
