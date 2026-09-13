@@ -32,6 +32,10 @@ coverage/
 *.png
 *.jpg
 
+# Published design examples are maintained documentation assets.
+!/docs/design/examples/*
+!/packages/web/docs/design/examples/*
+
 # svc:begin local-config sha256=0cb2591848c4e5675766aa516f16dfb9981fc52e1dcbadd8cec89b6982db927d
 svc.local.json
 AGENTS.local.md

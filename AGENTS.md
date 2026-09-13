@@ -16,7 +16,7 @@ Reason in English. Communicate with humans in Chinese.
 
 ## Knowledge Owners
 
-UI 设计、组件、Token 或视觉审视工作先读取 [DESIGN.md](DESIGN.md)，再按任务读取具体实现与指南。纯构建和非 UI 工作不需要加载全部设计上下文。DESIGN.md 拥有共同设计判断，具体值与 API 仍由下面的源头负责。
+UI 设计、组件、Token 或视觉审视工作从 [DESIGN.md](DESIGN.md) 的总纲和阅读路径进入，只读取与任务有关的设计正文。`docs/design/` 分别维护设计立场、视觉语言、页面组合与判断依据；纯构建和非 UI 工作无需加载这些正文。具体值与 API 仍由下面的源头负责。
 
 - Repository and package entry points: `README.md` and `packages/web/README.md`.
 - Public package API: package exports, component manifest, TypeScript source,
@@ -28,6 +28,14 @@ UI 设计、组件、Token 或视觉审视工作先读取 [DESIGN.md](DESIGN.md)
 - Build, release, preview, and production behavior: package scripts, repository
   scripts, and `.github/workflows/`.
 - Repeated subtree hazards: the nearest local `AGENTS.md`.
+
+## 设计变更的维护责任
+
+先明确变化要保持的设计关系，再确定修改位置。已有角色是否可复用，取决于共同用途与共同变化理由；新增共享能力应说明实际情境、现有缺口、默认行为、允许变化和覆盖责任。可以在变更说明中自然表达，无须另建统一模板。
+
+设计正文拥有已确认的选择及其理由，Token 源拥有名称、类型、值与引用，组件源码和声明拥有 API 事实。实现观察、提炼过程、待确认方案与讨论状态记录在 task packet，确认后的结论才进入正式正文。当前表现与认可要求不一致时应明确指出差异，按任务授权修复或提出规则变更，不能只为解释代码而修改要求。
+
+改变公开名称、用途、默认表现或交互承诺时，同步相应实现、设计正文、示例和迁移说明。静态检查确认交付事实，真实场景确认设计关系与表现；视觉验收需要说明比较依据，不能只报告 Token 合法或构建成功。
 
 ## Coding Guidelines
 

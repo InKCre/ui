@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export interface PublicComponent {
@@ -63,4 +63,14 @@ export function readComponentManifest(packageRoot = resolveWebPackageRoot()): Pu
   }
 
   return [...manifest.components].sort((left, right) => left.name.localeCompare(right.name));
+}
+
+/** The design source and its package copy preserve the same relative links. */
+export function listDesignFiles(root = repositoryRoot): string[] {
+  return [
+    "DESIGN.md",
+    ...readdirSync(resolve(root, "docs/design"), { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => relative(root, resolve(entry.parentPath, entry.name)).split("\\").join("/")),
+  ].sort();
 }

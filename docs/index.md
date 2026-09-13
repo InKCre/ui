@@ -2,7 +2,7 @@
 
 ## Navigation
 
-- [共同设计指南](../DESIGN.md)
+- [设计总纲与阅读路径](../DESIGN.md)：[设计立场](design/principles.md)、[视觉语言](design/visual-language.md)、[页面组合](design/composition.md)、[判断依据](design/reference.md)
 - [Repository overview](../README.md)
 - [Web package usage and development](../packages/web/README.md)
 - [Package migration contract](../packages/web/MIGRATION.md)

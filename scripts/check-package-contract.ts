@@ -17,6 +17,7 @@ import * as sass from "sass";
 import {
   readComponentManifest,
   readPackageManifest,
+  listDesignFiles,
   repositoryRoot,
   resolveWebPackageRoot,
 } from "./lib/ui-package.js";
@@ -35,6 +36,7 @@ interface PublishedPackageManifest {
 const packageRoot = resolveWebPackageRoot();
 const packageManifest = readPackageManifest(packageRoot);
 const publicComponents = readComponentManifest(packageRoot);
+const designFiles = listDesignFiles();
 const targetPackageName = packageManifest.name;
 const temporaryRoot = mkdtempSync(join(tmpdir(), "inkcre-ui-contract-"));
 
@@ -239,7 +241,7 @@ try {
   }
 
   const requiredFiles = [
-    "DESIGN.md",
+    ...designFiles,
     "dist/index.js",
     "dist/index.d.ts",
     "dist/components.d.ts",
@@ -311,7 +313,12 @@ try {
       dialogReference.includes("isLoading: boolean"),
     "Scoped slot arguments must be available to consumers",
   );
-  for (const file of ["README.md", "DESIGN.md", "MIGRATION.md", "styles/README.md"]) {
+  for (const file of [
+    "README.md",
+    "MIGRATION.md",
+    "styles/README.md",
+    ...designFiles.filter((file) => file.endsWith(".md")),
+  ]) {
     const content = readFileSync(resolve(packedRoot, file), "utf8");
     for (const match of content.matchAll(/\]\(([^)]+)\)/g)) {
       if (/^(?:https?:|#)/.test(match[1])) continue;
@@ -336,10 +343,13 @@ try {
     throw new Error(`Packed CSS references undefined design tokens: ${missingTokens.join(", ")}`);
   }
 
-  assert.equal(
-    readFileSync(resolve(packedRoot, "DESIGN.md"), "utf8"),
-    readFileSync(resolve(repositoryRoot, "DESIGN.md"), "utf8"),
-  );
+  assert.deepEqual(listDesignFiles(packedRoot), designFiles);
+  for (const file of designFiles) {
+    assert.ok(
+      readFileSync(resolve(packedRoot, file)).equals(readFileSync(resolve(repositoryRoot, file))),
+      `Packed design document differs from its source: ${file}`,
+    );
+  }
   assert.ok(
     !existsSync(resolve(consumerModules, "unocss")),
     "Basic install must not require UnoCSS",
