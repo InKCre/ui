@@ -1,6 +1,6 @@
 # 分组方案与验收边界
 
-A 组已完成并验证，其余分组仍是待讨论提案。状态、授权与进展统一见 [工作包入口](packet.md)。以下“建议行为”不代表现有实现已经满足，也不代表兼容性取舍已经批准。组是责任边界，组内切片才是可独立评审、验证和交付的单位。
+A 组已提交，原定 B1/B2、C、D、E 已实现并验证；B3 已完成[角色盘点](b3-role-inventory.md)和[候选契约](b3-design-contracts.md)，B4/B5 尚未启动，详细步骤见 [实施方案](plan-l1-token-system.md)。F、G、H 尚未启动。状态、授权与进展统一见 [工作包入口](packet.md)。以下发现保留初审基线，B—E 的最终行为、兼容决定和证据见 [实施记录](execution-b-e.md)。组是责任边界，组内切片才是可独立评审、验证和交付的单位。
 
 ## A 开发约定与文档入口
 
@@ -18,7 +18,7 @@ A 组已完成并验证，其余分组仍是待讨论提案。状态、授权与
 
 ## B Token 与主题契约
 
-**目标：** 库自身样式只引用有效 Token，显式主题选择能够覆盖系统偏好，输入格式与生成输出有清楚边界。
+**目标：** 设计角色、默认选择与上下文变化可解释，设计依赖在各消费入口按约定生效。原定 B1/B2 已完成的工程目标是库自身样式只引用有效 Token、显式主题选择覆盖系统偏好，以及明确输入格式与生成输出边界；后续 B3/B4/B5 补足设计与响应契约。
 
 **已观察：** 构建 CSS 中有 26 个 `--sys-*` 引用没有库内定义；[AutoForm 样式](../../packages/web/src/components/inkAutoForm/inkAutoForm.scss) 中的 `spacing`、`body-md` 等是实例。另见 [Placeholder](../../packages/web/src/components/inkPlaceholder/inkPlaceholder.scss)、[Textarea](../../packages/web/src/components/inkTextarea/inkTextarea.scss)、[Image](../../packages/web/src/components/inkImage/inkImage.scss)、[DatetimePickerView](../../packages/web/src/components/inkDatetimePickerView/inkDatetimePickerView.scss)。[主题入口](../../packages/web/styles/index.scss) 将显式 dark 放在系统 dark 媒体条件内。
 
@@ -27,6 +27,47 @@ A 组已完成并验证，其余分组仍是待讨论提案。状态、授权与
 **验收：** 库内 Token 引用均有定义，或是明确约定且由消费者提供的扩展值；验证系统 light/dark 与应用 light/dark/system 选择的组合，并检查受影响组件的实际视觉结果。生成结果可重现。
 
 **依赖与决策：** B1 可先执行。尚未确定现有无效名称应映射哪个语义值的地方，需要核对 token 源和设计用途。全量 DTCG 格式迁移和 Dart 输出不属于本组默认范围，相关演进归 H。
+
+### Token 体系复审（2026-09-13，讨论中）
+
+用户指出 L1 的问题超出无效变量和消费契约，要求评议 `web-ui-design-token-system-why-what.md`。最初的 Nextcloud 路径读取被系统拒绝；用户随后提供 `/Users/lanzhijiang/Downloads/web-ui-design-token-system-why-what.md`，现已完整读取。该稿标注为 Why & What 设计方向草案，不预设命名、工具或迁移方案；文件 SHA-256 为 `a8119b3ab7663a0986a97f1b93eca27456a0940ac83c607734f148f0b8ccdba1`。用户已认可下述判断与切片，并要求细化实施方案；具体命名、数值及响应策略仍需按 B3/B4 的步骤确定。
+
+本轮仓库复核支持将设计合理性单独讨论：
+
+- `sys.color.text.primary` 实际用于 InkButton 的 primary 背景之上，与容易被理解为主要正文的名称存在歧义；同组 `danger-on` 则明确表达背景配对。应先定义前景、背景及状态的使用关系，再决定命名。
+- 生成器将 ref 的 space、radius、size、font 等整体复制到 sys.$base。这些输出增加了命名空间，却没有独立表达系统决策。是否保留别名应由实际覆盖、兼容或设计变化需求决定。
+- 源中存在 primary-hover 和 danger-hover，而 InkButton 对应 hover/active 使用 opacity: 0.9；深色 text.base 与 text.muted 同值。这些是已观察的实现事实，说明状态责任与层级表达需要核对，不能仅凭变量有定义便认定设计成立；同值本身也不自动构成缺陷。
+- 按 `type/value` 叶节点统计，源含 237 个条目，均无非空 description。单凭源文件不足以让消费者理解适用背景、状态及替代关系；不据此推断其他文档完全没有说明。
+
+**对草案的判断：** 赞同以设计意图、依赖关系和适用条件作为一致性的对象。草案已经允许固定值、离散尺度、局部 CSS，并明确四种职责不等于四个代码层，因此不能将其解读为动态化全部 Token 或建设通用规则引擎。基础尺度本身也能表达有意选择的视觉节奏，是否升级为响应规则仍需实际场景证明。
+
+诊断需更精确：现有源已经包含语义颜色、字体角色和主题映射；本地 client-web 的 `apps/client-web/src/views/info-base/list/list.scss` 也已使用 clamp 表达页面留白。当前问题包含设计规则缺口，以及已有规则在生成和消费中的不一致，不能简单归结为只存在数值表或缺少流式布局。
+
+补充复核与隔离生成证据：
+
+- [Sass apply-font](../../packages/web/styles/_mixins.scss) 默认只输出字号、字重、行高、字距，而 [Uno 字体规则](../../packages/web/styles/uno/preset-ink.ts) 还输出字体家族和非 none 的装饰。使用现有 Sass 与 UnoCSS 的一次性生成实验确认：同一个 `label-lg-underlined`，Sass 没有 font-family/text-decoration，Uno 有 Inter 和 underline。这里已是可观察的输出差异，不仅是模型讨论。
+- 同次实验中 Uno `p-md` 输出 `padding:16px`；组件 Sass 使用 `var(--sys-space-md)`。只有在设计明确支持运行时修改该尺度时，才要求两者共同响应；在决定覆盖能力前，不把全部字面量输出一概判错。
+- [Skill seed](../../packages/web/skill.seed.json) 将“硬编码一个已有 Token 值”列为常见错误。这会鼓励按数值相等建立依赖，应在新规则确定后改为按设计角色选择，并说明合法的局部规则。随包指南还需给出默认方案和少量允许的变化，避免让每个消费者 Agent 自行推导设计系数。
+
+建议在草案原则之上明确三个落地条件：设计系统提供可直接使用的默认选择；公开覆盖能力注明作用域、优先级及求值时机；新增响应机制以实际内容、容器和用户设置下的改善为依据。跨平台共享语义角色和行为要求，具体 CSS 表达式由 Web 拥有，不能直接承诺其等同 Flutter 或 uniapp 的实现。
+
+用户已认可后续切片如下；[实施方案](plan-l1-token-system.md) 进一步定义其步骤、交付物、文件责任和验收，该表保留切片定义，当前执行结果见表后的 B3／B4／B5 记录：
+
+| 切片 | 交付与范围 | 验收依据 |
+| ---- | ---------- | -------- |
+| B3 设计角色与响应契约 | 分别明确 typography、spacing、color 的默认选择、相关上下文、允许变化、边界和责任；包括字体继承、前景背景配对及控件状态。 | 能解释哪些属性应一起变化，哪些应保持；固定值与响应行为都有实际用途。 |
+| B4 代表场景验证 | 用现有 Input/Field/Form 验证文字与控件尺寸，用 Button 验证颜色和状态，用真实下游页面验证容器与留白。先做最小实验，不新增 Card 等组件作为前提。 | 窄容器、长中文/英文、文字放大、浅深主题、错误及禁用状态下内容与功能可用，视觉结果经过人工判断。 |
+| B5 源结构、输出与迁移 | 根据 B3/B4 的已确定规则调整 Token 源、Sass/Uno 输出、文档、Skill 与消费迁移；先明确构建时配置和运行时覆盖分别支持什么。 | 同一公开角色在各入口兑现相同契约，必要依赖按预期传播，发布兼容边界清楚。 |
+
+这些切片替代上一轮暂定的 B3/B4 划分。原定 B1/B2 保留工程修复和验证结果，不能代表上述设计工作完成。F 继续拥有通用 API 提取机制，B5 拥有本轮设计消费说明；H 继续由真实消费者触发非 Web 输出，跨平台可共享的语义不因此推迟到 H。
+
+**B3 执行结果：** 用户要求“开始 B3”后，已完成 B3.1—B3.3。最新角色、默认候选、维护／覆盖责任和 B4 实验编号由 [B3 候选契约](b3-design-contracts.md) 统一记录，实际调用与计算证据见 [盘点清单](b3-role-inventory.md)。本节保留此前评议；它不替代已收敛的 B3 交付，也不能被理解为 B4 的视觉验证已经完成。
+
+**B4 执行结果：** 用户授权“做 b4”后，已完成所有编号实验的裁决。已选规则、修订原因与实际证据由 [B4 场景验证](b4-validation.md) 统一记录；当时正式实现尚未迁移，后续结果见 B5。保留静态基础尺度，新增文本角色有场景依据，修订文字控件几何、Switch 状态尺寸占位、合法颜色配对及默认消费指南。
+
+草案中的关键技术边界已对照一手资料核实：[DTCG 2025.10](https://www.designtokens.org/tr/2025.10/format/) 的命名值、引用与复合值，[CSS Values](https://www.w3.org/TR/css-values-4/#font-relative-lengths) 的相对单位及 clamp 规则，[容器单位](https://www.w3.org/TR/css-conditional-5/#container-lengths) 的祖先依赖及小视口回退，以及 [文本缩放](https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html)、[颜色混合](https://www.w3.org/TR/css-color-5/#color-mix) 与 [对比度](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) 的不同职责。没有依据将公式或特定 CSS 单位视为视觉或可访问性通过证明。本轮只做阅读、只读调查、隔离生成和工作包编辑，没有修改生产源码、外部草案或消费者。
+
+**B5 执行结果：** 仓库内已验证，详见 [实施记录](b5-execution.md)。源、生成器、组件、Story、Skill、迁移说明和 major Changeset 已完成，完整检查及默认产物消费通过。用户要求停止 Firefox 原生文字放大专项，后续不以极端场景扩展适配。真实发送端与消费者联调证据仍归 G。
 
 ## C 基础控件与表单上下文
 
@@ -72,7 +113,9 @@ A 组已完成并验证，其余分组仍是待讨论提案。状态、授权与
 
 **目标：** Agent 和工程师通过已安装包就能找到完整、准确、足够精简的 API 与组合方法。
 
-**已观察：** [Skill 生成器](../../scripts/build-agent-skills.ts) 只提取 `*Props`／`*Emits`，没有纳入 Vue `defineModel`；[Popup 参考](../../packages/web/skills/ui-web/references/components/InkPopup.md) 因而漏掉 open 模型。参考主要列名称，缺少类型、默认值、载荷、插槽参数与完整用例。DoubleCheck 的 Skill 选型描述与真实弹层行为不同。现有随包分层读取结构可以保留。
+**已有基础：** B—E/B5 已校正组件选型和行为说明，包含 DoubleCheck 的实际弹层语义；补充默认表单、文本角色、主题覆盖、迁移指南及一份完整保存配方。随包 Skill 的分层结构与 Intent 本地打包发现检查继续保留。
+
+**仍需处理：** [Skill 生成器](../../scripts/build-agent-skills.ts) 的 API 事实主要从 `*Props`／`*Emits` 提取，尚未纳入 Vue `defineModel`。[Popup 参考](../../packages/web/skills/ui-web/references/components/InkPopup.md) 已在人工 caveat 说明 `v-model:open`，但生成的事实部分仍遗漏 open。类型、默认值、载荷和插槽参数也未形成完整事实；配方虽已有默认表单，尚未建立与类型检查对应的代表示例机制。
 
 **范围与切片：** F1 补齐 API 事实提取及解析失败边界；F2 复用 Story 中可类型检查的示例，提供少量完整的表单、反馈、主题、router 和 i18n 配方；F3 核对随包 Markdown 的可读入口与 Intent 发现／信任路径。组件行为的长期说明继续放在既有权威文档，避免手工维护两份 API。
 
@@ -84,7 +127,9 @@ A 组已完成并验证，其余分组仍是待讨论提案。状态、授权与
 
 **目标：** 安装产物、类型、运行时依赖和真实调用一致，以适量检查证明消费者能够使用。
 
-**已观察：** [包声明](../../packages/web/package.json) 将多项专用编辑依赖列为 peer，Vue 范围宽于实际 VueUse 要求。[包契约 fixture](../../scripts/check-package-contract.ts) 链接开发环境的全部依赖，并使用 `skipLibCheck`。总检查重复执行部分 Skill 和类型工作，还将当前产物改名为旧包身份复检。已检查的 client-web manifests 中没有发现指南所要求的 `intent.skills`；其他消费入口仍需核实。
+**已有基础：** Vue 支持范围已收紧到 ^3.5.0；B—E/B5 已验证公开导出、生成声明、Token 引用、Sass/Uno 与本地 tarball 消费，并给出 major Changeset 和已知 client-web 调用的迁移步骤。
+
+**仍需处理：** [包声明](../../packages/web/package.json) 将多项专用编辑依赖列为 peer；[包契约 fixture](../../scripts/check-package-contract.ts) 仍依靠本地完整依赖图且使用 `skipLibCheck`，不能作为独立最小安装证明。总检查重复执行部分 Skill 和类型工作，还保留改名后的旧包身份复检，需要根据现行消费责任判断是否保留。client-web 的版本升级、Skill 使用与关键页面尚未完成真实验收；extension registry 的 UI 消费位置尚未确认。
 
 **范围与切片：** G1 盘点 client-web 与 extension registry 的实际入口、版本、Skill 使用和关键页面；G2 校准依赖责任、支持版本与发布类型；G3 改进最小安装／公开入口／真实消费检查，并删除没有现行责任的重复步骤。保持源码联调作为开发便利，不替代产物证明。
 
@@ -92,11 +137,13 @@ A 组已完成并验证，其余分组仍是待讨论提案。状态、授权与
 
 **依赖与决策：** G1 应尽早调查，贯穿全部组件切片。基础控件与 JSON 编辑器是否分子入口、哪些包必须共享为 peer、旧包身份检查是否仍有价值，依据实际消费图决定，不预设拆 package 或升级工具链。跨仓实现按用户后续授权范围执行。
 
+B5 接收端已实现受限 Figma 值更新，但没有真实发送端代码／payload；G 的实际联调须补齐这项证据。B5 已记录 client-web 的 Token 调用迁移映射，生产者通过不代表消费者完成升级。
+
 ## H 多端契约与扩展时机
 
 **目标：** 让 Web 之外的实现能够复用设计语义，同时各平台拥有自己的交互与运行时边界。
 
-**已观察：** [Token 源](../../tokens/inkcre.tokens.json) 使用 `type/value` 与 `custom-shadow`，不能直接等同标准 DTCG 格式。[生成器](../../scripts/build-tokens.ts) 包含 Web/Sass 专用规则和剥离色值 alpha 的转换；当前扫描未发现受该转换损坏的非不透明 color token，不将其描述为已发生的视觉缺陷。现有组件依赖 DOM、Teleport、CodeMirror，不能推定能够用于 uniapp 所有运行端。
+**已观察：** [Token 源](../../tokens/inkcre.tokens.json) 使用 `type/value` 与 `custom-shadow`，不能直接等同标准 DTCG 格式。[生成器](../../scripts/build-tokens.ts) 包含 Web/Sass 专用规则；初审发现的 alpha 剥离转换已在 B5 移除，并验证半透明颜色和阴影输出。现有组件依赖 DOM、Teleport、CodeMirror，不能推定能够用于 uniapp 所有运行端。
 
 **本轮范围：** H1 明确哪些语义跨平台共享，记录输入格式、单位、颜色透明度、主题与名称兼容的演进原则；H2 仅在首个 Flutter 或具体 uniapp 运行端项目进入交付时启动对应 Token 输出与最小消费验证。
 
@@ -106,6 +153,6 @@ A 组已完成并验证，其余分组仍是待讨论提案。状态、授权与
 
 ## 推荐推进方式
 
-A 已完成；下一步可展开 B 的具体切片。每次只展开即将执行的切片，避免一次设计完所有组件。E1 可以因数据正确性提前处理，G1 的消费调查应尽早开展。
+A 已提交；B1—B5 与 C/D/E 已完成仓库内验证，实现整理为 b9c0bc6。后续先细化 G1 的位置／版本／入口调查，再据此推进 F1/F2 的事实和配方，结合 G2/G3 与 F3 完成依赖、安装和真实消费验证。F/G 已有成果如上，不从零重建。
 
 C 的基础交互规则支撑 D，D3 的日期契约支撑 E2 的日期映射；E1 支撑 E2/E3 的校验隔离。它们是局部依赖，不要求前一组全部完成才修后一组的独立缺陷。F 随各切片更新消费说明，G 随各切片证明打包与下游兼容。H2 暂缓，不作为当前 Web 修复的前置条件。

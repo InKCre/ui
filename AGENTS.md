@@ -8,7 +8,7 @@ Reason in English. Communicate with humans in Chinese.
 
 - `packages/web/`: `@inkcre/ui-web`, its public components, styles, stories,
   generated consumer skill, and package-local instructions.
-- `tokens/inkcre.tokens.json`: 当前 Figma Token 导出源，使用 `type/value`；格式与维护入口见 [Token 指南](tokens/tokens.md)。
+- `tokens/inkcre.tokens.json`: 仓库维护的设计 Token 规范源，使用 `type/value`；Figma 仅提议已有路径的值更新，格式与维护入口见 [Token 指南](tokens/tokens.md)。
 - `scripts/`: deterministic token, package-metadata, Agent Skill, contract, and
   release preparation commands.
 - `docs/index.md`: durable documentation navigation.

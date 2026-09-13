@@ -1,0 +1,116 @@
+{
+  "fonts": [
+    {
+      "font": "system-ui, -apple-system, sans-serif",
+      "actual": {
+        "width": 302,
+        "height": 20,
+        "overflow": 0,
+        "font": "14px",
+        "family": "system-ui, -apple-system, sans-serif",
+        "line": "20px",
+        "decoration": "none"
+      }
+    },
+    {
+      "font": "\"B5 Missing Font\", system-ui, sans-serif",
+      "actual": {
+        "width": 302,
+        "height": 20,
+        "overflow": 0,
+        "font": "14px",
+        "family": "\"B5 Missing Font\", system-ui, sans-serif",
+        "line": "20px",
+        "decoration": "none"
+      }
+    },
+    {
+      "font": "Georgia, serif",
+      "actual": {
+        "width": 302,
+        "height": 20,
+        "overflow": 0,
+        "font": "14px",
+        "family": "Georgia, serif",
+        "line": "20px",
+        "decoration": "none"
+      }
+    }
+  ],
+  "inputScroll": "native horizontal editing retained",
+  "combined": {
+    "width": 272,
+    "height": 20,
+    "overflow": 0,
+    "font": "14px",
+    "family": "\"Courier New\", monospace",
+    "line": "20px",
+    "decoration": "underline"
+  },
+  "switchPending": [
+    61.21875,
+    80,
+    100,
+    120,
+    90,
+    133.21875
+  ],
+  "recipe": "installed Skill recipe: success, rejected save, native submit and field error association",
+  "secondary": {
+    ".ink-header": {
+      "width": 272,
+      "height": 201,
+      "overflow": 0,
+      "font": "16px",
+      "family": "system-ui",
+      "line": "normal",
+      "decoration": "none"
+    },
+    ".ink-placeholder": {
+      "width": 272,
+      "height": 308,
+      "overflow": 0,
+      "font": "16px",
+      "family": "system-ui",
+      "line": "normal",
+      "decoration": "none"
+    },
+    ".ink-textarea": {
+      "width": 272,
+      "height": 118,
+      "overflow": 0,
+      "font": "14px",
+      "family": "system-ui, -apple-system, sans-serif",
+      "line": "20px",
+      "decoration": "none"
+    },
+    ".cm-scroller": {
+      "width": 254,
+      "height": 100,
+      "overflow": 0,
+      "font": "14px",
+      "family": "\"Courier New\", monospace",
+      "line": "20px",
+      "decoration": "none"
+    },
+    "tooltip": {
+      "width": 82.4375,
+      "height": 170,
+      "overflow": 0,
+      "font": "16px",
+      "family": "system-ui",
+      "line": "normal",
+      "decoration": "none"
+    },
+    "dialog": {
+      "width": 288,
+      "height": 272,
+      "overflow": 0,
+      "font": "14px",
+      "family": "system-ui, -apple-system, sans-serif",
+      "line": "20px",
+      "decoration": "none"
+    }
+  },
+  "errors": []
+}
