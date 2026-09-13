@@ -11,7 +11,7 @@
   box-sizing: border-box;
   position: relative;
   padding: 0;
-  @include apply-font(label-md, mono);
+  @include apply-font(label-md);
 
   &__handle {
     background-color: comp-var(switch, handle-bg);

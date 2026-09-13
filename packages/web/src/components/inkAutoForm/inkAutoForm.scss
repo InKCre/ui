@@ -3,7 +3,7 @@
     padding: sys-var(space, md);
     background-color: sys-var(color, surface, subtle);
     color: sys-var(color, feedback, error);
-    border-radius: sys-var(radius, md);
+    border-radius: sys-var(radius, none);
     @include apply-font(body-sm);
   }
 

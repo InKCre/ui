@@ -1,0 +1,43 @@
+{
+  "checks": [
+    {
+      "theme": "light",
+      "customThumbnail": "keyboard open, Escape close, focus return",
+      "download": "inkcre.svg, valid SVG, dialog remains open",
+      "header": {
+        "color": "rgb(7, 7, 7)",
+        "background": "rgb(255, 255, 255)",
+        "font": "system-ui, -apple-system, sans-serif"
+      }
+    },
+    {
+      "theme": "dark",
+      "customThumbnail": "keyboard open, Escape close, focus return",
+      "download": "inkcre.svg, valid SVG, dialog remains open",
+      "header": {
+        "color": "rgb(249, 249, 249)",
+        "background": "rgb(71, 71, 71)",
+        "font": "system-ui, -apple-system, sans-serif"
+      }
+    },
+    {
+      "theme": "light",
+      "autoFormDebug": {
+        "radius": "0px",
+        "font": "\"SF Mono\", Monaco, \"Roboto Mono\", monospace",
+        "color": "rgb(7, 7, 7)",
+        "background": "rgb(249, 249, 249)"
+      }
+    },
+    {
+      "theme": "dark",
+      "autoFormDebug": {
+        "radius": "0px",
+        "font": "\"SF Mono\", Monaco, \"Roboto Mono\", monospace",
+        "color": "rgb(249, 249, 249)",
+        "background": "rgb(31, 31, 31)"
+      }
+    }
+  ],
+  "errors": []
+}
