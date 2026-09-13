@@ -1,0 +1,28 @@
+{
+  "origin": "https://pr-46.design-dd4.pages.dev",
+  "browser": "149.0.7827.55",
+  "checks": [
+    {
+      "theme": "light",
+      "matchedVariables": 41,
+      "switch": "keyboard, width, sans, pending",
+      "image": "keyboard, Escape, focus return, real SVG download",
+      "button": "native submit"
+    },
+    {
+      "theme": "dark",
+      "matchedVariables": 41,
+      "switch": "keyboard, width, sans, pending",
+      "image": "keyboard, Escape, focus return, real SVG download",
+      "button": "native submit"
+    },
+    {
+      "histoire": "variant controls, reactive update and rendered source"
+    }
+  ],
+  "errors": [],
+  "source": "9128425dd26023c3e09981124758d7e23e6e7007",
+  "deployment": "https://45e22f48.design-dd4.pages.dev",
+  "workflow": "https://github.com/InKCre/ui/actions/runs/34759846429",
+  "checks_workflow": "https://github.com/InKCre/ui/actions/runs/34759790243"
+}
