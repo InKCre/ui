@@ -177,9 +177,9 @@ export const presetInk = () => ({
         "desktop": "1280px"
     },
     boxShadow: {
-        "low": "0px 1px 2px 0px #0c153014",
-        "md": "0px 6px 20px 0px #0c15301f",
-        "high": "0px 12px 32px 0px #0c155429"
+        "low": "0px 1px 2px 0px #0000001a",
+        "md": "0px 2px 6px 0px #00000029",
+        "high": "0px 4px 12px 0px #0000002e"
     },
   },
   rules: [

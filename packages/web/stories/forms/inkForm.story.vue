@@ -91,7 +91,7 @@ const formData = ref({
             ]"
           />
           <InkButton theme="primary" native-type="submit" text="提交演示 Submit demonstration" />
-          <p v-if="saved" class="font-body-sm text-feedback-success" role="status">
+          <p v-if="saved" class="font-body-sm text-text-subtle" role="status">
             已触发提交，演示不保存数据。
           </p>
         </InkForm>

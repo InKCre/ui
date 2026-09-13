@@ -20,7 +20,7 @@ use only the exported functions, mixins, and token subpaths.
 - apply-font(body-md) 输出四个度量、系统 UI 字体和 none 装饰；代码加 $mono: true，下划线加 $underlined: true。apply-font(title, lg) 无效，应使用 title-lg。
 - Uno 将 presetInk 放在 presetWind3 后；font-body-md、font-label-lg font-mono underline、p-md 使用同一公开角色。none 不能消除祖先绘制的下划线。
 - html[data-theme="light|dark"] 优先于系统；省略 data-theme 或设 system 时跟随系统。主题覆盖 CSS 放在库之后并匹配选择器。
-- 根级 sys 颜色、typo.family.sans/mono、font 角色四属性、space/radius 在 CSS/Sass 变量和 Uno 对应规则之间传播。Sass maps 与 Uno 尺寸／图标／断点／阴影是构建值；任意 ref 变化不保证带动 sys/comp。
+- 根级 sys 颜色、typo.family.sans/mono、font 角色四属性、space/radius 在 CSS/Sass 变量和 Uno 对应规则之间传播。apply-elevation 读取运行时 sys.elevation.raised 变量；Sass maps 与 Uno 尺寸／图标／断点／阴影是构建值，任意 ref 变化不保证带动 sys/comp。
 - Popup/Scrim Teleport 到 body，只保证根级覆盖，局部 wrapper 的主题或字体不能自动跟随。库不设置 html 字号，不下载字体。
 - 构建 CSS 自带组件内部静态图标和工具类，不含 preflight；应用动态 icon 仍需自身 Uno 提取或 safelist。
 

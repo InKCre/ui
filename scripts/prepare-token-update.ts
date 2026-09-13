@@ -254,6 +254,8 @@ function runFixture(): void {
       assert.equal(existsSync(resolve(temporaryRoot, ".changeset/figma-invalid-1.md")), false);
     }
     const cycle = structuredClone(source);
+    // 构造闭环的两端，避免依赖当前正文恰好引用哪一级中性色。
+    cycle.sys.light.color.text.base.value = "{ref.color.neutral.2}";
     cycle.ref.color.neutral["2"].value = "{sys.light.color.text.base}";
     const cycleRoot = resolve(temporaryRoot, "cycle");
     mkdirSync(resolve(cycleRoot, "tokens"), { recursive: true });
