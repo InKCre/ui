@@ -376,3 +376,13 @@ Header 修复已提交推送：`6b988c3` 分离按钮与图标，`d6125cf` 保�
 正式包发布完成：版本 PR #47 合入 `85453b50eee3a8e1db21cdedaca05ba0b6051dd6`，[Release 34798879363](https://github.com/InKCre/ui/actions/runs/34798879363) 成功，于 2026-09-14 02:22 UTC 发布 2.0.1。Histoire main 部署 34798879375 同样成功。版本准备仅在自动创建 PR 时被仓库权限拒绝，沿已生成版本分支手动创建 #47，检查通过后正常合入，未改权限。
 
 消费者四处依赖更新提交 `bb4ebd4`，移动侧栏布局修复独立提交 `d027230`。完整本地检查通过；[消费者 CI 34799554488](https://github.com/InKCre/client-web/actions/runs/34799554488) 全部成功，包括真实数据库与浏览器扩展 E2E。[远端部署 34799553542](https://github.com/InKCre/client-web/actions/runs/34799553542) 对应 `https://52f3ec3f.inkcre-client-web.pages.dev`，实际 Host／Registry／Mail／Twitter 的全旅程及浅深／窄宽菜单图形、焦点和切换全部通过，pageerror 为零。证据归档于消费者 `tasks/ui-v2-migration/evidence/ui-2.0.1`。消费者 PR #104 保持开放，不自动发布应用或原生扩展；G1、client-webext 独立主题和 L4 继续保留原边界。
+
+## I4：真实消费者的 Twitter、Mail 与 Graph
+
+用户进一步授权按正式 DESIGN.md 重做 Twitter setup、Mail 全部 UI 与 Graph view。消费者沿独立 worktree 和 PR #104 继续，具体责任、状态矩阵、Changeset 与证据由其 `tasks/ui-v2-migration/packet.md` 维护。
+
+Twitter 重组首次／已配置流程、凭据与授权动作；Mail 六个 renderer 重组识别／阅读／详情，保留 HTML 隔离及显式下载；Graph 重组场景工具区、节点和关系操作，保留窄屏可读焦点、平移／缩放与检索状态。没有反向修改设计规范或 Token，没有新建通用页面框架；移除不再使用的背景网格依赖。状态验收发现 Block.find 吞掉读取错误，已在原 Core 边界补错误传播，不改变数据库 schema 或检索协议。
+
+各组在消费者保留独立提交，继续使用正式 UI 2.0.1。本轮不发布消费者应用或原生扩展，G1、client-webext 独立主题及 L4 仍保留原边界。
+
+I4 已完成并推送：Twitter 4131616、Mail 9e1b0d4、必要的 Block 读取修复 bdcbdf8、Graph c62081e／ab5af80。验收源 9cd531e 的 [完整 CI](https://github.com/InKCre/client-web/actions/runs/34803560421) 与 [preview 部署](https://github.com/InKCre/client-web/actions/runs/34803559638) 均成功。实际远端 Host／Registry／Mail／Twitter／Graph 的原有及新增全旅程通过，pageerror 为零；源码／部署身份和代表截图由消费者 `tasks/ui-v2-migration/evidence/i4` 维护。
