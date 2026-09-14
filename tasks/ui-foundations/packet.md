@@ -10,7 +10,7 @@
 
 功能与版本分别经 UI [PR #43](https://github.com/InKCre/ui/pull/43)、[PR #44](https://github.com/InKCre/ui/pull/44) 检查后合入。正式发布、产物身份和消费者关联见 [发布与真实迁移](release-and-consumer-migration.md)。本地历史提交和验证证据保留在后续执行记录中；“未提交／未发布／消费者原状”仅描述各阶段结束时的状态。
 
-2026-09-13 用户进一步指出，DESIGN.md 的缺口在于侧重点与知识组织，而不是是否禁止圆角。F0 已按总纲、设计立场、视觉语言、页面组合和判断依据完成重组，并通过逐项讨论确认主要视觉方向与先取舍内容再安排留白的原则。设计知识 `1e9a4a5`、I1 `11be433`、I2 `284ade6` 保留独立提交，已推送至 [UI PR #46](https://github.com/InKCre/ui/pull/46)。下游 I1 `6a61637`、I3 `9af7a17` 及数据库冷启动修复 `cfd7b12` 已推送至 PR #104，真实 preview 页面验收、本机 SSH 数据库 E2E 与最终远端 CI 均通过。UI 展示构建在 preview 中发现既有运行时替换问题，已独立提交 `9128425` 修复，完整检查和远端复验均通过，证据见文末。两个 PR 尚未合入，生产者新包未发布；消费者仍安装正式 UI 2.0.0。
+2026-09-13 用户进一步指出，DESIGN.md 的缺口在于侧重点与知识组织，而不是是否禁止圆角。F0 已按总纲、设计立场、视觉语言、页面组合和判断依据完成重组，并通过逐项讨论确认主要视觉方向与先取舍内容再安排留白的原则。设计知识 `1e9a4a5`、I1 `11be433`、I2 `284ade6` 保留独立提交，已推送至 [UI PR #46](https://github.com/InKCre/ui/pull/46)。下游 I1 `6a61637`、I3 `9af7a17` 及数据库冷启动修复 `cfd7b12` 已推送至 PR #104，真实 preview 页面验收、本机 SSH 数据库 E2E 与最终远端 CI 均通过。UI 展示构建在 preview 中发现既有运行时替换问题，已独立提交 `9128425` 修复，完整检查和远端复验均通过，证据见文末。UI PR #46 与版本 PR #47 已合入，正式 UI 2.0.1 已发布；消费者 PR #104 已升级正式依赖并通过本地、远端全旅程及完整 CI。
 
 DESIGN.md 的定位和实施方案见 [L3 讨论方案](plan-l3-design-docs.md)，交付结果见 [L3 执行记录](l3-execution.md)。用户已授权发布 UI 和跨仓迁移，当前工作沿此边界继续；按用户要求，不恢复 Firefox 原生文字放大专项。
 
@@ -366,3 +366,13 @@ Header 修复已通过完整 `pnpm check` 和正式 Story 产物的浅深／375p
 保留 24px 图形尺寸后，最终完整 `pnpm check` 与四组浏览器检查再次通过；浅深菜单截图已复核。该收尾只使用原有图标尺寸 helper，没有改变 Token、事件或消费者样式。
 
 Header 修复已提交推送：`6b988c3` 分离按钮与图标，`d6125cf` 保留原有 24px 图形尺寸；最终源码的完整 CI 和 preview 均通过。真实远端浅深／375px／1280px 的图形、填色、焦点及三种输入事件全部通过，pageerror 为零，证据与部署身份见 [Header 验收](header-evidence/README.md)。消费者诊断记录已单独提交 `6644122` 并通过 CI；其依赖仍为 2.0.0，本轮没有发布或安装修复版本。
+
+## 2026-09-14 正式发布与消费者升级
+
+用户授权发布并更新消费者。UI PR #46 已按保留分层提交的 rebase 方式合入 main，合入提交为 `cd78a01`。沿既有 Changesets 版本 PR 和 main 发布路径交付正式修复版本，禁止从功能分支发布。消费者继续在 PR #104 的独立 worktree 更新四个直接依赖及 lockfile，保留业务、数据库、MF 共享与生产发布责任；这次 UI 发布不自动发布消费者应用或原生扩展。
+
+验证将使用正式 registry 安装、完整消费者 check、真实 Host／Mail／Twitter 重放，以及浅深主题下 Header 实际图标、尺寸、焦点和侧栏切换。生产者的 I1/I2 主题更新与 Header 修复随同一正式版本交付，不能只检查菜单却忽略现有页面的配色和状态。
+
+正式包发布完成：版本 PR #47 合入 `85453b50eee3a8e1db21cdedaca05ba0b6051dd6`，[Release 34798879363](https://github.com/InKCre/ui/actions/runs/34798879363) 成功，于 2026-09-14 02:22 UTC 发布 2.0.1。Histoire main 部署 34798879375 同样成功。版本准备仅在自动创建 PR 时被仓库权限拒绝，沿已生成版本分支手动创建 #47，检查通过后正常合入，未改权限。
+
+消费者四处依赖更新提交 `bb4ebd4`，移动侧栏布局修复独立提交 `d027230`。完整本地检查通过；[消费者 CI 34799554488](https://github.com/InKCre/client-web/actions/runs/34799554488) 全部成功，包括真实数据库与浏览器扩展 E2E。[远端部署 34799553542](https://github.com/InKCre/client-web/actions/runs/34799553542) 对应 `https://52f3ec3f.inkcre-client-web.pages.dev`，实际 Host／Registry／Mail／Twitter 的全旅程及浅深／窄宽菜单图形、焦点和切换全部通过，pageerror 为零。证据归档于消费者 `tasks/ui-v2-migration/evidence/ui-2.0.1`。消费者 PR #104 保持开放，不自动发布应用或原生扩展；G1、client-webext 独立主题和 L4 继续保留原边界。
