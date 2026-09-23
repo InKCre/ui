@@ -7,7 +7,8 @@
       "Application navigation and branding": "InkHeader",
       "Single action": "InkButton",
       "Structured form": "InkForm layout=\"col\" 搭配有 label/error 的内置控件；自定义字段才使用 InkField",
-      "Schema-driven primitive form": "InkAutoForm",
+      "Schema-driven configuration form": "InkAutoForm",
+      "Controlled tabs and route-backed tab links": "InkTabs",
       "JSON configuration editing": "InkJsonEditor",
       "Destructive confirmation": "InkDoubleCheck 提供确认弹层；InkDialog 支持异步等待和较复杂决策",
       "Custom or positioned overlay": "InkPopup; add InkScrim only when the composition does not already own one",
@@ -33,18 +34,23 @@
   },
   "components": {
     "InkAutoForm": {
-      "intent": ["schema-driven form", "flat JSON Schema editor", "automatic primitive controls"],
+      "intent": [
+        "schema-driven form",
+        "JSON Schema configuration editor",
+        "automatic field controls"
+      ],
       "preferWhen": [
-        "A flat JSON Schema should produce consistent controls with little application boilerplate.",
-        "String, number, and boolean properties can map to the package's existing field controls."
+        "A supported JSON Schema should produce consistent controls with little application boilerplate.",
+        "Nested objects, arrays, nullable fields and local definitions occur in real configuration schemas."
       ],
       "avoidWhen": [
-        "The workflow needs deeply nested schemas, conditional branches, arrays, or bespoke field composition.",
+        "The workflow needs conditional branches or bespoke field composition.",
         "The user should edit raw JSON text; use InkJsonEditor instead."
       ],
       "composeWith": ["InkForm", "InkInput", "InkSwitch"],
       "apiCaveats": [
-        "仅支持扁平 primitive schema，不提供自定义映射 prop。v-model:formData 保留已有值及额外属性，只为缺失值补默认值。",
+        "支持明确的对象、数组、nullable、本地 $defs/$ref 子集；不支持的 schema 使用 JSON 编辑。v-model:formData 保留已有值及额外属性，只为缺失值补默认值。",
+        "embedded 允许字段嵌入现有 InkForm 而不嵌套 form；format: password 只遮蔽输入，不改变读写语义。",
         "数字为 number，空数字删除字段；日期保留 JSON 字符串，Picker 确认才序列化。",
         "validation(FormValidation) 的 valid/status/errors/rootErrors 控制保存，pending/invalid/error 均不可保存。实例隔离，过期结果不应用。"
       ],
@@ -190,7 +196,7 @@
       ],
       "apiCaveats": [
         "layout 响应式传给子字段，控件自身 layout 优先；submit 传出 Event 并阻止默认导航。",
-        "不要嵌套 form，InkAutoForm 已拥有一个 form。"
+        "不要嵌套 form；在现有 InkForm 中使用 InkAutoForm embedded。"
       ],
       "commonMistakes": [
         "Do not infer full validation orchestration from the form wrapper.",
@@ -409,6 +415,25 @@
         "Do not optimistically show a successful state when the async change can still fail."
       ]
     },
+    "InkTabs": {
+      "intent": ["controlled tab selection", "route-backed tab links"],
+      "preferWhen": [
+        "A small set of sibling views needs a clear current choice and keyboard navigation.",
+        "The host owns either local selection or a route-derived selected value."
+      ],
+      "avoidWhen": [
+        "The choices are unrelated top-level destinations.",
+        "A simple action button is enough."
+      ],
+      "composeWith": ["InkButton"],
+      "apiCaveats": [
+        "Pass label, tabs and modelValue. The host owns the current value and content.",
+        "For route tabs pass to on each item and the host RouterLink through linkComponent; the UI package does not import vue-router."
+      ],
+      "commonMistakes": [
+        "Do not keep a second local selection state when the route already owns it."
+      ]
+    },
     "InkTextarea": {
       "intent": ["multiline text input", "description field", "long-form form value"],
       "preferWhen": [
@@ -476,10 +501,10 @@
     },
     {
       "name": "Schema Configuration",
-      "intent": "Choose between an automatically generated primitive form and raw schema-aware JSON editing.",
+      "intent": "Choose between a supported schema form and raw schema-aware JSON editing.",
       "components": ["InkAutoForm", "InkJsonEditor", "InkForm", "InkPlaceholder"],
       "steps": [
-        "Use InkAutoForm when a flat schema maps cleanly to ordinary primitive controls.",
+        "Use InkAutoForm when canRenderJsonSchema confirms the schema is supported.",
         "Use InkJsonEditor when users must see or edit the raw JSON document.",
         "JsonEditor 保留字符串草稿，通过 validation.valid 和对应 text 控制保存，确认有效后再 JSON.parse。",
         "Keep parsing and persistence errors separate from schema validation feedback.",

@@ -97,6 +97,11 @@
       "category": "controls"
     },
     {
+      "name": "InkTabs",
+      "source": "inkTabs",
+      "category": "controls"
+    },
+    {
       "name": "InkTextarea",
       "source": "inkTextarea",
       "category": "forms"

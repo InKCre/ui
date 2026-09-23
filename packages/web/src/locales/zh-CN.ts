@@ -22,4 +22,10 @@ export default {
     cancel: "取消",
     confirm: "确认",
   },
+  autoForm: {
+    add: "添加",
+    remove: "移除",
+    setValue: "设置值",
+    clearValue: "清空值",
+  },
 };

@@ -1,0 +1,26 @@
+.ink-tabs {
+  display: flex;
+  gap: sys-var(space, md);
+  border-bottom: 1px solid sys-var(color, border, subtle);
+
+  &__tab {
+    @include apply-font(label-lg);
+    padding: sys-var(space, sm) 0;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: sys-var(color, text, subtle);
+    text-decoration: none;
+    cursor: pointer;
+
+    &--active {
+      border-bottom-color: sys-var(color, border, strong);
+      color: sys-var(color, text, base);
+    }
+
+    &:focus-visible {
+      outline: 2px solid sys-var(color, border, strong);
+      outline-offset: 2px;
+    }
+  }
+}

@@ -27,7 +27,8 @@ matches a product task.
 - Application navigation and branding: InkHeader
 - Single action: InkButton
 - Structured form: InkForm layout="col" 搭配有 label/error 的内置控件；自定义字段才使用 InkField
-- Schema-driven primitive form: InkAutoForm
+- Schema-driven configuration form: InkAutoForm
+- Controlled tabs and route-backed tab links: InkTabs
 - JSON configuration editing: InkJsonEditor
 - Destructive confirmation: InkDoubleCheck 提供确认弹层；InkDialog 支持异步等待和较复杂决策
 - Custom or positioned overlay: InkPopup; add InkScrim only when the composition does not already own one
