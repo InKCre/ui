@@ -235,17 +235,24 @@ const [DefineDropdown, ReuseDropdown] = createReusableTemplate();
         @click="loadOptions(true)"
       />
       <div v-if="showOptions" class="ink-dropdown__options">
-        <input
-          ref="searchInput"
-          v-model="searchText"
-          role="combobox"
-          aria-label="Search options"
-          :aria-expanded="showOptions"
-          :aria-controls="`${controlId}-options`"
-          :aria-activedescendant="activeId"
-          class="ink-dropdown__search-input"
-          @keydown="handleKey"
-        />
+        <!-- Keep focus inside until the label click focuses its input. -->
+        <label
+          class="ink-dropdown__search"
+          @mousedown="(event) => event.target !== searchInput && event.preventDefault()"
+        >
+          <span class="i-mdi-magnify ink-dropdown__search-icon" aria-hidden="true" />
+          <input
+            ref="searchInput"
+            v-model="searchText"
+            role="combobox"
+            aria-label="Search options"
+            :aria-expanded="showOptions"
+            :aria-controls="`${controlId}-options`"
+            :aria-activedescendant="activeId"
+            class="ink-dropdown__search-input"
+            @keydown="handleKey"
+          />
+        </label>
         <div v-if="isRefreshing" role="status" class="ink-dropdown__loading">Loading...</div>
         <div :id="`${controlId}-options`" role="listbox" :aria-label="label || placeholder">
           <div

@@ -32,7 +32,7 @@ matches a product task.
 - JSON configuration editing: InkJsonEditor
 - Destructive confirmation: InkDoubleCheck 提供确认弹层；InkDialog 支持异步等待和较复杂决策
 - Custom or positioned overlay: InkPopup; add InkScrim only when the composition does not already own one
-- Loading state: InkLoading
+- Loading state: InkLoading；已知结构首次读取使用 InkSkeleton
 - Empty or error state: InkPlaceholder
 - Expandable media: InkImage
 - Paged collection: InkPagination

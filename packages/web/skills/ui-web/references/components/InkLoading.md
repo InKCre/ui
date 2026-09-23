@@ -16,7 +16,7 @@
 ## Avoid When
 
 - Content is empty or failed; use InkPlaceholder.
-- A static skeleton layout is required.
+- A known content structure needs placeholders; use InkSkeleton.
 
 ## Compose With
 
@@ -36,6 +36,8 @@
 
 | 名称 | 类型 | 必需 | 默认表达式 |
 | --- | --- | --- | --- |
+| `variant` | `undefined \| "blocks" \| "spinner"` | 否 | `"blocks"` |
+| `label` | `undefined \| string` | 否 | `""` |
 | `size` | `undefined \| "md" \| "sm" \| "xs"` | 否 | `"md"` |
 | `density` | `undefined \| "md" \| "sm"` | 否 | `"md"` |
 
@@ -48,12 +50,13 @@
 - None.
 
 - Public types: None
-- Story variants: `Basic`
+- Story variants: `Content waiting`, `Inline spinner`, `Sizes and density`
 
 
 ## API Caveats
 
-- 提供 role=status 和默认 Loading 名称，可透传 aria-label；不管理请求和相邻按钮状态。
+- 默认 blocks 用于内容区/预览，spinner 用于紧凑行内等待；size/density 沿用。label 同时作为可见说明及 status 的 aria-label，重复文字节点 aria-hidden；无 label 时透传 aria-label，默认 Loading。只提供一次 role=status；不管理请求和相邻按钮状态。
+- 减少动态效果偏好下停止动画，保留图形与说明；已有内容刷新保留内容，失败后提供局部重试。
 
 ## Common Mistakes
 

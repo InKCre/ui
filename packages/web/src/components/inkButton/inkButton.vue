@@ -1,29 +1,23 @@
 <script setup lang="ts">
-import { computed, inject, type ComputedRef } from "vue";
-import { inkButtonProps, inkButtonEmits } from "./inkButton";
+import { computed, inject } from "vue";
+import { inkButtonProps, inkButtonEmits, buttonDisabledKey } from "./inkButton";
 
 const props = defineProps(inkButtonProps);
 const emit = defineEmits(inkButtonEmits);
 
-const injectedIsLoading = inject<ComputedRef<boolean> | boolean>("isLoading", false);
-
-const isLoading = computed(() => {
-  if (typeof injectedIsLoading === "boolean") {
-    return props.isLoading || injectedIsLoading;
-  }
-  return props.isLoading || injectedIsLoading.value;
-});
+const inheritedDisabled = inject(buttonDisabledKey, undefined);
+const isDisabled = computed(() => props.disabled || props.isLoading || inheritedDisabled?.value);
 
 const buttonClass = computed(() => [
   "ink-button",
   `ink-button--type-${props.type}`,
   `ink-button--theme-${props.theme}`,
   `ink-button--size-${props.size}`,
-  { "ink-button--loading": isLoading.value },
+  { "ink-button--loading": props.isLoading },
 ]);
 
 const handleClick = (event: MouseEvent) => {
-  if (!isLoading.value && !props.disabled) {
+  if (!isDisabled.value) {
     emit("click", event);
   }
 };
@@ -33,7 +27,7 @@ const handleClick = (event: MouseEvent) => {
   <button
     :class="buttonClass"
     :type="nativeType"
-    :disabled="disabled || isLoading"
+    :disabled="isDisabled"
     :aria-busy="isLoading || undefined"
     @click="handleClick"
   >

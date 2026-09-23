@@ -12,7 +12,7 @@
       "JSON configuration editing": "InkJsonEditor",
       "Destructive confirmation": "InkDoubleCheck 提供确认弹层；InkDialog 支持异步等待和较复杂决策",
       "Custom or positioned overlay": "InkPopup; add InkScrim only when the composition does not already own one",
-      "Loading state": "InkLoading",
+      "Loading state": "InkLoading；已知结构首次读取使用 InkSkeleton",
       "Empty or error state": "InkPlaceholder",
       "Expandable media": "InkImage",
       "Paged collection": "InkPagination"
@@ -73,7 +73,7 @@
       "composeWith": ["InkDialog", "InkDoubleCheck", "InkHeader", "InkTooltip"],
       "apiCaveats": [
         "type 控制 default/square 外形；nativeType 控制 button/submit/reset，默认 button。提交必须使用 nativeType=\"submit\"。",
-        "click 传出 MouseEvent；disabled、isLoading 或 Dialog 的 pending 禁用动作。图标按钮必须提供 aria-label。",
+        "click 传出 MouseEvent；disabled、isLoading 或 Dialog 的 pending 禁用动作，仅自身 isLoading 显示等待动画。图标按钮必须提供 aria-label。",
         "默认 theme=\"subtle\"；主动作显式 primary。文字可换行，最小高度 md=36px、sm=24px；pending 保留标签与相邻 spinner，不使用遮盖标签的覆盖层。"
       ],
       "commonMistakes": [
@@ -113,7 +113,7 @@
       "apiCaveats": [
         "modelValue 为 boolean 或 Promise<boolean>；也支持布尔模型配合 isLoading。只应用最新 Promise，拒绝发出 error。",
         "pending 阻止确认、取消、遮罩和 Escape；confirm 只发事件，取消发出 cancel 和 update:modelValue(false)。",
-        "title 提供名称；自定义 header 或无 title 时提供 aria-label/aria-labelledby。默认槽获得 cancel/confirm/isLoading。"
+        "title 提供名称；自定义 header 或无 title 时提供 aria-label/aria-labelledby。默认槽与 footer 槽获得 cancel/confirm/isLoading；自定义执行按钮显式绑定 isLoading，取消只禁用。"
       ],
       "commonMistakes": [
         "Do not nest a second independently controlled scrim beneath the dialog.",
@@ -292,15 +292,26 @@
       ],
       "avoidWhen": [
         "Content is empty or failed; use InkPlaceholder.",
-        "A static skeleton layout is required."
+        "A known content structure needs placeholders; use InkSkeleton."
       ],
       "composeWith": ["InkButton", "InkDialog", "InkImage"],
       "apiCaveats": [
-        "提供 role=status 和默认 Loading 名称，可透传 aria-label；不管理请求和相邻按钮状态。"
+        "默认 blocks 用于内容区/预览，spinner 用于紧凑行内等待；size/density 沿用。label 同时作为可见说明及 status 的 aria-label，重复文字节点 aria-hidden；无 label 时透传 aria-label，默认 Loading。只提供一次 role=status；不管理请求和相邻按钮状态。",
+        "减少动态效果偏好下停止动画，保留图形与说明；已有内容刷新保留内容，失败后提供局部重试。"
       ],
       "commonMistakes": [
         "Do not leave a loading indicator active after the operation reaches an empty or error state."
       ]
+    },
+    "InkSkeleton": {
+      "intent": ["skeleton", "known content placeholder", "initial loading"],
+      "preferWhen": ["首次读取的列表、标题或属性行已有明确结构。"],
+      "avoidWhen": ["结构未知的预览使用 InkLoading blocks；已有内容刷新保留内容。"],
+      "composeWith": ["InkLoading", "InkButton"],
+      "apiCaveats": [
+        "单块默认宽 100%、高 1em，通过 class/style 组合尺寸；aria-hidden，宿主只为整个区域提供一次状态说明。响应浅深主题及 prefers-reduced-motion。"
+      ],
+      "commonMistakes": ["不要画假的可点击操作，不要在错误或空态保留骨架。"]
     },
     "InkPagination": {
       "intent": ["pagination", "previous and next navigation", "paged collection"],
@@ -548,9 +559,9 @@
     {
       "name": "Collection Feedback",
       "intent": "Represent pending, empty, error, and paged collection states without conflating them.",
-      "components": ["InkLoading", "InkPlaceholder", "InkPagination", "InkButton"],
+      "components": ["InkLoading", "InkSkeleton", "InkPlaceholder", "InkPagination", "InkButton"],
       "steps": [
-        "Show InkLoading only while a request is pending.",
+        "只在请求期间显示等待。已知结构首次加载用 InkSkeleton，内容预览用 InkLoading 默认 blocks，紧凑状态用 spinner。已有内容刷新及失败保留内容。",
         "After completion, choose a specific empty, filtered-empty, permission, or error InkPlaceholder.",
         "Render InkPagination only when a valid bounded page model exists.",
         "Offer a retry or recovery InkButton only when the action is available."

@@ -63,7 +63,7 @@
 ## API Caveats
 
 - type 控制 default/square 外形；nativeType 控制 button/submit/reset，默认 button。提交必须使用 nativeType="submit"。
-- click 传出 MouseEvent；disabled、isLoading 或 Dialog 的 pending 禁用动作。图标按钮必须提供 aria-label。
+- click 传出 MouseEvent；disabled、isLoading 或 Dialog 的 pending 禁用动作，仅自身 isLoading 显示等待动画。图标按钮必须提供 aria-label。
 - 默认 theme="subtle"；主动作显式 primary。文字可换行，最小高度 md=36px、sm=24px；pending 保留标签与相邻 spinner，不使用遮盖标签的覆盖层。
 
 ## Common Mistakes

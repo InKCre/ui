@@ -147,9 +147,9 @@ async function submit() {
 
 **Intent:** Represent pending, empty, error, and paged collection states without conflating them.
 
-**Components:** `InkLoading`, `InkPlaceholder`, `InkPagination`, `InkButton`
+**Components:** `InkLoading`, `InkSkeleton`, `InkPlaceholder`, `InkPagination`, `InkButton`
 
-1. Show InkLoading only while a request is pending.
+1. 只在请求期间显示等待。已知结构首次加载用 InkSkeleton，内容预览用 InkLoading 默认 blocks，紧凑状态用 spinner。已有内容刷新及失败保留内容。
 2. After completion, choose a specific empty, filtered-empty, permission, or error InkPlaceholder.
 3. Render InkPagination only when a valid bounded page model exists.
 4. Offer a retry or recovery InkButton only when the action is available.

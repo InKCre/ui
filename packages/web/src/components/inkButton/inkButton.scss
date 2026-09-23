@@ -84,3 +84,9 @@
     }
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-button__loading {
+    animation: none;
+  }
+}

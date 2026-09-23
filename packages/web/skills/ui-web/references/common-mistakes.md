@@ -91,6 +91,10 @@
 - Do not render an orphan scrim without an overlay lifecycle.
 - Do not rely on visual dimming alone for modal accessibility.
 
+## InkSkeleton
+
+- 不要画假的可点击操作，不要在错误或空态保留骨架。
+
 ## InkSwitch
 
 - Do not optimistically show a successful state when the async change can still fail.

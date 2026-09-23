@@ -180,7 +180,7 @@ function buildModel(): SkillModel {
       const api = checker.getComponentMeta(
         resolve(componentsRoot, component.source, `${component.source}.vue`),
       );
-      if (!api.type || !api.props.some((prop) => !prop.global)) {
+      if (!api.type) {
         throw new Error(`No public component metadata for ${component.name}`);
       }
       const definitions = new Map(

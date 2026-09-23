@@ -17,6 +17,7 @@ import InkPicker from "./components/inkPicker/inkPicker.vue";
 import InkPlaceholder from "./components/inkPlaceholder/inkPlaceholder.vue";
 import InkPopup from "./components/inkPopup/inkPopup.vue";
 import InkScrim from "./components/inkScrim/inkScrim.vue";
+import InkSkeleton from "./components/inkSkeleton/inkSkeleton.vue";
 import InkSwitch from "./components/inkSwitch/inkSwitch.vue";
 import InkTabs from "./components/inkTabs/inkTabs.vue";
 import InkTextarea from "./components/inkTextarea/inkTextarea.vue";
@@ -41,6 +42,7 @@ export const publicComponents: {
   readonly InkPlaceholder: typeof InkPlaceholder;
   readonly InkPopup: typeof InkPopup;
   readonly InkScrim: typeof InkScrim;
+  readonly InkSkeleton: typeof InkSkeleton;
   readonly InkSwitch: typeof InkSwitch;
   readonly InkTabs: typeof InkTabs;
   readonly InkTextarea: typeof InkTextarea;
@@ -64,6 +66,7 @@ export const publicComponents: {
   InkPlaceholder,
   InkPopup,
   InkScrim,
+  InkSkeleton,
   InkSwitch,
   InkTabs,
   InkTextarea,
@@ -89,6 +92,7 @@ export {
   InkPlaceholder,
   InkPopup,
   InkScrim,
+  InkSkeleton,
   InkSwitch,
   InkTabs,
   InkTextarea,

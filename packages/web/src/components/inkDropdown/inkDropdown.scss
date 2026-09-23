@@ -49,6 +49,25 @@
   overflow-wrap: anywhere;
 }
 
+.ink-dropdown__search {
+  display: flex;
+  align-items: center;
+  gap: sys-var(space, sm);
+  padding: sys-var(space, sm);
+  cursor: text;
+
+  &:has(:focus-visible) {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: -2px;
+  }
+}
+
+.ink-dropdown__search-icon {
+  @include apply-icon(sm, true);
+  flex-shrink: 0;
+  color: sys-var(color, text, subtle);
+}
+
 .ink-dropdown__search-input {
   @include apply-font(label-lg);
   flex: 1;
@@ -57,6 +76,7 @@
   border: none;
   outline: none;
   padding: 0;
+  min-width: 0;
   width: 100%;
 }
 

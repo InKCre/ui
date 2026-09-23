@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, provide, readonly, useId } from "vue";
+import { computed, provide, useId } from "vue";
 import { inkDialogProps, inkDialogEmits, type DialogPosition } from "./inkDialog";
 import InkButton from "../inkButton/inkButton.vue";
+import { buttonDisabledKey } from "../inkButton/inkButton";
 import InkPopup from "../inkPopup/inkPopup.vue";
 import { useOptionalI18n } from "../../i18n";
 
@@ -26,8 +27,7 @@ const open = computed({
   },
 });
 
-// Provide loading state to buttons via inject
-provide("isLoading", readonly(isLoading));
+provide(buttonDisabledKey, isLoading);
 
 const cCancelText = computed(() => {
   if (props.cancelText) return props.cancelText;
@@ -75,12 +75,13 @@ const handleConfirm = () => {
       </div>
 
       <div v-if="$slots.footer || showCancel || showConfirm" class="ink-dialog__footer">
-        <slot name="footer">
+        <slot name="footer" :cancel="handleCancel" :confirm="handleConfirm" :isLoading="isLoading">
           <InkButton v-if="showCancel" :text="cCancelText" theme="subtle" @click="handleCancel" />
           <InkButton
             v-if="showConfirm"
             :text="cConfirmText"
             theme="primary"
+            :is-loading="isLoading"
             @click="handleConfirm"
           />
         </slot>
