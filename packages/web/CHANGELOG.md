@@ -1,5 +1,11 @@
 # @inkcre/ui-web
 
+## 2.1.1
+
+### Patch Changes
+
+- 905ce44: Use InkButton for InkAutoForm array and nullable-field actions.
+
 ## 2.1.0
 
 ### Minor Changes
