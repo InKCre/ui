@@ -15,6 +15,7 @@ import InkSwitch from "../inkSwitch/inkSwitch.vue";
 import InkDropdown from "../inkDropdown/inkDropdown.vue";
 import InkPicker from "../inkPicker/inkPicker.vue";
 import InkField from "../inkField/inkField.vue";
+import InkButton from "../inkButton/inkButton.vue";
 import { useOptionalI18n } from "../../i18n";
 
 defineOptions({ name: "InkAutoFormField" });
@@ -71,13 +72,13 @@ function updateScalar(value: unknown) {
   <div class="ink-auto-form__field">
     <div v-if="resolved?.nullable && value === null" class="ink-auto-form__nullable">
       <span>{{ label }}</span>
-      <button
-        type="button"
+      <InkButton
+        size="sm"
         :disabled="disabled"
         @click="emit('update:value', initialFormValue(schema, root))"
       >
         {{ message("setValue", "Set value") }}
-      </button>
+      </InkButton>
     </div>
     <template v-else-if="resolved?.type === 'object'">
       <fieldset class="ink-auto-form__group">
@@ -86,15 +87,14 @@ function updateScalar(value: unknown) {
         <p v-if="resolved.description" class="ink-auto-form__description">
           {{ resolved.description }}
         </p>
-        <button
+        <InkButton
           v-if="resolved.nullable"
-          type="button"
+          size="sm"
           :disabled="disabled"
-          class="ink-auto-form__secondary"
           @click="emit('update:value', null)"
         >
           {{ message("clearValue", "Clear value") }}
-        </button>
+        </InkButton>
         <InkAutoFormField
           v-for="[key, child] in entries"
           :key="key"
@@ -127,8 +127,8 @@ function updateScalar(value: unknown) {
             :disabled="disabled"
             @update:value="updateItem(index, $event)"
           />
-          <button
-            type="button"
+          <InkButton
+            size="sm"
             :disabled="disabled"
             @click="
               emit(
@@ -138,15 +138,15 @@ function updateScalar(value: unknown) {
             "
           >
             {{ message("remove", "Remove") }}
-          </button>
+          </InkButton>
         </div>
-        <button
-          type="button"
+        <InkButton
+          size="sm"
           :disabled="disabled"
           @click="emit('update:value', [...items, initialFormValue(resolved.items!, root)])"
         >
           {{ message("add", "Add") }} {{ label }}
-        </button>
+        </InkButton>
       </fieldset>
     </template>
     <InkInput
@@ -221,20 +221,19 @@ function updateScalar(value: unknown) {
         }
       "
     />
-    <button
+    <InkButton
       v-if="
         resolved?.nullable &&
         value !== null &&
         resolved.type !== 'object' &&
         resolved.type !== 'array'
       "
-      type="button"
-      class="ink-auto-form__secondary"
+      size="sm"
       :disabled="disabled"
       @click="emit('update:value', null)"
     >
       {{ message("clearValue", "Clear value") }}
-    </button>
+    </InkButton>
   </div>
 </template>
 
