@@ -14,45 +14,59 @@
   display: flex;
   align-items: center;
   gap: sys-var(space, xs);
+  color: sys-var(color, text, subtle);
+
+  &__blocks {
+    display: inline-flex;
+    align-items: center;
+    gap: inherit;
+    flex: 0 0 auto;
+  }
+
+  &__spinner {
+    flex: 0 0 auto;
+    font-size: 1em;
+  }
 
   &__block {
     animation: ink-loading-pulse 0.9s ease-in-out infinite;
+    background-color: currentColor;
 
     &--1 {
-      background-color: ref-var(color, neutral, 80);
       animation-delay: 0s;
     }
 
     &--2 {
-      background-color: ref-var(color, neutral, 70);
       animation-delay: 0.3s;
     }
 
     &--3 {
-      background-color: ref-var(color, neutral, 80);
       animation-delay: 0.5s;
     }
   }
 
   // Size variants
   &--s-xs {
+    font-size: 0.75rem;
     .ink-loading__block {
-      width: 5px;
-      height: 5px;
+      width: 0.3125rem;
+      height: 0.3125rem;
     }
   }
 
   &--s-sm {
+    font-size: 0.875rem;
     .ink-loading__block {
-      width: 12px;
-      height: 12px;
+      width: 0.75rem;
+      height: 0.75rem;
     }
   }
 
   &--s-md {
+    font-size: 1rem;
     .ink-loading__block {
-      width: 18px;
-      height: 18px;
+      width: 1.125rem;
+      height: 1.125rem;
     }
   }
 
@@ -63,5 +77,12 @@
 
   &--d-md {
     gap: sys-var(space, sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-loading__block,
+  .ink-loading__spinner {
+    animation: none;
   }
 }

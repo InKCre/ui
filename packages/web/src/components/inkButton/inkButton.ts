@@ -1,4 +1,8 @@
 import { makeStringProp, makeBooleanProp } from "../../utils/vue-props";
+import type { InjectionKey, Ref } from "vue";
+
+export const buttonDisabledKey: InjectionKey<Readonly<Ref<boolean>>> =
+  Symbol("ink-button-disabled");
 
 // --- Types ---
 type ButtonTheme = "subtle" | "primary" | "danger";

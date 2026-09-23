@@ -41,7 +41,7 @@ Sass map 保存构建结果。CSS 初始化同一组系统变量；apply-font �
     "releaseType": "minor",
     "commitMessage": "调整字段组间距",
     "tokens": {
-      "ref": { "space": { "md": { "type": "dimension", "value": 24 } } }
+      "ref": { "space": { "md": { "type": "dimension", "value": "1.5rem" } } }
     }
   }
 }
@@ -50,6 +50,8 @@ Sass map 保存构建结果。CSS 初始化同一组系统变量；apply-font �
 `tokens` 接受对象或其 JSON 字符串，必须包含至少一个已知路径。`pnpm tokens:update` 由工作流映射的 `INKCRE_TOKEN_FILENAME`、`INKCRE_TOKEN_JSON`、`INKCRE_CHANGESET_ID`、`INKCRE_CHANGESET_SUMMARY`、`INKCRE_CHANGESET_RELEASE` 驱动。
 
 导入只替换叶节点的 value，保留遗漏角色及仓库元数据；提供的非空 description 必须与仓库一致。未知／已删除路径、类型、组结构或别名变化直接失败。发布分类只能为 patch/minor/major，由维护者根据可观察影响选择：命名、类型、用途、默认字体和尺寸变化不能仅因为由 Figma 发起就视为 patch。需要改契约时直接修改规范源、实现和迁移说明。
+
+dimension 值必须沿用既有单位，数值按 px 判断。已有 rem 值不能导入数值、px 或 em；发送端应以原有单位表达提议，接收端不猜测根字号或自动转换。既有 fixture 验证相对值生成后仍保留 rem，并拒绝单位回退且不残留写入。
 
 候选在临时目录验证并生成，成功后才更新源、四份输出和 Changeset；文件写入失败会恢复已写文件。Changeset 不覆盖已有文件；没有值变化时不创建 Changeset。工作流随后提出 PR，合并与发布沿用仓库治理。
 

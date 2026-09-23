@@ -54,6 +54,18 @@ function mergeValues(source: Record<string, unknown>, payload: unknown, path = "
     if (JSON.stringify(references(current.value)) !== JSON.stringify(references(incoming.value))) {
       throw new Error(`Alias changes require a contract migration: ${name}`);
     }
+    const dimensionUnit = (value: unknown) =>
+      typeof value === "number"
+        ? "px"
+        : typeof value === "string"
+          ? value.match(/[a-z%]+$/i)?.[0]
+          : undefined;
+    if (
+      current.type === "dimension" &&
+      dimensionUnit(current.value) !== dimensionUnit(incoming.value)
+    ) {
+      throw new Error(`Dimension unit changes require a contract migration: ${name}`);
+    }
     if (incoming.description != null && incoming.description !== current.description) {
       throw new Error(`Repository-owned description conflicts at ${name}`);
     }
@@ -161,7 +173,7 @@ function runFixture(): void {
     const update: TokenUpdate = {
       filename: "inkcre.tokens.json",
       payload: {
-        ref: { space: { md: { type: "dimension", value: 24 } } },
+        ref: { space: { md: { type: "dimension", value: "1.5rem" } } },
         sys: { light: { color: { overlay: { scrim: { type: "color", value: "#00000080" } } } } },
         effect: {
           elevation: {
@@ -182,7 +194,7 @@ function runFixture(): void {
     const result = prepareTokenUpdate(temporaryRoot, update);
     assert.equal(result.changed, true);
     const actual = JSON.parse(readFileSync(tokenPath, "utf8"));
-    source.ref.space.md.value = 24;
+    source.ref.space.md.value = "1.5rem";
     source.sys.light.color.overlay.scrim.value = "#00000080";
     source.effect.elevation.raised.low.value.radius = 4;
     assert.deepEqual(
@@ -194,6 +206,10 @@ function runFixture(): void {
       readFileSync(result.changesetPath, "utf8").includes(`${JSON.stringify(packageName)}: minor`),
     );
     for (const file of generatedFiles) assert.ok(existsSync(resolve(temporaryRoot, file)));
+    assert.match(
+      readFileSync(resolve(temporaryRoot, generatedFiles[0]), "utf8"),
+      /"md": "1\.5rem"/,
+    );
     assert.equal(
       prepareTokenUpdate(temporaryRoot, { ...update, changesetId: "figma-noop-1" }).changed,
       false,
@@ -211,6 +227,9 @@ function runFixture(): void {
       { payload: { ref: { space: { unknown: { type: "dimension", value: 8 } } } } },
       { payload: { ref: { space: { md: { type: "number", value: 24 } } } } },
       { payload: { ref: { space: { md: { type: "dimension", value: "bad" } } } } },
+      { payload: { ref: { space: { md: { type: "dimension", value: 24 } } } } },
+      { payload: { ref: { space: { md: { type: "dimension", value: "24px" } } } } },
+      { payload: { ref: { space: { md: { type: "dimension", value: "1.5em" } } } } },
       {
         payload: {
           ref: {

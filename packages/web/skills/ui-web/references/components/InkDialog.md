@@ -58,17 +58,17 @@
 
 - `header`: `{}`
 - `default`: `{ cancel: () => void; confirm: () => void; isLoading: boolean; }`
-- `footer`: `{}`
+- `footer`: `{ cancel: () => void; confirm: () => void; isLoading: boolean; }`
 
 - Public types: None
-- Story variants: `Basic`, `with Custom Slots`, `Async`, `Without Cancel`
+- Story variants: `Basic`, `Custom footer failure and retry`, `Async`, `Without Cancel`
 
 
 ## API Caveats
 
 - modelValue 为 boolean 或 Promise<boolean>；也支持布尔模型配合 isLoading。只应用最新 Promise，拒绝发出 error。
 - pending 阻止确认、取消、遮罩和 Escape；confirm 只发事件，取消发出 cancel 和 update:modelValue(false)。
-- title 提供名称；自定义 header 或无 title 时提供 aria-label/aria-labelledby。默认槽获得 cancel/confirm/isLoading。
+- title 提供名称；自定义 header 或无 title 时提供 aria-label/aria-labelledby。默认槽与 footer 槽获得 cancel/confirm/isLoading；自定义执行按钮显式绑定 isLoading，取消只禁用。
 
 ## Common Mistakes
 

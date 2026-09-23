@@ -276,23 +276,23 @@
     "space": {
       "md": {
         "type": "dimension",
-        "value": 16
+        "value": "1rem"
       },
       "lg": {
         "type": "dimension",
-        "value": 32
+        "value": "2rem"
       },
       "xl": {
         "type": "dimension",
-        "value": 56
+        "value": "3.5rem"
       },
       "xs": {
         "type": "dimension",
-        "value": 4
+        "value": "0.25rem"
       },
       "sm": {
         "type": "dimension",
-        "value": 8
+        "value": "0.5rem"
       }
     },
     "typo": {

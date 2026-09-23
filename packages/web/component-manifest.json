@@ -92,6 +92,11 @@
       "category": "overlays"
     },
     {
+      "name": "InkSkeleton",
+      "source": "inkSkeleton",
+      "category": "feedback"
+    },
+    {
       "name": "InkSwitch",
       "source": "inkSwitch",
       "category": "controls"

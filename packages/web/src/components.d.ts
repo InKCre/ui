@@ -21,6 +21,7 @@ declare module "vue" {
     InkPlaceholder: typeof import("./index.js")["InkPlaceholder"];
     InkPopup: typeof import("./index.js")["InkPopup"];
     InkScrim: typeof import("./index.js")["InkScrim"];
+    InkSkeleton: typeof import("./index.js")["InkSkeleton"];
     InkSwitch: typeof import("./index.js")["InkSwitch"];
     InkTabs: typeof import("./index.js")["InkTabs"];
     InkTextarea: typeof import("./index.js")["InkTextarea"];

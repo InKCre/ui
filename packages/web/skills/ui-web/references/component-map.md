@@ -20,6 +20,7 @@ component references relevant to the task.
 - [InkLoading](components/InkLoading.md): loading indicator; async progress feedback; pending state
 - [InkPlaceholder](components/InkPlaceholder.md): empty state; error state; unavailable content guidance
 - [InkPopup](components/InkPopup.md): positioned popup; low-level overlay surface; custom controlled overlay
+- [InkSkeleton](components/InkSkeleton.md): skeleton; known content placeholder; initial loading
 - [InkTooltip](components/InkTooltip.md): contextual hint; hover explanation; supplementary label
 
 ## forms

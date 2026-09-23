@@ -1,3 +1,11 @@
+# 未发布：场景化加载、Dialog 动作与相对间距
+
+InkLoading 默认仍为三个方块，用于内容区、图谱和预览等待。新增 `variant="spinner"` 与可见 `label`；没有可见标签时继续支持 aria-label。新增 InkSkeleton 单块骨架，用 class/style 定义具体宽高，整个区域由宿主提供一次加载说明。Loading、Skeleton 与 Button 等待图形响应 prefers-reduced-motion。
+
+InkDialog 的 pending 继续锁住内部 InkButton、确认、取消、Escape 和遮罩，但不再让所有按钮显示执行动画。默认 Confirm 显式显示 loading，Cancel 只禁用。自定义 footer 将 `:is-loading` 传给正在执行的按钮；默认槽和 footer 槽均提供 cancel、confirm、isLoading。直接依赖内部字符串 `isLoading` 注入的代码应移除，改用公开 prop/slot。验证保存、失败恢复和 Promise 拒绝后重试，不能把取消显示为正在提交。
+
+五个 ref.space 源值改为 rem：xs/sm/md/lg/xl 为 0.25/0.5/1/2/3.5rem。Token 路径、sys 引用与 Sass/Uno 用法不变，16px 根字号下等大，20px 时间距按比例放大；复核表单、按钮、Dropdown、Tabs、Dialog、Header 的换行。radius 和 ref.size 不变。Figma 的 dimension 提议须保留已有单位，单位变更改为显式仓库迁移。
+
 # 未发布：默认配色与阴影
 
 浅深主题的主动作、普通表面与 Switch 采用中性灰配对；危险按钮底色保持灰红，需要注意的反馈文字使用较纯的语义色。覆盖层阴影缩小偏移与模糊范围。公开角色、组件 API 与调用方式保持不变，升级后重新构建即可获得默认值。

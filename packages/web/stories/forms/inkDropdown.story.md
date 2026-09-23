@@ -4,6 +4,8 @@ InkDropdown 从字符串或数字值的选项中选择，发出 `update:modelVal
 
 聚焦触发按钮后，Enter、Space 或方向键打开列表；上下方向键移动，Home/End 到边界，Enter 选择。直接输入字符会进入搜索框，支持按标签和 description 过滤。Escape、Tab、焦点离开或点击外部关闭；选择和 Escape 后焦点回到触发按钮。
 
+列表顶部的搜索区用前缀放大镜与内边距表明输入用途，点击图标或搜索区即可聚焦输入；键盘聚焦时显示区域轮廓。搜索区的外侧水平留白与选项保持一致。
+
 加载失败显示提示并发出 error，不伪装成空列表成功。过期加载结果和卸载后的结果不会写回。disabled 或 editable=false 禁止选择和刷新；加载期间禁止选择和步进。
 
 label 自动关联按钮，name 提供隐藏表单值。required 表达 aria-required，应用仍需验证必选值；它不是原生 select 的 required 校验。
