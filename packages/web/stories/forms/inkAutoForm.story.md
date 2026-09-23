@@ -9,3 +9,5 @@ InkAutoForm 将 object schema 的 string、number、integer、boolean、嵌套 o
 每个实例拥有独立 schema 服务。validation 事件传出 FormValidation，包含 valid、status、errors 和 rootErrors。pending、invalid、error 均不能保存；字段与根级错误都显示。服务异常发出 error，不能当作校验成功。替换数据或 schema 后只应用最新校验结果。
 
 组件默认渲染 form；嵌入宿主现有表单时设置 `embedded`，只渲染字段容器，不产生嵌套 form。保存按钮可放在外部，并使用 validation.valid 控制是否允许保存。消费者可在渲染前使用 `canRenderJsonSchema` 判断是否需要退回原始 JSON 编辑。
+
+数组的添加／移除和可空字段的设置／清除使用 InkButton 的小尺寸次要操作样式。它们只更新表单草稿，不提交外层表单；禁用整个表单时这些操作也不可用。
