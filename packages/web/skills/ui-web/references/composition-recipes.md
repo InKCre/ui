@@ -96,11 +96,11 @@ async function submit() {
 
 ## Schema Configuration
 
-**Intent:** Choose between an automatically generated primitive form and raw schema-aware JSON editing.
+**Intent:** Choose between a supported schema form and raw schema-aware JSON editing.
 
 **Components:** `InkAutoForm`, `InkJsonEditor`, `InkForm`, `InkPlaceholder`
 
-1. Use InkAutoForm when a flat schema maps cleanly to ordinary primitive controls.
+1. Use InkAutoForm when canRenderJsonSchema confirms the schema is supported.
 2. Use InkJsonEditor when users must see or edit the raw JSON document.
 3. JsonEditor 保留字符串草稿，通过 validation.valid 和对应 text 控制保存，确认有效后再 JSON.parse。
 4. Keep parsing and persistence errors separate from schema validation feedback.

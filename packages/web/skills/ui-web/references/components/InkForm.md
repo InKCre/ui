@@ -53,7 +53,7 @@
 ## API Caveats
 
 - layout 响应式传给子字段，控件自身 layout 优先；submit 传出 Event 并阻止默认导航。
-- 不要嵌套 form，InkAutoForm 已拥有一个 form。
+- 不要嵌套 form；在现有 InkForm 中使用 InkAutoForm embedded。
 
 ## Common Mistakes
 

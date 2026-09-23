@@ -1,6 +1,6 @@
 # inkAutoForm
 
-InkAutoForm 将扁平 object schema 的 string、number、integer、boolean 映射为现有控件，不提供嵌套或条件表单框架。根 schema 和不支持的字段类型会显示错误。
+InkAutoForm 将 object schema 的 string、number、integer、boolean、嵌套 object、数组、本地 `$defs/$ref` 和简单 nullable 映射为现有控件，不提供条件表单框架。根 schema 和不支持的字段类型会显示错误。`format: password` 只让输入框遮蔽文字，不改变配置读写语义。
 
 使用 `v-model:formData` 接收对象。初始化或 schema 改变时只给缺失字段补 default，已有值（包括 0、false、空字符串和 null）优先；schema 中未列出的已有属性保留，是否允许由 schema 校验。外部 formData 更新不重新套默认值，因此清空数字不会被默认值重新填回。
 
@@ -8,4 +8,4 @@ InkAutoForm 将扁平 object schema 的 string、number、integer、boolean 映�
 
 每个实例拥有独立 schema 服务。validation 事件传出 FormValidation，包含 valid、status、errors 和 rootErrors。pending、invalid、error 均不能保存；字段与根级错误都显示。服务异常发出 error，不能当作校验成功。替换数据或 schema 后只应用最新校验结果。
 
-组件本身已经渲染 form，不应嵌入另一个 form；保存按钮可放在外部，并使用 validation.valid 控制是否允许保存。
+组件默认渲染 form；嵌入宿主现有表单时设置 `embedded`，只渲染字段容器，不产生嵌套 form。保存按钮可放在外部，并使用 validation.valid 控制是否允许保存。消费者可在渲染前使用 `canRenderJsonSchema` 判断是否需要退回原始 JSON 编辑。

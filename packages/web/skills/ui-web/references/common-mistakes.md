@@ -95,6 +95,10 @@
 
 - Do not optimistically show a successful state when the async change can still fail.
 
+## InkTabs
+
+- Do not keep a second local selection state when the route already owns it.
+
 ## InkTextarea
 
 - Do not assume v-model without checking the argument used by the value contract.

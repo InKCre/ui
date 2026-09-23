@@ -1,4 +1,8 @@
 .ink-auto-form {
+  display: flex;
+  flex-direction: column;
+  gap: sys-var(space, md);
+
   &__error {
     padding: sys-var(space, md);
     background-color: sys-var(color, surface, subtle);
@@ -9,6 +13,53 @@
 
   &__field {
     position: relative;
+    min-width: 0;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: sys-var(space, md);
+    min-width: 0;
+    margin: 0;
+    padding: sys-var(space, md);
+    border: 1px solid sys-var(color, border, subtle);
+
+    legend {
+      @include apply-font(label-lg);
+      padding-inline: sys-var(space, xs);
+    }
+  }
+
+  &__description {
+    @include apply-font(body-sm);
+    margin: 0;
+    color: sys-var(color, text, subtle);
+  }
+
+  &__array-item {
+    display: flex;
+    flex-direction: column;
+    gap: sys-var(space, sm);
+
+    > .ink-auto-form__field {
+      min-width: 0;
+    }
+
+    > button {
+      align-self: flex-start;
+    }
+  }
+
+  &__group > button {
+    align-self: flex-start;
+  }
+
+  &__nullable {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: sys-var(space, sm);
   }
 
   &__field-errors {

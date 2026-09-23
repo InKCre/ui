@@ -5,17 +5,17 @@
 ## Intent
 
 - schema-driven form
-- flat JSON Schema editor
-- automatic primitive controls
+- JSON Schema configuration editor
+- automatic field controls
 
 ## Prefer When
 
-- A flat JSON Schema should produce consistent controls with little application boilerplate.
-- String, number, and boolean properties can map to the package's existing field controls.
+- A supported JSON Schema should produce consistent controls with little application boilerplate.
+- Nested objects, arrays, nullable fields and local definitions occur in real configuration schemas.
 
 ## Avoid When
 
-- The workflow needs deeply nested schemas, conditional branches, arrays, or bespoke field composition.
+- The workflow needs conditional branches or bespoke field composition.
 - The user should edit raw JSON text; use InkJsonEditor instead.
 
 ## Compose With
@@ -38,6 +38,8 @@
 | --- | --- | --- | --- |
 | `formData` | `undefined \| Record<string, any>` | 否 | `() => ({})` |
 | `layout` | `undefined \| "col" \| "inline" \| "row"` | 否 | `"col"` |
+| `embedded` | `undefined \| boolean` | 否 | `false` |
+| `disabled` | `undefined \| boolean` | 否 | `false` |
 | `schema` | `JSONSchema` | 是 | `undefined` |
 
 ### Events
@@ -51,7 +53,7 @@
 - None.
 
 - Public types: `JSONSchema`, `JSONSchemaProperty`, `FormValidation`
-- Story variants: `Text Fields with Validation`, `Textarea (Long Text)`, `Boolean Switches`, `Dropdown (Enum Values)`, `Date and Time Pickers`, `Default Values from Schema`, `Validation Errors`, `Invalid Schema Handling`, `Complex Form (Mixed Field Types)`, `Inline Layout`, `Row Layout`, `Existing values, numeric and date boundaries`
+- Story variants: `Text Fields with Validation`, `Textarea (Long Text)`, `Boolean Switches`, `Dropdown (Enum Values)`, `Date and Time Pickers`, `Default Values from Schema`, `Validation Errors`, `Invalid Schema Handling`, `Complex Form (Mixed Field Types)`, `Inline Layout`, `Row Layout`, `Existing values, numeric and date boundaries`, `Nested credentials, arrays and nullable values`
 
 ### Public type definitions
 
@@ -60,21 +62,35 @@ export interface JSONSchema {
   type: "object";
   properties: Record<string, JSONSchemaProperty>;
   required?: string[];
-  [key: string]: any;
+  $defs?: Record<string, JSONSchemaProperty>;
+  [key: string]: unknown;
 }
 
 export interface JSONSchemaProperty {
-  type: "string" | "number" | "integer" | "boolean";
+  type?:
+    | "string"
+    | "number"
+    | "integer"
+    | "boolean"
+    | "object"
+    | "array"
+    | "null"
+    | Array<"string" | "number" | "integer" | "boolean" | "object" | "array" | "null">;
+  $ref?: string;
+  anyOf?: JSONSchemaProperty[];
+  properties?: Record<string, JSONSchemaProperty>;
+  required?: string[];
+  items?: JSONSchemaProperty;
   title?: string;
   description?: string;
-  default?: any;
-  enum?: any[];
-  format?: "date" | "time" | "datetime" | "date-time";
+  default?: unknown;
+  enum?: unknown[];
+  format?: "date" | "time" | "datetime" | "date-time" | "password";
   maxLength?: number;
   minimum?: number;
   maximum?: number;
   pattern?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface FormValidation {
@@ -87,7 +103,8 @@ export interface FormValidation {
 
 ## API Caveats
 
-- 仅支持扁平 primitive schema，不提供自定义映射 prop。v-model:formData 保留已有值及额外属性，只为缺失值补默认值。
+- 支持明确的对象、数组、nullable、本地 $defs/$ref 子集；不支持的 schema 使用 JSON 编辑。v-model:formData 保留已有值及额外属性，只为缺失值补默认值。
+- embedded 允许字段嵌入现有 InkForm 而不嵌套 form；format: password 只遮蔽输入，不改变读写语义。
 - 数字为 number，空数字删除字段；日期保留 JSON 字符串，Picker 确认才序列化。
 - validation(FormValidation) 的 valid/status/errors/rootErrors 控制保存，pending/invalid/error 均不可保存。实例隔离，过期结果不应用。
 

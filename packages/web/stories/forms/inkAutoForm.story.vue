@@ -238,6 +238,33 @@ const retainedSchema: JSONSchema = {
   },
   required: ["name", "count"],
 };
+const nestedSchema: JSONSchema = {
+  type: "object",
+  properties: {
+    parameters: { $ref: "#/$defs/Parameters" },
+    exclusions: { anyOf: [{ $ref: "#/$defs/Exclusions" }, { type: "null" }] },
+  },
+  required: ["parameters"],
+  $defs: {
+    Parameters: {
+      type: "object",
+      properties: {
+        host: { type: "string" },
+        password: { type: "string", format: "password" },
+        folders: { type: "array", items: { type: "string" } },
+      },
+      required: ["host", "password"],
+    },
+    Exclusions: {
+      type: "object",
+      properties: { names: { type: "array", items: { type: "string" } } },
+    },
+  },
+};
+const nestedData = ref<Record<string, unknown>>({
+  parameters: { host: "mail.example.com", password: "example-secret", folders: ["Inbox"] },
+  exclusions: null,
+});
 </script>
 
 <template>
@@ -316,6 +343,10 @@ const retainedSchema: JSONSchema = {
       />
       <p>校验：{{ retainedValidation?.status }}</p>
       <pre class="story-debug">{{ retainedData }}</pre>
+    </Variant>
+    <Variant title="Nested credentials, arrays and nullable values">
+      <InkAutoForm v-model:form-data="nestedData" :schema="nestedSchema" />
+      <pre class="story-debug">{{ nestedData }}</pre>
     </Variant>
   </Story>
 </template>

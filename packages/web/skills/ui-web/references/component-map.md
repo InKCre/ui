@@ -11,6 +11,7 @@ component references relevant to the task.
 - [InkHeader](components/InkHeader.md): application header; branding; top navigation
 - [InkPagination](components/InkPagination.md): pagination; previous and next navigation; paged collection
 - [InkSwitch](components/InkSwitch.md): boolean toggle; immediate setting; async on/off control
+- [InkTabs](components/InkTabs.md): controlled tab selection; route-backed tab links
 
 ## feedback
 
@@ -23,7 +24,7 @@ component references relevant to the task.
 
 ## forms
 
-- [InkAutoForm](components/InkAutoForm.md): schema-driven form; flat JSON Schema editor; automatic primitive controls
+- [InkAutoForm](components/InkAutoForm.md): schema-driven form; JSON Schema configuration editor; automatic field controls
 - [InkDropdown](components/InkDropdown.md): single selection; dropdown options; lazy-loaded choice
 - [InkField](components/InkField.md): form field wrapper; label and value layout; field-level structure
 - [InkForm](components/InkForm.md): form layout context; grouped fields; consistent field composition

@@ -22,4 +22,10 @@ export default {
     cancel: "Cancel",
     confirm: "Confirm",
   },
+  autoForm: {
+    add: "Add",
+    remove: "Remove",
+    setValue: "Set value",
+    clearValue: "Clear value",
+  },
 };

@@ -11,21 +11,35 @@ export interface JSONSchema {
   type: "object";
   properties: Record<string, JSONSchemaProperty>;
   required?: string[];
-  [key: string]: any;
+  $defs?: Record<string, JSONSchemaProperty>;
+  [key: string]: unknown;
 }
 
 export interface JSONSchemaProperty {
-  type: "string" | "number" | "integer" | "boolean";
+  type?:
+    | "string"
+    | "number"
+    | "integer"
+    | "boolean"
+    | "object"
+    | "array"
+    | "null"
+    | Array<"string" | "number" | "integer" | "boolean" | "object" | "array" | "null">;
+  $ref?: string;
+  anyOf?: JSONSchemaProperty[];
+  properties?: Record<string, JSONSchemaProperty>;
+  required?: string[];
+  items?: JSONSchemaProperty;
   title?: string;
   description?: string;
-  default?: any;
-  enum?: any[];
-  format?: "date" | "time" | "datetime" | "date-time";
+  default?: unknown;
+  enum?: unknown[];
+  format?: "date" | "time" | "datetime" | "date-time" | "password";
   maxLength?: number;
   minimum?: number;
   maximum?: number;
   pattern?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface FieldComponentMapping {
@@ -35,7 +49,7 @@ export interface FieldComponentMapping {
 
 // --- Props ---
 export const inkAutoFormProps = {
-  /** JSON Schema definition for the form (flat properties only) */
+  /** JSON Schema definition for the form. */
   schema: {
     type: Object as PropType<JSONSchema>,
     required: true,
@@ -44,7 +58,130 @@ export const inkAutoFormProps = {
   formData: makeObjectProp<Record<string, any>>({}),
   /** Layout for form fields */
   layout: makeStringProp<FieldLayout>("col"),
+  /** Render fields without a form element when embedded in an existing form. */
+  embedded: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
 } as const;
+
+/** Resolve only local definitions; unsupported or cyclic schemas must use a JSON editor. */
+export function resolveFormSchema(
+  property: JSONSchemaProperty,
+  root: JSONSchema,
+  visited: ReadonlySet<string> = new Set(),
+): JSONSchemaProperty | null {
+  if (typeof property.$ref !== "undefined" && typeof property.$ref !== "string") return null;
+  if (property.$ref) {
+    const prefix = "#/$defs/";
+    if (!property.$ref.startsWith(prefix) || visited.has(property.$ref)) return null;
+    const name = property.$ref.slice(prefix.length).replace(/~1/g, "/").replace(/~0/g, "~");
+    const target = root.$defs?.[name];
+    return target && typeof target === "object" && !Array.isArray(target)
+      ? resolveFormSchema(target, root, new Set([...visited, property.$ref]))
+      : null;
+  }
+  if (property.anyOf) {
+    if (
+      !Array.isArray(property.anyOf) ||
+      property.anyOf.some(
+        (branch) => !branch || typeof branch !== "object" || Array.isArray(branch),
+      )
+    )
+      return null;
+    // Zod represents an optional URL as the empty literal or a URL string.
+    if (
+      property.anyOf.length === 2 &&
+      property.anyOf.some((branch) => branch.const === "") &&
+      property.anyOf.some((branch) => branch.type === "string" && branch.const === undefined)
+    ) {
+      const editable = property.anyOf.find(
+        (branch) => branch.type === "string" && branch.const === undefined,
+      )!;
+      return {
+        ...editable,
+        title: property.title ?? editable.title,
+        default: property.default ?? editable.default,
+      };
+    }
+    const nonNull = property.anyOf.filter((branch) => branch.type !== "null");
+    if (nonNull.length !== 1 || nonNull.length === property.anyOf.length) return null;
+    const resolved = resolveFormSchema(nonNull[0], root, visited);
+    return resolved
+      ? { ...resolved, title: property.title ?? resolved.title, nullable: true }
+      : null;
+  }
+  if (Array.isArray(property.type)) {
+    const nonNull = property.type.filter((type) => type !== "null");
+    return nonNull.length === 1 && nonNull.length !== property.type.length
+      ? { ...property, type: nonNull[0], nullable: true }
+      : null;
+  }
+  return property;
+}
+
+export function canRenderJsonSchema(schema: unknown): schema is JSONSchema {
+  if (!schema || typeof schema !== "object") return false;
+  const root = schema as JSONSchema;
+  if (
+    root.type !== "object" ||
+    !root.properties ||
+    typeof root.properties !== "object" ||
+    Array.isArray(root.properties)
+  )
+    return false;
+  if (Object.keys(root.properties).length === 0) return false;
+  function supported(raw: unknown, depth: number): boolean {
+    if (depth > 16 || !raw || typeof raw !== "object" || Array.isArray(raw)) return false;
+    const property = resolveFormSchema(raw as JSONSchemaProperty, root);
+    if (!property) return false;
+    if (
+      ["oneOf", "allOf", "if", "then", "else", "patternProperties"].some((key) => key in property)
+    )
+      return false;
+    if (property.type === "object")
+      return (
+        !!property.properties &&
+        !Array.isArray(property.properties) &&
+        Object.values(property.properties).every((child) => supported(child, depth + 1))
+      );
+    if (property.type === "array") return !!property.items && supported(property.items, depth + 1);
+    return ["string", "number", "integer", "boolean"].includes(String(property.type));
+  }
+  if (["oneOf", "allOf", "if", "then", "else", "patternProperties"].some((key) => key in root))
+    return false;
+  return Object.values(root.properties).every((property) => supported(property, 0));
+}
+
+export function initialFormValue(raw: JSONSchemaProperty, root: JSONSchema): unknown {
+  const property = resolveFormSchema(raw, root);
+  if (!property) return undefined;
+  if (property.default !== undefined) return property.default;
+  if (property.type === "object")
+    return Object.fromEntries(
+      Object.entries(property.properties ?? {})
+        .map(([key, child]) => [key, initialFormValue(child, root)])
+        .filter(([, value]) => value !== undefined),
+    );
+  if (property.type === "array") return [];
+  if (property.type === "boolean") return false;
+  if (property.type === "string") return "";
+  return undefined;
+}
+
+/** Readable fallback for schemas that do not provide a title. */
+export function schemaFieldLabel(key: string): string {
+  const words = key
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) =>
+      ["ai", "api", "http", "id", "llm", "url"].includes(word.toLowerCase())
+        ? word.toUpperCase()
+        : word,
+    );
+  if (!words.length) return key;
+  return words.join(" ").replace(/^./, (letter) => letter.toUpperCase());
+}
 
 // --- Emits ---
 export const inkAutoFormEmits = {
@@ -80,6 +217,10 @@ export function mapSchemaPropertyToComponent(property: JSONSchemaProperty): Fiel
         })),
       },
     };
+  }
+
+  if (type === "string" && format === "password") {
+    return { component: "inkInput", props: { nativeType: "password" } };
   }
 
   // String with date/time format -> Picker
