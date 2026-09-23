@@ -1,5 +1,11 @@
 # @inkcre/ui-web
 
+## 2.1.0
+
+### Minor Changes
+
+- 510d3cf: Extend InkAutoForm for nested configuration schemas, embedded use, and password hints; add controlled InkTabs.
+
 ## 2.0.1
 
 ### Patch Changes
