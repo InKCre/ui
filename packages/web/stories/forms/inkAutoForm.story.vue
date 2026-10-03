@@ -2,6 +2,7 @@
 import type { FormValidation } from "../../src/index";
 import { ref } from "vue";
 import InkAutoForm from "../../src/components/inkAutoForm/inkAutoForm.vue";
+import InkButton from "../../src/components/inkButton/inkButton.vue";
 import type { JSONSchema } from "../../src/components/inkAutoForm/inkAutoForm";
 
 // Schema for basic text fields
@@ -241,6 +242,10 @@ const retainedSchema: JSONSchema = {
 const nestedSchema: JSONSchema = {
   type: "object",
   properties: {
+    public_url: { type: ["string", "null"], title: "Public URL" },
+    empty_text: { type: ["string", "null"], title: "Empty text" },
+    optional_text: { type: "string", title: "Optional text" },
+    include_private: { type: "boolean", title: "Include private" },
     parameters: { $ref: "#/$defs/Parameters" },
     exclusions: { anyOf: [{ $ref: "#/$defs/Exclusions" }, { type: "null" }] },
   },
@@ -262,9 +267,13 @@ const nestedSchema: JSONSchema = {
   },
 };
 const nestedData = ref<Record<string, unknown>>({
+  public_url: null,
+  empty_text: "",
+  include_private: false,
   parameters: { host: "mail.example.com", password: "example-secret", folders: ["Inbox"] },
   exclusions: null,
 });
+const nestedDisabled = ref(false);
 </script>
 
 <template>
@@ -345,7 +354,15 @@ const nestedData = ref<Record<string, unknown>>({
       <pre class="story-debug">{{ retainedData }}</pre>
     </Variant>
     <Variant title="Nested credentials, arrays and nullable values">
-      <InkAutoForm v-model:form-data="nestedData" :schema="nestedSchema" />
+      <InkButton
+        :text="nestedDisabled ? '启用字段' : '禁用字段'"
+        @click="nestedDisabled = !nestedDisabled"
+      />
+      <InkAutoForm
+        v-model:form-data="nestedData"
+        :schema="nestedSchema"
+        :disabled="nestedDisabled"
+      />
       <pre class="story-debug">{{ nestedData }}</pre>
     </Variant>
   </Story>

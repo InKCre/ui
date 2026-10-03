@@ -62,6 +62,10 @@
     gap: sys-var(space, sm);
   }
 
+  &__clear {
+    margin-top: sys-var(space, xs);
+  }
+
   &__field-errors {
     display: flex;
     flex-direction: column;

@@ -37,6 +37,11 @@ const resolved = computed(() => resolveFormSchema(props.schema, props.root));
 const mapping = computed(() =>
   resolved.value ? mapSchemaPropertyToComponent(resolved.value) : null,
 );
+const directText = computed(
+  () =>
+    resolved.value?.type === "string" &&
+    (mapping.value?.component === "inkInput" || mapping.value?.component === "inkTextarea"),
+);
 const entries = computed(() => Object.entries(resolved.value?.properties ?? {}));
 const items = computed(() => (Array.isArray(props.value) ? props.value : []));
 function updateChild(key: string, value: unknown) {
@@ -70,7 +75,7 @@ function updateScalar(value: unknown) {
 
 <template>
   <div class="ink-auto-form__field">
-    <div v-if="resolved?.nullable && value === null" class="ink-auto-form__nullable">
+    <div v-if="resolved?.nullable && value === null && !directText" class="ink-auto-form__nullable">
       <span>{{ label }}</span>
       <InkButton
         size="sm"
@@ -186,6 +191,7 @@ function updateScalar(value: unknown) {
     >
       <InkSwitch
         :id="id"
+        size="sm"
         :aria-label="label"
         :aria-describedby="error ? `${id}-error` : undefined"
         :aria-invalid="!!error || undefined"
@@ -229,6 +235,9 @@ function updateScalar(value: unknown) {
         resolved.type !== 'array'
       "
       size="sm"
+      theme="subtle"
+      class="ink-auto-form__clear"
+      :aria-label="`${message('clearValue', 'Clear value')}: ${label}`"
       :disabled="disabled"
       @click="emit('update:value', null)"
     >

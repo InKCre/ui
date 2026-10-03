@@ -1,3 +1,7 @@
+# 待发布：AutoForm 字段交互
+
+普通 nullable 文本现在直接显示输入，不需要先点击“设置值”。未编辑的 null、未设置字段与空字符串仍各自保留；“清空值”显式置 null。Boolean 字段使用已有 sm 开关。公开模型与事件不变，重新构建即可采用；nullable object、array、Boolean、enum 与日期的状态选择沿用原语义。
+
 # 未发布：场景化加载、Dialog 动作与相对间距
 
 InkLoading 默认仍为三个方块，用于内容区、图谱和预览等待。新增 `variant="spinner"` 与可见 `label`；没有可见标签时继续支持 aria-label。新增 InkSkeleton 单块骨架，用 class/style 定义具体宽高，整个区域由宿主提供一次加载说明。Loading、Skeleton 与 Button 等待图形响应 prefers-reduced-motion。
