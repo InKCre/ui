@@ -43,7 +43,7 @@ InkDialog 的 pending 继续锁住内部 InkButton、确认、取消、Escape �
 
 Button pending 的覆盖层改为相邻 spinner；依赖 `ink-button__loading-overlay` 的样式需要移除。Button、带框输入和 Switch 的固定高度改为可增长的最小高度，Switch xs 从 18px 增至至少 24px，两个状态文案共同决定宽度。Dropdown 选中说明、DoubleCheck 普通标题、Image 标题底板和遮罩透明度已改正，Dialog 同样由 Popup 承担内边距，默认宽度上限 640px，窄视口两侧各留 16px；清理相应下游补丁后再复核。
 
-已知 client-web 调用包括：settings 的 `apply-font('title', 'lg')`；LogsViewer／RecallSearch 的 body-md 和错误背景；JobCard／任务详情／peerCard 的反馈颜色；侧栏、来源内容和设置通知中的 muted；info-base/list 的页面标题与空间。逐处按用途迁移，不能全局机械替换。extension registry 的实际消费位置尚未确认，须在消费者验收中补齐。
+已知 impl-ts 调用包括：settings 的 `apply-font('title', 'lg')`；LogsViewer／RecallSearch 的 body-md 和错误背景；JobCard／任务详情／peerCard 的反馈颜色；侧栏、来源内容和设置通知中的 muted；info-base/list 的页面标题与空间。逐处按用途迁移，不能全局机械替换。extension registry 的实际消费位置尚未确认，须在消费者验收中补齐。
 
 Figma 导入也改变：仅更新已知路径的值，显式提供 releaseType，旧的全量导出包含已删除角色时会失败。维护者应更新发送端或准备只含已知值的提议；具体接收端格式见仓库 Token 生成说明。
 
@@ -55,8 +55,8 @@ Figma 导入也改变：仅更新已知路径的值，显式提供 releaseType�
 
 本节对应 2.0.0 的基础控件、弹层和 schema 编辑契约调整。升级时完成以下迁移并验证真实保存流程。
 
-- InkButton 默认原生类型改为 button。表单提交写 `nativeType="submit"`；type 仍控制 default/square 外形。client-web 的 info-base/list 和 RecallSearch 搜索按钮依赖旧默认提交行为，需要明确标记。
-- InkJsonEditor 的模型现在包含原始文本和无效 JSON。将直接 JSON.parse 的 computed setter 改为独立字符串草稿，监听 validation；仅在 valid=true 且结果 text 与草稿一致时解析和持久化。client-web 的 peerCard 配置编辑属于这种调用，必须迁移，否则输入中间态会让 setter 抛错。
+- InkButton 默认原生类型改为 button。表单提交写 `nativeType="submit"`；type 仍控制 default/square 外形。impl-ts 的 info-base/list 和 RecallSearch 搜索按钮依赖旧默认提交行为，需要明确标记。
+- InkJsonEditor 的模型现在包含原始文本和无效 JSON。将直接 JSON.parse 的 computed setter 改为独立字符串草稿，监听 validation；仅在 valid=true 且结果 text 与草稿一致时解析和持久化。impl-ts 的 peerCard 配置编辑属于这种调用，必须迁移，否则输入中间态会让 setter 抛错。
 - InkPicker 的内置日期选择只在 Confirm 更新 Date，取消不再提交。初始化可用 null；JSON 日期字符串应由消费者转换，InkAutoForm 已提供其内部字符串边界。
 - Popup/Scrim 使用原生 dialog。提供 aria-label 或 aria-labelledby；不要依赖旧遮罩 DOM 选择器。scrim=false 保留非模态行为，默认模式由浏览器提供背景隔离、嵌套与焦点管理。
 - useOptionalVModel 与内部 optional model 统一：传入非 undefined 的模型由父级控制，父级拒绝更新时显示不会擅自改变。传常量 false 不等于省略模型。
