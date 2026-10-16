@@ -104,20 +104,17 @@ republishing the other. `wrangler.toml` owns the Pages project name, output
 directory, and compatibility date. Delivery jobs run through GitHub environments;
 the Cloudflare credential remains a selected organization Actions secret.
 
-## Joint development with client-web
+## Joint development with impl-ts
 
 The consuming Vite/Vitest/TypeScript pipeline owns source consumption. Keep
 this workspace installed and generated, then opt in from a sibling
-`client-web` checkout:
+`impl-ts` checkout:
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm generate
-pnpm --dir ../client-web dev:ui --ui-source ../ui/packages/web
+pnpm --dir ../impl-ts dev:ui --ui-source ../ui/packages/web
 ```
-
-Replace `../ui` with this checkout's actual location while the local directory
-is still named `design` or is stored elsewhere.
 
 The command validates this package root and maps only its public specifiers for
 the current development process. It does not use `pnpm link`, persist an
@@ -125,10 +122,10 @@ absolute path, or modify either manifest or lockfile. Token JSON changes still
 require `pnpm generate`.
 
 Run the consumer source-graph check with
-`pnpm --dir ../client-web type-check:ui --ui-source ../ui/packages/web`.
+`pnpm --dir ../impl-ts type-check:ui --ui-source ../ui/packages/web`.
 Normal client development, builds, checks, and CI remain pinned to the
 published registry artifact. The consumer's
-[`docs/40-deployment/development-runtime.md`](https://github.com/InKCre/client-web/blob/main/docs/40-deployment/development-runtime.md#joint-development-lanes)
+[`docs/40-deployment/development-runtime.md`](https://github.com/InKCre/impl-ts/blob/main/docs/40-deployment/development-runtime.md#joint-development-lanes)
 owns the full startup, remotes, cleanup, troubleshooting, and release-fidelity
 contract.
 

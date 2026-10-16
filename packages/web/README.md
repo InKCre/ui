@@ -47,15 +47,15 @@ Sass helper 与 Token 子路径见[样式入口](styles/README.md)。构建 CSS 
 
 ## 本地源码联调
 
-以下命令在 UI 源码仓库根执行，要求存在相邻的 client-web checkout，且两个工作区都已按各自指南安装依赖：
+以下命令在 UI 源码仓库根执行，要求存在相邻的 impl-ts checkout，且两个工作区都已按各自指南安装依赖：
 
 ```bash
 pnpm generate
-pnpm --dir ../client-web dev:ui --ui-source ../ui/packages/web
-pnpm --dir ../client-web type-check:ui --ui-source ../ui/packages/web
+pnpm --dir ../impl-ts dev:ui --ui-source ../ui/packages/web
+pnpm --dir ../impl-ts type-check:ui --ui-source ../ui/packages/web
 ```
 
-将 `../ui` 替换为本地实际 checkout 路径。消费者拥有源码映射和 peer 运行时解析；正式构建与 CI 仍使用锁定的发布产物。Token 源变化后需重新生成。完整启动、清理和故障排查见[消费者开发指南](https://github.com/InKCre/client-web/blob/main/docs/40-deployment/development-runtime.md#joint-development-lanes)。
+将 `../ui` 替换为本地实际 checkout 路径。消费者拥有源码映射和 peer 运行时解析；正式构建与 CI 仍使用锁定的发布产物。Token 源变化后需重新生成。完整启动、清理和故障排查见[消费者开发指南](https://github.com/InKCre/impl-ts/blob/main/docs/40-deployment/development-runtime.md#joint-development-lanes)。
 
 ## Agent Skill
 
