@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import InkImage from "../../src/components/inkImage/inkImage.vue";
+import InkButton from "../../src/components/inkButton/inkButton.vue";
 import imageFixture from "../../src/logo.svg";
+import detailFixture from "./assets/image-detail.svg";
+import tallFixture from "./assets/image-tall.svg";
 
 const imageSrc = ref(imageFixture);
+const controlledOpen = ref(false);
+const controlledSource = ref(detailFixture);
+const longCaption =
+  "长图保留完整的上下文。放大后应能逐段阅读图片里的细节，说明文字也应当可达，但不能挤掉图片或遮住关闭操作。".repeat(
+    8,
+  );
 </script>
 
 <template>
@@ -56,6 +65,53 @@ const imageSrc = ref(imageFixture);
           <span class="image-story-surface">InKCre 标志</span>
         </template>
       </InkImage>
+    </Variant>
+
+    <Variant title="Large Image Detail">
+      <InkImage
+        :src="detailFixture"
+        alt="Large diagram with fine text"
+        title="Inspect the bottom-right detail at original size."
+        style="width: 320px"
+      />
+    </Variant>
+
+    <Variant title="Tall Image With Long Caption">
+      <InkImage
+        :src="tallFixture"
+        alt="Tall reading specimen"
+        :title="longCaption"
+        style="width: 140px"
+      />
+    </Variant>
+    <Variant title="Controlled Preview And Source Change">
+      <InkButton @click="controlledOpen = true">Open controlled preview</InkButton>
+      <InkImage
+        v-model:expanded="controlledOpen"
+        :src="controlledSource"
+        alt="Controlled image preview"
+        style="width: 320px"
+      >
+        <template #expanded-header>
+          <InkButton
+            size="sm"
+            @click="
+              controlledSource = controlledSource === detailFixture ? tallFixture : detailFixture
+            "
+            >Switch image</InkButton
+          >
+        </template>
+        <template #expanded-footer>
+          <span
+            >Changing the image restores the full composition without closing this preview.</span
+          >
+        </template>
+      </InkImage>
+      <output>Preview {{ controlledOpen ? "open" : "closed" }}</output>
+    </Variant>
+
+    <Variant title="Unavailable Image">
+      <InkImage src="data:image/png;base64,AA==" alt="Unavailable sample image" />
     </Variant>
   </Story>
 </template>

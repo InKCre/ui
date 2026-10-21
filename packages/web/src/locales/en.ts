@@ -1,4 +1,13 @@
 export default {
+  image: {
+    fit: "Fit to window",
+    originalSize: "Original size",
+    preview: "Image preview",
+    caption: "Image caption",
+    details: "Image details",
+    loading: "Loading image…",
+    error: "Image could not be displayed",
+  },
   placeholder: {
     empty: {
       title: "No data",

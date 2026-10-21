@@ -56,13 +56,14 @@
 - `expanded-footer`: `{}`
 
 - Public types: None
-- Story variants: `Basic Usage`, `With Title`, `Custom Size (Style + Class)`, `Custom Thumbnail Slot`, `Eager Loading (lazy: false)`, `With Expanded Footer`, `With Custom Header`
+- Story variants: `Basic Usage`, `With Title`, `Custom Size (Style + Class)`, `Custom Thumbnail Slot`, `Eager Loading (lazy: false)`, `With Expanded Footer`, `With Custom Header`, `Large Image Detail`, `Tall Image With Long Caption`, `Controlled Preview And Source Change`, `Unavailable Image`
 
 
 ## API Caveats
 
 - 缩略图为原生按钮，alt/title 提供名称。v-model:expanded 可受控，省略则内部管理。
-- InkScrim 提供模态、Escape 和焦点恢复；槽内容点击不关闭。
+- InkScrim 提供模态、Escape 和焦点恢复；图片区空白点击关闭，图片及槽内容点击不关闭。
+- 默认适应图片区，100% 使用原尺寸并通过原生滚动查看细节；打开或更换 src 时复位。长说明和扩展区域独立滚动，操作区固定。
 
 ## Common Mistakes
 

@@ -1,4 +1,13 @@
 export default {
+  image: {
+    fit: "适应窗口",
+    originalSize: "原尺寸",
+    preview: "图片预览",
+    caption: "图片说明",
+    details: "图片详情",
+    loading: "正在加载图片…",
+    error: "无法显示图片",
+  },
   placeholder: {
     empty: {
       title: "暂无数据",
