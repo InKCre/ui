@@ -7,6 +7,12 @@ export default {
     details: "Image details",
     loading: "Loading image…",
     error: "Image could not be displayed",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    zoomLevel: "Zoom level",
+    gestures: "Drag to pan · Scroll or pinch to zoom",
+    keyboard:
+      "Double-click or double-tap to zoom. Keyboard: + and − to zoom, arrows to pan, 0 to fit, 1 for original size.",
   },
   placeholder: {
     empty: {
