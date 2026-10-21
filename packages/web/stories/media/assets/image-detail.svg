@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1100" viewBox="0 0 1800 1100">
+  <rect width="1800" height="1100" fill="#f5f5f5"/>
+  <g fill="none" stroke="#bdbdbd" stroke-width="1">
+    <path d="M300 0v1100m300-1100v1100m300-1100v1100m300-1100v1100m300-1100v1100M0 220h1800M0 440h1800M0 660h1800M0 880h1800"/>
+  </g>
+  <g fill="#252525" font-family="system-ui,sans-serif">
+    <text x="60" y="100" font-size="54">Image detail specimen</text>
+    <text x="60" y="160" font-size="24">1800 × 1100 · inspect at original size</text>
+    <text x="60" y="310" font-size="28">Collection</text>
+    <text x="660" y="310" font-size="28">Organization</text>
+    <text x="1260" y="310" font-size="28">Application</text>
+    <text x="60" y="510" font-size="20">Top-left detail: keep the source context.</text>
+    <text x="1260" y="1030" font-size="20">Bottom-right detail: information stays readable.</text>
+  </g>
+  <g fill="none" stroke="#404040" stroke-width="3">
+    <path d="M60 350h420v170H60zM660 350h420v170H660zM1260 350h420v170h-420zM480 430h180m420 0h180"/>
+  </g>
+</svg>

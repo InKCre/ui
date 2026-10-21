@@ -232,7 +232,8 @@
       "composeWith": ["InkLoading", "InkPlaceholder", "InkPopup"],
       "apiCaveats": [
         "缩略图为原生按钮，alt/title 提供名称。v-model:expanded 可受控，省略则内部管理。",
-        "InkScrim 提供模态、Escape 和焦点恢复；槽内容点击不关闭。"
+        "InkScrim 提供模态、Escape 和焦点恢复；图片区空白点击关闭，图片及槽内容点击不关闭。",
+        "默认适应图片区；滚轮、双指、按钮和键盘连续缩放至 800%，100% 只是快捷比例；拖动浏览，双击 / 双点切换细节与全图。打开或更换 src 复位，长说明和扩展区域独立滚动，操作区固定。"
       ],
       "commonMistakes": [
         "Do not enable expansion when the source cannot provide a useful larger view."

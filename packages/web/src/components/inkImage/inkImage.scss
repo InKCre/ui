@@ -7,7 +7,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    cursor: zoom-in;
     overflow: hidden;
     transition:
       transform 0.2s ease,
@@ -20,49 +20,130 @@
     display: block;
   }
 
-  // Expanded view - full viewport lightbox
   &__expanded {
-    padding: sys-var(space, xl) sys-var(space, lg);
     box-sizing: border-box;
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: safe center;
-    overflow: auto;
+    overflow: hidden;
     flex-direction: column;
+    background: sys-var(color, surface, base);
+    color: sys-var(color, text, base);
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
     gap: sys-var(space, sm);
+    align-items: center;
+    padding: sys-var(space, md);
+    padding-right: calc(36px + 2 * #{sys-var(space, md)} + #{sys-var(space, sm)});
+  }
+
+  &__zoom-controls {
+    display: flex;
+    gap: sys-var(space, xs);
+    align-items: center;
+  }
+
+  &__zoom-level {
+    @include apply-font(body-sm);
+    min-width: 4ch;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__help {
+    @include apply-font(body-sm);
+    flex-basis: 100%;
+    margin: 0;
+    color: sys-var(color, text, subtle);
+  }
+
+  &__keyboard-help {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   &__expanded-header {
-    display: flex;
     flex-shrink: 0;
-    max-width: 100%;
+    max-height: 20vh;
+    overflow: auto;
+    padding: sys-var(space, sm) sys-var(space, md);
   }
 
   &__expanded-title {
-    @include apply-font(title-sm);
-    color: ref-var(color, neutral, 98);
+    @include apply-font(body-sm);
     margin: 0;
-    flex: 1;
-    background-color: ref-var(color, neutral, 2);
-    padding: sys-var(space, xs) sys-var(space, sm);
     white-space: normal;
     overflow-wrap: anywhere;
   }
 
-  &__img-expanded {
+  &__viewport {
+    position: relative;
+    flex: 1;
     min-height: 0;
-    flex-shrink: 1;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    margin: 0 sys-var(space, md);
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
+    user-select: none;
+    // The opaque canvas keeps the underlying page from competing with image detail.
+    background: sys-var(color, surface, subtle);
+  }
+
+  &__img-expanded {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: none;
+    max-height: none;
+    transform-origin: 0 0;
     display: block;
+    cursor: zoom-in;
+  }
+
+  &__viewport--zoomed {
+    cursor: grab;
+  }
+
+  &__viewport--zoomed &__img-expanded {
+    cursor: inherit;
+  }
+
+  &__viewport--dragging,
+  &__viewport--dragging &__img-expanded {
+    cursor: grabbing;
+  }
+
+  &__status {
+    align-self: center;
+    justify-self: center;
+    position: absolute;
   }
 
   &__expanded-footer {
     flex-shrink: 0;
-    max-width: 100%;
+    max-height: 25vh;
+    padding: sys-var(space, sm) sys-var(space, md);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  &__viewport:focus-visible,
+  &__expanded-header:focus-visible,
+  &__expanded-footer:focus-visible {
+    outline: 2px solid sys-var(color, border, strong);
+    outline-offset: -2px;
   }
 }
 
