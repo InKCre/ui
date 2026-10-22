@@ -37,6 +37,10 @@ export default {
     cancel: "Cancel",
     confirm: "Confirm",
   },
+  input: {
+    showPassword: "Show password",
+    hidePassword: "Hide password",
+  },
   autoForm: {
     add: "Add",
     remove: "Remove",

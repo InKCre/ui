@@ -5,6 +5,8 @@ import { inkInputProps, inkInputEmits } from "./inkInput";
 import InkField from "../inkField/inkField.vue";
 import InkButton from "../inkButton/inkButton.vue";
 import { useFieldControl } from "../../composables/use-field-control";
+import { useOptionalI18n } from "../../i18n";
+import en from "../../locales/en";
 
 defineOptions({ inheritAttrs: false });
 const props = defineProps(inkInputProps);
@@ -26,8 +28,10 @@ const effectiveType = computed(() => {
   return props.nativeType;
 });
 const passwordToggleIcon = computed(() => (showPassword.value ? "i-mdi-eye-off" : "i-mdi-eye"));
+const i18n = useOptionalI18n();
+const text = (key: keyof typeof en.input) => (i18n ? i18n.t(`input.${key}`) : en.input[key]);
 const passwordToggleLabel = computed(() =>
-  showPassword.value ? "Hide password" : "Show password",
+  showPassword.value ? text("hidePassword") : text("showPassword"),
 );
 
 async function startEditing() {
