@@ -220,7 +220,13 @@ export function mapSchemaPropertyToComponent(property: JSONSchemaProperty): Fiel
   }
 
   if (type === "string" && format === "password") {
-    return { component: "inkInput", props: { nativeType: "password" } };
+    return {
+      component: "inkInput",
+      props: {
+        nativeType: "password",
+        showPasswordToggle: true,
+      },
+    };
   }
 
   // String with date/time format -> Picker

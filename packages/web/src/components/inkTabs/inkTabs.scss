@@ -1,6 +1,7 @@
 .ink-tabs {
   display: flex;
   gap: sys-var(space, md);
+  padding-inline: sys-var(space, sm);
   border-bottom: 1px solid sys-var(color, border, subtle);
 
   &__tab {

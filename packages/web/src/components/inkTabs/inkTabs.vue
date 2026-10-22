@@ -1,8 +1,19 @@
 <script setup lang="ts">
+import { useId } from "vue";
 import { inkTabsEmits, inkTabsProps } from "./inkTabs";
 
 const props = defineProps(inkTabsProps);
 const emit = defineEmits(inkTabsEmits);
+
+// Generate unique IDs for tabs
+const baseId = useId();
+function getTabId(value: string): string {
+  return `${baseId}-tab-${value}`;
+}
+function getPanelId(value: string): string {
+  return `${baseId}-panel-${value}`;
+}
+
 function onKeydown(event: KeyboardEvent, index: number) {
   const count = props.tabs.length;
   if (!count) return;
@@ -24,6 +35,12 @@ function onKeydown(event: KeyboardEvent, index: number) {
   tabs?.[next]?.focus();
   tabs?.[next]?.click();
 }
+
+// Expose methods for parent components to associate tabpanels
+defineExpose({
+  getTabId,
+  getPanelId,
+});
 </script>
 
 <template>
@@ -32,10 +49,12 @@ function onKeydown(event: KeyboardEvent, index: number) {
       :is="tab.to !== undefined && linkComponent ? linkComponent : 'button'"
       v-for="(tab, index) in tabs"
       :key="tab.value"
+      :id="getTabId(tab.value)"
       class="ink-tabs__tab"
       :class="{ 'ink-tabs__tab--active': modelValue === tab.value }"
       role="tab"
       :aria-selected="modelValue === tab.value"
+      :aria-controls="getPanelId(tab.value)"
       :tabindex="modelValue === tab.value ? 0 : -1"
       :type="tab.to !== undefined && linkComponent ? undefined : 'button'"
       v-bind="tab.to !== undefined && linkComponent ? { to: tab.to } : {}"
