@@ -4,7 +4,7 @@ InKCre 的 Vue 3 Web UI 库，提供组件、设计 Token、样式工具和随�
 
 ## 安装
 
-包发布到 GitHub Packages 的 `@inkcre` scope，需要消费者具有读取权限。先按[仓库认证说明](https://github.com/InKCre/ui#github-packages-authentication)配置注册表和凭据，再在消费者项目中安装：
+包发布到 GitHub Packages 的 `@inkcre` scope，需要消费者具有读取权限。先按[仓库认证说明](https://github.com/InKCre/ui/blob/main/CONTRIBUTING.md#github-packages-authentication)配置注册表和凭据，再在消费者项目中安装：
 
 ```bash
 pnpm add @inkcre/ui-web vue@^3.5.25
