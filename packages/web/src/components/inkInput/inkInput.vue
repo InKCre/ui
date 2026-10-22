@@ -19,17 +19,15 @@ const showPassword = ref(false);
 // Password toggle logic
 const isPasswordField = computed(() => props.nativeType === "password");
 const shouldShowToggle = computed(
-  () => isPasswordField.value && props.showPasswordToggle && props.type !== "inline"
+  () => isPasswordField.value && props.showPasswordToggle && props.type !== "inline",
 );
 const effectiveType = computed(() => {
   if (isPasswordField.value && showPassword.value) return "text";
   return props.nativeType;
 });
-const passwordToggleIcon = computed(() =>
-  showPassword.value ? "i-mdi-eye-off" : "i-mdi-eye"
-);
+const passwordToggleIcon = computed(() => (showPassword.value ? "i-mdi-eye-off" : "i-mdi-eye"));
 const passwordToggleLabel = computed(() =>
-  showPassword.value ? "Hide password" : "Show password"
+  showPassword.value ? "Hide password" : "Show password",
 );
 
 async function startEditing() {
@@ -121,7 +119,9 @@ const [DefineInput, ReuseInput] = createReusableTemplate();
       >
         <slot>{{ modelValue || placeholder }}</slot>
       </button>
-      <span v-else-if="type !== 'inline' || !editable" :id="controlId" class="ink-input__value">{{ modelValue }}</span>
+      <span v-else-if="type !== 'inline' || !editable" :id="controlId" class="ink-input__value">{{
+        modelValue
+      }}</span>
     </div>
   </DefineInput>
   <InkField

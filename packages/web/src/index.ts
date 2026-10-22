@@ -33,7 +33,15 @@ import type { InkI18n } from "./i18n";
 
 export { INK_ROUTER_KEY, INK_I18N_KEY };
 
-export type { DropdownOption, JSONSchema, JSONSchemaProperty, InkTab, InkTabsExpose, InkRouter, InkI18n };
+export type {
+  DropdownOption,
+  JSONSchema,
+  JSONSchemaProperty,
+  InkTab,
+  InkTabsExpose,
+  InkRouter,
+  InkI18n,
+};
 export { canRenderJsonSchema };
 
 export type { JsonEditorValidation } from "./components/inkJsonEditor/jsonSchemaService";
