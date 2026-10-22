@@ -25,6 +25,18 @@
       </div>
 
       <div style="margin: 20px 0">
+        <h3>inkInput (Password with Toggle)</h3>
+        <InkInput
+          v-model="passwordValue"
+          label="Password"
+          native-type="password"
+          :show-password-toggle="true"
+          placeholder="Enter password..."
+        />
+        <p>Password length: {{ passwordValue.length }}</p>
+      </div>
+
+      <div style="margin: 20px 0">
         <h3>inkSwitch</h3>
         <InkSwitch v-model="switchValue" label="Enable Feature" />
         <p>Switch is: {{ switchValue ? "ON" : "OFF" }}</p>
@@ -47,6 +59,7 @@ import InkSwitch from "./components/inkSwitch/inkSwitch.vue";
 import InkLoading from "./components/inkLoading/inkLoading.vue";
 
 const inputValue = ref("");
+const passwordValue = ref("");
 const switchValue = ref(false);
 
 const handleClick = () => {

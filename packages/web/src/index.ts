@@ -25,7 +25,7 @@ import { INK_I18N_KEY } from "./i18n";
 import type { DropdownOption } from "./components/inkDropdown/inkDropdown";
 import type { JSONSchema, JSONSchemaProperty } from "./components/inkAutoForm/inkAutoForm";
 import { canRenderJsonSchema } from "./components/inkAutoForm/inkAutoForm";
-import type { InkTab } from "./components/inkTabs/inkTabs";
+import type { InkTab, InkTabsExpose } from "./components/inkTabs/inkTabs";
 
 // others
 import type { InkRouter } from "./router";
@@ -33,7 +33,7 @@ import type { InkI18n } from "./i18n";
 
 export { INK_ROUTER_KEY, INK_I18N_KEY };
 
-export type { DropdownOption, JSONSchema, JSONSchemaProperty, InkTab, InkRouter, InkI18n };
+export type { DropdownOption, JSONSchema, JSONSchemaProperty, InkTab, InkTabsExpose, InkRouter, InkI18n };
 export { canRenderJsonSchema };
 
 export type { JsonEditorValidation } from "./components/inkJsonEditor/jsonSchemaService";

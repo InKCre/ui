@@ -30,6 +30,17 @@
     }
   }
 
+  &__password-toggle {
+    flex-shrink: 0;
+    margin-inline-start: sys-var(space, xs);
+    padding: sys-var(space, xs);
+    min-inline-size: auto;
+  }
+
+  &--with-password-toggle {
+    padding-inline-end: sys-var(space, xs);
+  }
+
   &--inline:not(&--inline-editing) {
     border: none;
     padding: 0;
