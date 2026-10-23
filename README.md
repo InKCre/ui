@@ -16,6 +16,10 @@ The InKCre design system and the `@inkcre/ui-web` web renderer — design tokens
 
 ### Use the package
 
+The current GitHub Packages path requires package read access and npm authentication. A public
+Release-tarball path is being prepared; see the [delivery and cutover contract](CONTRIBUTING.md#public-package-delivery)
+before selecting an installation path.
+
 ```bash
 pnpm add @inkcre/ui-web
 ```
