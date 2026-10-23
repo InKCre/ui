@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import InkImage from "../../src/components/inkImage/inkImage.vue";
 import InkButton from "../../src/components/inkButton/inkButton.vue";
-import imageFixture from "../../src/logo.svg";
+import imageFixture from "../../../../assets/logo/svg/original-transparent/inkcre-original-transparent-256.svg";
 import detailFixture from "./assets/image-detail.svg";
 import tallFixture from "./assets/image-tall.svg";
 

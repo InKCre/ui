@@ -22,6 +22,8 @@
 
 `src/public-components.ts`、`src/components.d.ts`、`src/version.ts`、Token 输出和 `skills/ui-web/` 是生成物。修改源头后，从仓库根执行 `pnpm generate`；不要手改生成物。
 
+Logo 源由仓库根 `assets/logo/` 持有；`assets/` 是包构建时生成的完整交付副本，不手改。消费者从 `@inkcre/ui-web/logo/*` 取静态资源，维护流程见根级贡献指南。
+
 ## 开发与验证
 
 在仓库根安装依赖并运行命令。组件预览使用 `pnpm story:dev`；类型检查使用 `pnpm type-check`；完整基线使用 `pnpm check`。本包不设自动化单元／组件套件，不为每个组件创建测试文件。

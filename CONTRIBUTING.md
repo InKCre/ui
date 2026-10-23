@@ -56,6 +56,14 @@ Check selection follows the [organization verification policy](https://github.co
 
 组件用途、交互和示例变化的文档责任见[Agent 文档生成说明](scripts/build-agent-skills.md#内容责任)。作者核对受影响的选型与限制，审阅者通过相关 Story 或实际消费者动作确认；结构、类型和构建检查只承担各自能观察到的事实。
 
+## Logo 资产维护
+
+`assets/logo/` 拥有跨平台 Logo 资产，配套的日期版 ZIP 是无需运行时依赖的下载件。当前批次按用户提供的 `InKCre-logo-pack-20261021.zip` 原样纳入，包括矢量、PNG、母版、原始来源、清单、历史 QA 和重建脚本。`PROVENANCE.json` 中的其他仓库路径只记录来源；今后的维护以 UI 仓库为准。
+
+正常包构建只校验并复制到 `packages/web/assets/`，不重绘资产，也不要求安装 Inkscape 或 Pillow。后者仅用于显式重建，依赖及步骤见资产包说明。维护者更新源文件后，应复核浅深色与逻辑尺寸、重建清单，并交付匹配的新日期版 ZIP；已发布的日期版下载件不覆盖。同步更新下载链接、包说明及 Changeset。包内 `QA-report.json` 是该批次的历史报告，不能替代本次验证。
+
+`check:package` 核对源目录、ZIP 与实际安装产物的文件集合和字节，并通过临时 Vite 消费者验证 SVG／PNG 子路径。此检查需要 `unzip`（macOS 和现有 Ubuntu CI 已提供）；不会运行资产重建脚本。
+
 ## Token pipeline
 
 `tokens/inkcre.tokens.json` is the Token specification source. Figma proposes value

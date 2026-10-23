@@ -16,6 +16,7 @@ Design tokens are the single source for names, types, values, and references. Fi
 
 - Design stance, visual language, composition, and rationale: `DESIGN.md` and `docs/design/`
 - Design-token source: `tokens/inkcre.tokens.json` (see `tokens/tokens.md` for format and maintenance)
+- Brand assets: `assets/logo/`; the matching dated ZIP is the standalone delivery. Other repositories recorded in its provenance are historical sources, not future asset owners.
 - Public package API: `packages/web/` exports, component manifest, TypeScript sources, generated declarations, styles
 - Component usage evidence: `packages/web/stories/`
 - UI consumer Agent guidance: `packages/web/skill.seed.json` and the generated `packages/web/skills/ui-web/`

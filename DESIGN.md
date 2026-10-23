@@ -10,6 +10,7 @@ InKCre 的界面应让内容的关系和可执行的操作容易理解，让阅�
 | 选择文字、颜色、形状和层次，或审视整体视觉是否协调 | [视觉语言](docs/design/visual-language.md) |
 | 把内容和操作组织成页面、列表、表单或浮层           | [页面组合](docs/design/composition.md)     |
 | 比较方案、解释取舍，或用已有例子校准判断           | [判断依据](docs/design/reference.md)       |
+| 选择 Logo 配色、逻辑尺寸和高 DPI 资产              | [Logo Pack](assets/logo/README.zh-CN.md)   |
 
 设计立场说明理由，视觉语言说明表达，页面组合说明关系如何落到场景，判断依据说明能从实例得出什么结论。它们共享设计方向，各自只拥有相应的知识；一个技术问题不要求加载整套正文。
 

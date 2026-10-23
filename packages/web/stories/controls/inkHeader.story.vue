@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import InkHeader from "../../src/components/inkHeader/inkHeader.vue";
-import logoSrc from "../../src/logo.svg";
+import logoSrc from "../../../../assets/logo/svg/original-transparent/inkcre-original-transparent-32.svg";
 
 const menuClicks = ref(0);
 </script>

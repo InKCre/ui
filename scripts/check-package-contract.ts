@@ -12,8 +12,9 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import * as sass from "sass";
+import { verifyLogoPack } from "./lib/logo-pack.js";
 import {
   readComponentManifest,
   readPackageManifest,
@@ -224,6 +225,42 @@ try {
     { cwd: consumerRoot },
   );
   const packedRoot = realpathSync(resolve(consumerModules, targetPackageName));
+  const logoSource = resolve(repositoryRoot, "assets/logo");
+  const logoInventory = verifyLogoPack(logoSource);
+  const packedLogo = resolve(packedRoot, "assets/logo");
+  assert.deepEqual(verifyLogoPack(packedLogo), logoInventory);
+  for (const file of logoInventory.files) {
+    assert.ok(
+      readFileSync(resolve(packedLogo, file)).equals(readFileSync(resolve(logoSource, file))),
+      `Packed logo differs: ${file}`,
+    );
+  }
+  const archive = resolve(repositoryRoot, "assets", logoInventory.archiveName);
+  assert.ok(
+    readFileSync(resolve(packedRoot, "assets", logoInventory.archiveName)).equals(
+      readFileSync(archive),
+    ),
+    "Packed logo ZIP differs from the standalone delivery",
+  );
+  const prefix = `${logoInventory.archiveName.slice(0, -4)}/`;
+  const archiveEntries = run("unzip", ["-Z1", archive], { capture: true })
+    .trim()
+    .split("\n")
+    .filter((name) => !name.endsWith("/"));
+  assert.deepEqual(
+    [...archiveEntries].sort(),
+    logoInventory.files.map((file) => prefix + file).sort(),
+    "Standalone logo ZIP inventory differs from the source",
+  );
+  const archivedBytes = execFileSync("unzip", ["-p", archive], { maxBuffer: 16 * 1024 * 1024 });
+  assert.ok(
+    archivedBytes.equals(
+      Buffer.concat(
+        archiveEntries.map((name) => readFileSync(resolve(logoSource, name.slice(prefix.length)))),
+      ),
+    ),
+    "Standalone logo ZIP bytes differ from the source",
+  );
   const packedManifest = JSON.parse(
     readFileSync(resolve(packedRoot, "package.json"), "utf8"),
   ) as PublishedPackageManifest;
@@ -400,6 +437,8 @@ try {
     `<script setup lang="ts">
 import { InkButton, InkTextarea, InkDialog, InkImage } from "${targetPackageName}";
 import type { DialogPosition, InkImageErrorPayload } from "./DocumentedTypes";
+import logoSvg from "${targetPackageName}/logo/svg/original-transparent/inkcre-original-transparent-32.svg?url";
+import logoPng from "${targetPackageName}/logo/png/2x/reverse-transparent/inkcre-reverse-transparent-32px@2x.png?url";
 import SettingsForm from "./SettingsForm.vue";
 import HostIntegration from "./HostIntegration.vue";
 import JsonConfiguration from "./JsonConfiguration.vue";
@@ -409,7 +448,7 @@ type Assert<T extends true> = T;
 type PositionMatches = Assert<Equal<DialogPosition, NonNullable<InstanceType<typeof InkDialog>["$props"]["position"]>>>;
 type ImageErrorMatches = Assert<Equal<InkImageErrorPayload, Parameters<NonNullable<InstanceType<typeof InkImage>["$props"]["onError"]>>[0]>>;
 </script>
-<template><InkButton /><InkTextarea mono value="code" /><SettingsForm :save="save" />
+<template><img :src="logoSvg" width="32" height="32" alt="InKCre" /><img :src="logoPng" width="32" height="32" alt="InKCre" /><InkButton /><InkTextarea mono value="code" /><SettingsForm :save="save" />
 <HostIntegration current-path="/settings" current-name="Settings" locale="en" :translate="(key) => key" />
 <JsonConfiguration :save="save" /></template>`,
   );
@@ -422,7 +461,7 @@ type ImageErrorMatches = Assert<Equal<InkImageErrorPayload, Parameters<NonNullab
         module: "ESNext",
         moduleResolution: "Bundler",
         skipLibCheck: false,
-        types: [],
+        types: ["vite/client"],
       },
       include: ["*.vue"],
     }),
@@ -438,9 +477,21 @@ type ImageErrorMatches = Assert<Equal<InkImageErrorPayload, Parameters<NonNullab
   );
   writeFileSync(
     resolve(consumerRoot, "vite.config.ts"),
-    'import {defineConfig} from "vite"; import vue from "@vitejs/plugin-vue"; export default defineConfig({plugins:[vue()]});',
+    'import {defineConfig} from "vite"; import vue from "@vitejs/plugin-vue"; export default defineConfig({plugins:[vue()], build:{assetsInlineLimit:0}});',
   );
   run("pnpm", ["exec", "vite", "build"], { cwd: consumerRoot });
+  const emittedAssets = listFiles(resolve(consumerRoot, "dist/assets")).map((file) =>
+    readFileSync(file),
+  );
+  for (const file of [
+    "svg/original-transparent/inkcre-original-transparent-32.svg",
+    "png/2x/reverse-transparent/inkcre-reverse-transparent-32px@2x.png",
+  ]) {
+    assert.ok(
+      emittedAssets.some((contents) => contents.equals(readFileSync(resolve(logoSource, file)))),
+      `Consumer build must emit the imported logo: ${file}`,
+    );
+  }
 
   const intentCli = resolve(consumerModules, "@tanstack/intent/dist/cli.mjs");
   const intentList = JSON.parse(
@@ -626,7 +677,7 @@ void presetInk;
         module: "ESNext",
         moduleResolution: "Bundler",
         skipLibCheck: false,
-        types: [targetPackageName],
+        types: [targetPackageName, "vite/client"],
       },
       include: ["index.ts", "env.d.ts", "*.vue"],
     }),
