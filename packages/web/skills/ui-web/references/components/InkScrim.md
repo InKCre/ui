@@ -49,7 +49,7 @@
 
 - `default`: `{ close: () => void; }`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Open Scrim`, `Closed Scrim`, `Dismissible (closeOnScrim: true)`, `Non-Dismissible (closeOnScrim: false)`
 
 

@@ -52,10 +52,12 @@
 
 - None.
 
-- Public types: `JSONSchema`, `JSONSchemaProperty`, `FormValidation`
+- Types exported from the package root: `JSONSchema`, `JSONSchemaProperty`, `FormValidation`
 - Story variants: `Text Fields with Validation`, `Textarea (Long Text)`, `Boolean Switches`, `Dropdown (Enum Values)`, `Date and Time Pickers`, `Default Values from Schema`, `Validation Errors`, `Invalid Schema Handling`, `Complex Form (Mixed Field Types)`, `Inline Layout`, `Row Layout`, `Existing values, numeric and date boundaries`, `Nested credentials, arrays and nullable values`
 
-### Public type definitions
+### API type definitions
+
+以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。
 
 ```ts
 export interface JSONSchema {

@@ -64,7 +64,7 @@
 
 - `default`: `{ closePopup: () => void; modelValue: ([{ readonly type: PropType<T>; }] extends [Prop<infer V, infer D>] ? unknown extends V ? keyof V extends never ? IfAny<V, V, D> : V : V : { readonly type: PropType<T>; }) | undefined; }`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Date Picker`, `Required Field`
 
 

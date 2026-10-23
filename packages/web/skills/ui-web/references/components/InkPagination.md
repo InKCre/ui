@@ -48,7 +48,7 @@
 
 - None.
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Few Pages (1-5)`, `Many Pages (1-20)`, `First Page`, `Last Page`, `Single Page Only`, `Text Type - Few Pages`, `Text Type - Many Pages`
 
 

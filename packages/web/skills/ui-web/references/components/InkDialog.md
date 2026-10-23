@@ -16,7 +16,7 @@
 ## Avoid When
 
 - Only a low-level positioned surface is needed; use InkPopup.
-- A compact confirmation popup attached to one trigger is enough; use InkDoubleCheck.
+- A simple action needs a centered confirmation with title, message, and two choices; use InkDoubleCheck.
 
 ## Compose With
 
@@ -60,9 +60,22 @@
 - `default`: `{ cancel: () => void; confirm: () => void; isLoading: boolean; }`
 - `footer`: `{ cancel: () => void; confirm: () => void; isLoading: boolean; }`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Basic`, `Custom footer failure and retry`, `Async`, `Without Cancel`
 
+### API type definitions
+
+以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。
+
+```ts
+export type DialogPosition =
+  | "center"
+  | "left"
+  | "right"
+  | "bottom"
+  | "top"
+  | [number, number, number, number];
+```
 
 ## API Caveats
 

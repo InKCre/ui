@@ -70,12 +70,11 @@ app.use(InKCreUiWeb);
 - `references/composition-recipes.md`: reviewed multi-component workflows.
 - `references/integration.md`: installation, router, and i18n boundaries.
 - `references/styling-and-themes.md`: CSS, Sass, tokens, and themes.
-- `references/common-mistakes.md`: package-specific failure modes.
+- `references/common-mistakes.md`: cross-component mistakes; component-specific cautions stay in each component reference.
 - `references/components/Ink*.md`: generated public API facts plus reviewed guidance.
 
 ## Avoid
 
 - Do not invent props or events from conventions used by another UI library.
 - Do not treat low-level InkPopup or InkScrim as a replacement for InkDialog when the standard dialog workflow fits.
-- Do not expose repository paths, generated implementation files, or internal prop helpers to consumers.
-- Do not edit this generated skill tree directly; update skill.seed.json or public component facts and regenerate it.
+- Do not depend on repository paths, generated implementation files, or internal prop helpers.

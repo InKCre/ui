@@ -48,9 +48,26 @@
 
 - None.
 
-- Public types: None
+- Types exported from the package root: `InkTab`, `InkTabsExpose`
 - Story variants: `Controlled tabs`
 
+### API type definitions
+
+以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。
+
+```ts
+export interface InkTab {
+  value: string;
+  label: string;
+  /** Route target understood by the consumer-provided link component. */
+  to?: unknown;
+}
+
+export interface InkTabsExpose {
+  getTabId: (value: string) => string;
+  getPanelId: (value: string) => string;
+}
+```
 
 ## API Caveats
 

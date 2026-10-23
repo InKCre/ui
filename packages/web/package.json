@@ -21,7 +21,8 @@
     "skills",
     "MIGRATION.md",
     "DESIGN.md",
-    "docs/design/"
+    "docs/design/",
+    "assets/"
   ],
   "type": "module",
   "sideEffects": [
@@ -31,6 +32,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
+    "./logo/*": "./assets/logo/*",
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",

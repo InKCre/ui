@@ -47,7 +47,7 @@
 
 - `default`: `{ describedby: string | undefined; }`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Top`, `Bottom`, `Left`, `Right`, `Long Text`
 
 

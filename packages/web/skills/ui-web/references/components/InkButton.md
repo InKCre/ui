@@ -56,7 +56,7 @@
 - `default`: `{}`
 - `suffix-icon`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Subtle`, `Primary`, `Danger`, `Medium (Default)`, `Small`, `Loading State - Subtle`, `Loading State - Primary`, `Loading State - Danger`, `Very Long Text`, `Short Text`, `Icon Prefix`, `Icon Suffix`, `Icon Only (Square)`, `Explicit form submission`
 
 

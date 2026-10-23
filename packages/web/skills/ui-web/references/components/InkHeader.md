@@ -49,7 +49,7 @@
 
 - `right-icon`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Basic`, `With Logo`, `Without Logo`, `Auto Page Title`
 
 

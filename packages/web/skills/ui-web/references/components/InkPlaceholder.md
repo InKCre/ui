@@ -52,7 +52,7 @@
 - `description`: `{}`
 - `actions`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Empty State - Default`, `Empty State - Custom Text`, `Empty State - Custom Illustration`, `Error State - Default`, `Error State - Custom Text`, `Empty State - With Actions`, `Error State - With Retry Action`, `Custom Illustration Slot`, `Custom Title Slot`, `Fully Custom Content`, `Long Description`
 
 

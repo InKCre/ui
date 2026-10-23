@@ -92,7 +92,7 @@ async function submit() {
 
 - Do not normalize every control to the same model prop name; use each component's actual API.
 - Do not wrap controls in duplicate InkField labels when they already consume InkForm context.
-- 示例的文本和颜色工具类需要 presetInk；应用入口加载样式。未使用 Uno 时可用同名 Sass 角色和系统变量。
+- 示例使用普通 CSS 和系统变量；应用入口加载 @inkcre/ui-web/styles 即可，无需 UnoCSS。
 
 ## Schema Configuration
 
