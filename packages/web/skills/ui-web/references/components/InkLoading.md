@@ -49,7 +49,7 @@
 
 - None.
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Content waiting`, `Inline spinner`, `Sizes and density`
 
 

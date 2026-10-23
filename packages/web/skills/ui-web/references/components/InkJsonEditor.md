@@ -61,10 +61,12 @@
 
 - None.
 
-- Public types: `JsonEditorValidation`
+- Types exported from the package root: `JsonEditorValidation`
 - Story variants: `Basic`, `JSON Schema`, `In popup`, `Validated save and isolated editors`
 
-### Public type definitions
+### API type definitions
+
+以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。
 
 ```ts
 export interface JsonEditorValidation {

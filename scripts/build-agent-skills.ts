@@ -9,7 +9,12 @@ import {
 } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { createChecker, type ComponentMeta } from "vue-component-meta";
-import { propDefault, propType, typeDeclarations } from "./lib/component-api.js";
+import {
+  propDefault,
+  propType,
+  typeDeclarations,
+  referencedTypeDeclarations,
+} from "./lib/component-api.js";
 import {
   repositoryRoot,
   readComponentManifest,
@@ -191,15 +196,24 @@ function buildModel(): SkillModel {
           ]),
       );
 
+      for (const name of componentSeed.publicTypes ?? []) {
+        if (!definitions.has(name))
+          throw new Error(`Missing public type ${component.name}.${name}`);
+      }
+
       return {
         ...component,
         ...componentSeed,
         api,
-        typeDefinitions: (componentSeed.publicTypes ?? []).map((name) => {
-          const definition = definitions.get(name);
-          if (!definition) throw new Error(`Missing public type ${component.name}.${name}`);
-          return definition;
-        }),
+        typeDefinitions: referencedTypeDeclarations(
+          [
+            ...(componentSeed.publicTypes ?? []),
+            ...api.props.filter((prop) => !prop.global).map(propType),
+            ...api.events.map((event) => event.type),
+            ...api.slots.map((slot) => slot.type),
+          ],
+          definitions,
+        ),
         storyVariants: extractStoryVariants(storySource),
         publicTypes: componentSeed.publicTypes ?? [],
         apiCaveats: componentSeed.apiCaveats ?? [],
@@ -294,7 +308,7 @@ ${bullets(model.skill.rules)}
 - \`references/composition-recipes.md\`: reviewed multi-component workflows.
 - \`references/integration.md\`: installation, router, and i18n boundaries.
 - \`references/styling-and-themes.md\`: CSS, Sass, tokens, and themes.
-- \`references/common-mistakes.md\`: package-specific failure modes.
+- \`references/common-mistakes.md\`: cross-component mistakes; component-specific cautions stay in each component reference.
 - \`references/components/Ink*.md\`: generated public API facts plus reviewed guidance.
 
 ## Avoid
@@ -420,22 +434,13 @@ ${bullets(model.styling.tokenLayers)}
 }
 
 function renderCommonMistakes(model: SkillModel): string {
-  const componentMistakes = model.components
-    .filter((component) => component.commonMistakes.length > 0)
-    .map(
-      (component) => `## ${component.name}
-
-${bullets(component.commonMistakes)}`,
-    )
-    .join("\n\n");
-
   return `${GENERATED_HEADER}
 
 # Common Mistakes
 
 ${bullets(model.commonMistakes)}
 
-${componentMistakes}
+组件专属提醒见 [组件索引](component-map.md) 指向的对应参考；按任务读取即可。
 `;
 }
 
@@ -495,10 +500,10 @@ ${inlineCode(component.composeWith)}
 - Import: \`import { ${component.name} } from "${packageName}";\`
 
 ${renderApi(component.api)}
-- Public types: ${inlineCode(component.publicTypes)}
+- Types exported from the package root: ${inlineCode(component.publicTypes)}
 - Story variants: ${inlineCode(component.storyVariants)}
 
-${component.typeDefinitions.length ? "### Public type definitions\n\n```ts\n" + component.typeDefinitions.join("\n\n") + "\n```\n" : ""}
+${component.typeDefinitions.length ? "### API type definitions\n\n以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。\n\n```ts\n" + component.typeDefinitions.join("\n\n") + "\n```\n" : ""}
 ## API Caveats
 
 ${bullets(component.apiCaveats)}

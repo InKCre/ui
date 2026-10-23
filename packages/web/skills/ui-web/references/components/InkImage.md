@@ -55,9 +55,19 @@
 - `expanded-header`: `{}`
 - `expanded-footer`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Basic Usage`, `With Title`, `Custom Size (Style + Class)`, `Custom Thumbnail Slot`, `Eager Loading (lazy: false)`, `With Expanded Footer`, `With Custom Header`, `Large Image Detail`, `Tall Image With Long Caption`, `Controlled Preview And Source Change`, `Unavailable Image`
 
+### API type definitions
+
+以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。
+
+```ts
+export interface InkImageErrorPayload {
+  error: Event;
+  src: string;
+}
+```
 
 ## API Caveats
 

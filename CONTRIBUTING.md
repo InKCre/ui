@@ -44,6 +44,18 @@ For interaction or visual behavior changes, also review the affected Story or re
 consuming page — build and coverage checks do not prove those behaviors correct.
 Check selection follows the [organization verification policy](https://github.com/InKCre/.github/blob/main/TESTING.md).
 
+## 包版本与迁移说明
+
+需要消费者调整调用或特别复核的变化写入 `packages/web/MIGRATION.md` 的 `## 下一版本` 区，并为 Web 包添加 Changeset。正文中的小节使用三级标题；CHANGELOG 记录版本变化，MIGRATION 只说明升级动作和兼容边界，不重复完整变更列表。
+
+运行 `pnpm changeset:version` 推进版本。它先恢复未完成的迁移归档，再执行 Changesets，将待定正文归入新的正式版本，最后同步包元数据。`migration-base` 标记记录待定内容开始积累时的包版本，由命令维护，不手改；版本发生变化但没有迁移内容时也会更新标记。版本标题表示该版本包含这些变化，不表示 registry 已发布成功。
+
+归档通过一次文件替换同时更新正文与基准，已有历史不改写。Changesets 成功后若归档或元数据生成失败，修复报错后重跑同一命令；先完成恢复，再添加下一批 Changeset。Changesets 自身失败时可能留下部分版本文件，需要先检查其输出与工作树，不将部分结果直接发布。目标版本已存在迁移历史时，命令报错并保留原文，交由维护者核对。
+
+`pnpm check:release` 校验迁移结构并在临时工作区验证版本推进、失败恢复与重复执行；普通 PR 可以保留待定内容。`pnpm changeset:publish` 在发布前要求基准与包版本一致、待定区为空，不能用裸 `changeset publish` 绕过检查。当前归档入口只支持正式版本；引入预发布流程时需同步定义迁移归属和恢复规则。
+
+组件用途、交互和示例变化的文档责任见[Agent 文档生成说明](scripts/build-agent-skills.md#内容责任)。作者核对受影响的选型与限制，审阅者通过相关 Story 或实际消费者动作确认；结构、类型和构建检查只承担各自能观察到的事实。
+
 ## Token pipeline
 
 `tokens/inkcre.tokens.json` is the Token specification source. Figma proposes value

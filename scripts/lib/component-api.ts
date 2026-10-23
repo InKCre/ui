@@ -90,3 +90,33 @@ export function typeDeclarations(source: string, fileName: string): Map<string, 
     ),
   );
 }
+
+/** Follow component-local type names used by the consumer signature, without traversing dependencies. */
+export function referencedTypeDeclarations(
+  signatures: string[],
+  definitions: Map<string, string>,
+): string[] {
+  const selected = new Map<string, string>();
+  const pending = [...signatures];
+  for (let index = 0; index < pending.length; index++) {
+    const scanner = ts.createScanner(
+      ts.ScriptTarget.Latest,
+      true,
+      ts.LanguageVariant.Standard,
+      pending[index],
+    );
+    for (
+      let token = scanner.scan();
+      token !== ts.SyntaxKind.EndOfFileToken;
+      token = scanner.scan()
+    ) {
+      if (token !== ts.SyntaxKind.Identifier) continue;
+      const name = scanner.getTokenText();
+      const definition = definitions.get(name);
+      if (!definition || selected.has(name)) continue;
+      selected.set(name, definition);
+      pending.push(definition);
+    }
+  }
+  return [...selected.values()];
+}

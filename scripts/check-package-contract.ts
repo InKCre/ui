@@ -313,6 +313,16 @@ try {
       dialogReference.includes("isLoading: boolean"),
     "Scoped slot arguments must be available to consumers",
   );
+  const imageReference = readFileSync(
+    resolve(packedRoot, "skills/ui-web/references/components/InkImage.md"),
+    "utf8",
+  );
+  const documentedTypes = [dialogReference, imageReference].map((reference) => {
+    const definition = reference.match(/### API type definitions[\s\S]*?```ts\n([\s\S]*?)\n```/);
+    assert.ok(definition, "Consumer API types must be explained in the installed reference");
+    return definition[1];
+  });
+  writeFileSync(resolve(consumerRoot, "DocumentedTypes.ts"), documentedTypes.join("\n\n"));
   for (const file of [
     "README.md",
     "MIGRATION.md",
@@ -388,11 +398,16 @@ try {
   writeFileSync(
     resolve(consumerRoot, "App.vue"),
     `<script setup lang="ts">
-import { InkButton, InkTextarea } from "${targetPackageName}";
+import { InkButton, InkTextarea, InkDialog, InkImage } from "${targetPackageName}";
+import type { DialogPosition, InkImageErrorPayload } from "./DocumentedTypes";
 import SettingsForm from "./SettingsForm.vue";
 import HostIntegration from "./HostIntegration.vue";
 import JsonConfiguration from "./JsonConfiguration.vue";
 const save = async () => {};
+type Equal<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+type Assert<T extends true> = T;
+type PositionMatches = Assert<Equal<DialogPosition, NonNullable<InstanceType<typeof InkDialog>["$props"]["position"]>>>;
+type ImageErrorMatches = Assert<Equal<InkImageErrorPayload, Parameters<NonNullable<InstanceType<typeof InkImage>["$props"]["onError"]>>[0]>>;
 </script>
 <template><InkButton /><InkTextarea mono value="code" /><SettingsForm :save="save" />
 <HostIntegration current-path="/settings" current-name="Settings" locale="en" :translate="(key) => key" />
