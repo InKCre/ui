@@ -17,3 +17,8 @@ export const inkTabsProps = {
 export const inkTabsEmits = {
   "update:modelValue": (_value: string) => true,
 } as const;
+
+export interface InkTabsExpose {
+  getTabId: (value: string) => string;
+  getPanelId: (value: string) => string;
+}

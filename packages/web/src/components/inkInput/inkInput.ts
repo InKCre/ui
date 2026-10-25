@@ -1,4 +1,4 @@
-import { makeStringProp } from "../../utils/vue-props";
+import { makeStringProp, makeBooleanProp } from "../../utils/vue-props";
 import { formControlCommonProps } from "../inkForm/inkForm";
 
 // --- Types ---
@@ -11,6 +11,7 @@ export const inkInputProps = {
   nativeType: makeStringProp("text"),
   placeholder: makeStringProp(""),
   type: makeStringProp<InkInputType>("default"),
+  showPasswordToggle: makeBooleanProp(true),
 } as const;
 
 // --- Emits ---

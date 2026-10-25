@@ -49,6 +49,7 @@
 | `nativeType` | `undefined \| string` | 否 | `"text"` |
 | `placeholder` | `undefined \| string` | 否 | `""` |
 | `type` | `undefined \| "default" \| "inline"` | 否 | `"default"` |
+| `showPasswordToggle` | `undefined \| boolean` | 否 | `true` |
 
 ### Events
 
@@ -61,7 +62,7 @@
 - `default`: `{}`
 
 - Public types: None
-- Story variants: `Column Layout`, `Inline Layout`, `Optional`, `Required`, `Inline Editable`, `Inline confirmation and cancellation`
+- Story variants: `Column Layout`, `Inline Layout`, `Optional`, `Required`, `Inline Editable`, `Inline confirmation and cancellation`, `Password (Default)`, `Password with Toggle`
 
 
 ## API Caveats

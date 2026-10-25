@@ -36,6 +36,10 @@ export default {
     cancel: "取消",
     confirm: "确认",
   },
+  input: {
+    showPassword: "显示密码",
+    hidePassword: "隐藏密码",
+  },
   autoForm: {
     add: "添加",
     remove: "移除",

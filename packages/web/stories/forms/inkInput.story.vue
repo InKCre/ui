@@ -6,6 +6,8 @@ const basicValue = ref("");
 const requiredValue = ref("");
 const inlineName = ref("原名称");
 const savedName = ref("尚未保存");
+const passwordValue = ref("");
+const passwordWithToggleValue = ref("");
 </script>
 
 <template>
@@ -52,6 +54,31 @@ const savedName = ref("尚未保存");
     <Variant title="Inline confirmation and cancellation">
       <InkInput v-model="inlineName" type="inline" label="名称" @confirm="savedName = $event" />
       <p>Enter 保存，Escape 或失焦取消。持久化入口收到：{{ savedName }}</p>
+    </Variant>
+
+    <!-- [Feature] Password Input -->
+    <Variant title="Password (Default)">
+      <InkInput
+        v-model="passwordValue"
+        label="Password"
+        native-type="password"
+        placeholder="Enter your password"
+        layout="col"
+      />
+    </Variant>
+
+    <Variant title="Password with Toggle">
+      <InkInput
+        v-model="passwordWithToggleValue"
+        label="Password"
+        native-type="password"
+        :show-password-toggle="true"
+        placeholder="Enter your password"
+        layout="col"
+      />
+      <p style="margin-top: 8px; font-size: 0.875rem; color: #666">
+        Click the eye icon to toggle password visibility
+      </p>
     </Variant>
   </Story>
 </template>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref, nextTick } from "vue";
+import { ref, computed, nextTick } from "vue";
 import { createReusableTemplate } from "@vueuse/core";
 import { inkInputProps, inkInputEmits } from "./inkInput";
 import InkField from "../inkField/inkField.vue";
+import InkButton from "../inkButton/inkButton.vue";
 import { useFieldControl } from "../../composables/use-field-control";
+import { useOptionalI18n } from "../../i18n";
+import en from "../../locales/en";
 
 defineOptions({ inheritAttrs: false });
 const props = defineProps(inkInputProps);
@@ -13,6 +16,23 @@ const isInlineEditing = ref(false);
 const input = ref<HTMLInputElement>();
 const trigger = ref<HTMLButtonElement>();
 const draft = ref("");
+const showPassword = ref(false);
+
+// Password toggle logic
+const isPasswordField = computed(() => props.nativeType === "password");
+const shouldShowToggle = computed(
+  () => isPasswordField.value && props.showPasswordToggle && props.type !== "inline",
+);
+const effectiveType = computed(() => {
+  if (isPasswordField.value && showPassword.value) return "text";
+  return props.nativeType;
+});
+const passwordToggleIcon = computed(() => (showPassword.value ? "i-mdi-eye-off" : "i-mdi-eye"));
+const i18n = useOptionalI18n();
+const text = (key: keyof typeof en.input) => (i18n ? i18n.t(`input.${key}`) : en.input[key]);
+const passwordToggleLabel = computed(() =>
+  showPassword.value ? text("hidePassword") : text("showPassword"),
+);
 
 async function startEditing() {
   if (!props.editable || props.disabled) return;
@@ -45,6 +65,9 @@ function onBlur() {
   isInlineEditing.value = false;
   emit("cancel");
 }
+function togglePasswordVisibility() {
+  showPassword.value = !showPassword.value;
+}
 const [DefineInput, ReuseInput] = createReusableTemplate();
 </script>
 
@@ -55,6 +78,7 @@ const [DefineInput, ReuseInput] = createReusableTemplate();
       :class="{
         'ink-input--inline': type === 'inline',
         'ink-input--inline-editing': isInlineEditing,
+        'ink-input--with-password-toggle': shouldShowToggle,
       }"
     >
       <input
@@ -63,7 +87,7 @@ const [DefineInput, ReuseInput] = createReusableTemplate();
         :id="controlId"
         ref="input"
         class="ink-input__input"
-        :type="nativeType"
+        :type="effectiveType"
         :name="name"
         :disabled="disabled"
         :required="required"
@@ -75,8 +99,19 @@ const [DefineInput, ReuseInput] = createReusableTemplate();
         @keydown="type === 'inline' && finishEditing($event)"
         @blur="onBlur"
       />
+      <InkButton
+        v-if="shouldShowToggle"
+        native-type="button"
+        theme="subtle"
+        size="sm"
+        :icon="passwordToggleIcon"
+        :aria-label="passwordToggleLabel"
+        :aria-pressed="showPassword"
+        class="ink-input__password-toggle"
+        @click="togglePasswordVisibility"
+      />
       <button
-        v-else-if="type === 'inline' && editable"
+        v-else-if="type === 'inline' && editable && !isInlineEditing"
         v-bind="$attrs"
         :id="controlId"
         ref="trigger"
@@ -88,7 +123,9 @@ const [DefineInput, ReuseInput] = createReusableTemplate();
       >
         <slot>{{ modelValue || placeholder }}</slot>
       </button>
-      <span v-else :id="controlId" class="ink-input__value">{{ modelValue }}</span>
+      <span v-else-if="type !== 'inline' || !editable" :id="controlId" class="ink-input__value">{{
+        modelValue
+      }}</span>
     </div>
   </DefineInput>
   <InkField
