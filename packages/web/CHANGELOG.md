@@ -1,5 +1,11 @@
 # @inkcre/ui-web
 
+## 2.6.1
+
+### Patch Changes
+
+- 8c078d7: 修正安装指南中的 GitHub Packages 认证链接。
+
 ## 2.6.0
 
 ### Minor Changes

@@ -4,7 +4,7 @@
 
 ## 下一版本
 
-<!-- migration-base: 2.6.0 -->
+<!-- migration-base: 2.6.1 -->
 
 ## 2.6.0
 
