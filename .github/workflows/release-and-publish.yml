@@ -46,8 +46,8 @@ jobs:
         with:
           version: pnpm changeset:version
           publish: pnpm changeset:publish
-          commit: "chore(release): 更新包版本"
-          title: "chore(release): 更新包版本"
+          commit: "chore(release): prepare UI package release"
+          title: "chore(release): prepare UI package release"
           # The action reads this input (not the GITHUB_TOKEN env) for PR creation.
           github-token: ${{ steps.release-app-token.outputs.token }}
         env:
