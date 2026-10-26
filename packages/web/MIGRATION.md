@@ -4,7 +4,9 @@
 
 ## 下一版本
 
-<!-- migration-base: 2.5.0 -->
+<!-- migration-base: 2.6.0 -->
+
+## 2.6.0
 
 ### Logo 资产
 
