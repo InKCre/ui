@@ -21,12 +21,13 @@ Web 消费者从 `@inkcre/ui-web/logo/*` 导入，Swift 消费者依赖本仓库
 
 ### Use the package
 
-The current GitHub Packages path requires package read access and npm authentication. A public
-Release-tarball path is being prepared; see the [delivery and cutover contract](CONTRIBUTING.md#public-package-delivery)
-before selecting an installation path.
+Original packages are available through public Release assets without a token. Configure the
+exact-version override in the [public delivery guide](CONTRIBUTING.md#public-package-delivery)
+before adding the package, and keep the dependency version as semver for Module Federation.
+The GitHub Packages registry path still requires package access and npm authentication.
 
 ```bash
-pnpm add @inkcre/ui-web
+pnpm add --save-exact @inkcre/ui-web@2.6.0
 ```
 
 See [`packages/web/README.md`](packages/web/README.md) for installation, public entries, and the Skills shipped with the package. Browse the live component catalog at [design.inkcre.dev](https://design.inkcre.dev).

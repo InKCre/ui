@@ -153,13 +153,14 @@ published and anonymously verified, a pnpm workspace can route the exact version
 
 ```yaml
 overrides:
-  '@inkcre/ui-web@2.3.0': https://github.com/InKCre/ui/releases/download/%40inkcre%2Fui-web%402.3.0/inkcre-ui-web-2.3.0.tgz
+  "@inkcre/ui-web@2.6.0": https://github.com/InKCre/ui/releases/download/%40inkcre%2Fui-web%402.6.0/inkcre-ui-web-2.6.0.tgz
 ```
 
 Regenerate and review the lockfile, then verify a fresh `pnpm install --frozen-lockfile` with an empty
 store and no GitHub token, plus consumer builds. Never activate an override before its attachment
-exists. The initial 2.3.0 attachment and `impl-ts` consumer cutover are pending release approval;
-the current consumer lockfile still requires GitHub Packages access.
+exists. Original 2.3.0, 2.5.0, and 2.6.0 tarballs are public. The `impl-ts` consumer cutover is
+[merged and verified](https://github.com/InKCre/impl-ts/pull/171), including cold installs, consumer
+builds, and real fork CI. Future UI upgrades must adopt their own verified exact-version override.
 
 ## GitHub Packages authentication
 
