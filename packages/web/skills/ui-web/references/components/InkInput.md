@@ -61,7 +61,7 @@
 
 - `default`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Column Layout`, `Inline Layout`, `Optional`, `Required`, `Inline Editable`, `Inline confirmation and cancellation`, `Password (Default)`, `Password with Toggle`
 
 

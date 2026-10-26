@@ -13,6 +13,7 @@
     "check:generated": "tsx scripts/check-generated.ts",
     "check:stories": "tsx scripts/check-story-coverage.ts",
     "check:package": "tsx scripts/check-package-contract.ts",
+    "check:release": "tsx scripts/version-package.ts --check && tsx --test scripts/test-version-package.ts",
     "check:token-workflow": "tsx scripts/prepare-token-update.ts fixture",
     "tokens:update": "tsx scripts/prepare-token-update.ts apply",
     "type-check": "pnpm type-check:root && pnpm --filter @inkcre/ui-web type-check",
@@ -23,13 +24,15 @@
     "format": "oxfmt .oxfmtrc.json package.json pnpm-workspace.yaml tsconfig.json scripts .github/workflows/*.yml README.md DESIGN.md docs/design && pnpm --filter @inkcre/ui-web format",
     "format:check": "oxfmt --check .oxfmtrc.json package.json pnpm-workspace.yaml tsconfig.json scripts .github/workflows/*.yml README.md DESIGN.md docs/design && pnpm --filter @inkcre/ui-web format:check",
     "lint": "oxlint --deny-warnings scripts && pnpm --filter @inkcre/ui-web lint",
-    "check": "pnpm format:check && pnpm lint && pnpm check:generated && pnpm --filter @inkcre/ui-web skill:validate && pnpm check:stories && pnpm check:token-workflow && pnpm type-check:root && pnpm build && pnpm check:package && pnpm story",
+    "check": "pnpm format:check && pnpm lint && pnpm check:generated && pnpm --filter @inkcre/ui-web skill:validate && pnpm check:stories && pnpm check:token-workflow && pnpm check:release && pnpm check:logo && pnpm type-check:root && pnpm build && pnpm check:package && pnpm story",
     "changeset": "changeset",
     "changeset:add": "changeset add",
-    "changeset:version": "changeset version && pnpm build-package-metadata",
-    "changeset:publish": "changeset publish",
+    "changeset:version": "tsx scripts/version-package.ts",
+    "changeset:publish": "tsx scripts/version-package.ts --check-publish && changeset publish",
     "changeset:status": "changeset status",
-    "release": "pnpm changeset:version && changeset publish"
+    "release": "pnpm changeset:version && pnpm changeset:publish",
+    "logo:pack": "python3 scripts/logo-release.py pack",
+    "check:logo": "python3 scripts/test-logo.py && tsx scripts/check-logo.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

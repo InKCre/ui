@@ -46,7 +46,7 @@
 
 - `default`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `完整设置表单与保存失败`, `宿主路由语言和主题适配`, `JSON 草稿与验证后保存`, `Column Layout`, `Inline Layout`, `Reactive layout`, `长标签、错误与窄容器`
 
 

@@ -64,10 +64,12 @@
 
 - None.
 
-- Public types: `DropdownOption`
+- Types exported from the package root: `DropdownOption`
 - Story variants: `Basic`, `With Refresh`, `Async Options`, `With Descriptions`, `Preselected Async Value`, `With Stepping`, `Stepping & Refresh`, `Keyboard Navigation`
 
-### Public type definitions
+### API type definitions
+
+以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。
 
 ```ts
 export interface DropdownOption {
