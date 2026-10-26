@@ -124,6 +124,43 @@ registry artifact. The consumer's
 [`docs/40-deployment/development-runtime.md`](https://github.com/InKCre/impl-ts/blob/main/docs/40-deployment/development-runtime.md#joint-development-lanes)
 owns the full startup, remotes, cleanup, troubleshooting, and release-fidelity contract.
 
+## Public package delivery
+
+`@inkcre/ui-web` has no confidentiality requirement. GitHub Packages remains the publishing
+registry; anonymous consumers use the original package tarball attached to its versioned GitHub
+Release. Changing GitHub Package visibility alone does not remove npm authentication.
+
+The release workflow publishes with Changesets, then runs `pnpm release:public <version> --publish`.
+The command reads the already-published registry tarball, checks its integrity and package identity,
+and attaches those exact bytes to the existing `@inkcre/ui-web@<version>` Release. It does not build,
+version, or publish an npm package. An identical attachment is a successful no-op; a conflicting
+attachment fails without overwriting it. Anonymous download and byte comparison complete the check.
+
+Maintainers can prepare or recover a single version independently of npm publication:
+
+```bash
+pnpm release:public 2.3.0           # Read-only checks; does not upload
+pnpm release:public 2.3.0 --publish # Explicit public upload or verification
+```
+
+This requires GitHub CLI authentication for release access and npm authentication for package reads;
+upload additionally requires repository contents write access. No token is embedded in the download
+URL. Run `pnpm check:public-package` for the append-only/retry regression check.
+
+Consumers retain semver dependencies where runtime sharing reads those ranges. After the asset is
+published and anonymously verified, a pnpm workspace can route the exact version using a root
+`pnpm-workspace.yaml` override:
+
+```yaml
+overrides:
+  '@inkcre/ui-web@2.3.0': https://github.com/InKCre/ui/releases/download/%40inkcre%2Fui-web%402.3.0/inkcre-ui-web-2.3.0.tgz
+```
+
+Regenerate and review the lockfile, then verify a fresh `pnpm install --frozen-lockfile` with an empty
+store and no GitHub token, plus consumer builds. Never activate an override before its attachment
+exists. The initial 2.3.0 attachment and `impl-ts` consumer cutover are pending release approval;
+the current consumer lockfile still requires GitHub Packages access.
+
 ## GitHub Packages authentication
 
 The committed `.npmrc` routes only the `@inkcre` scope to GitHub Packages. It never
@@ -131,7 +168,8 @@ stores or expands a credential. Local credentials belong to the trusted user
 configuration.
 
 For interactive one-time setup, create a classic GitHub personal access token with
-`read:packages`, then let npm write it to your user-level configuration:
+`read:packages` and confirm read access to the package, then let npm write it to your user-level
+configuration. A token scope does not grant the package ACL:
 
 ```bash
 npm login --scope=@inkcre --auth-type=legacy --registry=https://npm.pkg.github.com

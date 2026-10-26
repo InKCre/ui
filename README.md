@@ -21,6 +21,10 @@ Web 消费者从 `@inkcre/ui-web/logo/*` 导入，Swift 消费者依赖本仓库
 
 ### Use the package
 
+The current GitHub Packages path requires package read access and npm authentication. A public
+Release-tarball path is being prepared; see the [delivery and cutover contract](CONTRIBUTING.md#public-package-delivery)
+before selecting an installation path.
+
 ```bash
 pnpm add @inkcre/ui-web
 ```
