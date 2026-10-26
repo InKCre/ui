@@ -58,11 +58,13 @@ Check selection follows the [organization verification policy](https://github.co
 
 ## Logo 资产维护
 
-`assets/logo/` 拥有跨平台 Logo 资产，配套的日期版 ZIP 是无需运行时依赖的下载件。当前批次按用户提供的 `InKCre-logo-pack-20261021.zip` 原样纳入，包括矢量、PNG、母版、原始来源、清单、历史 QA 和重建脚本。`PROVENANCE.json` 中的其他仓库路径只记录来源；今后的维护以 UI 仓库为准。
+`assets/logo/masters/inkcre-original-transparent-optical-32.svg` 与 `inkcre-original-transparent-standard-256.svg` 是人工维护源，`data-inkcre-color` 区分主体与灰块以生成配色。其余 SVG、PNG 和 manifest 是产物。更新源或生成规则后，按[资产说明](assets/logo/README.zh-CN.md)重建；App Icon 由消费应用维护。原日期 ZIP、PROVENANCE 和原始 sources 是历史证据，不能约束未来 Logo 必须等于旧包。
 
-正常包构建只校验并复制到 `packages/web/assets/`，不重绘资产，也不要求安装 Inkscape 或 Pillow。后者仅用于显式重建，依赖及步骤见资产包说明。维护者更新源文件后，应复核浅深色与逻辑尺寸、重建清单，并交付匹配的新日期版 ZIP；已发布的日期版下载件不覆盖。同步更新下载链接、包说明及 Changeset。包内 `QA-report.json` 是该批次的历史报告，不能替代本次验证。
+普通包构建只检查输入摘要和产物清单，复制消费资源，不运行渲染器。`pnpm check:logo` 检查源关系、逐文件 ZIP 校验和冲突拒绝；`check:package` 继续验证真实 npm tarball 的公开 SVG／PNG 子路径。图形未变时复用已有显示证据，不重做全部渲染和多仓测试。
 
-`check:package` 核对源目录、ZIP 与实际安装产物的文件集合和字节，并通过临时 Vite 消费者验证 SVG／PNG 子路径。此检查需要 `unzip`（macOS 和现有 Ubuntu CI 已提供）；不会运行资产重建脚本。
+所有渠道沿用 `packages/web/package.json` 的 UI 发行号与 Changeset。Swift 资源公开入口的破坏性变更同样计入 SemVer 和 MIGRATION。发布成功的 `@inkcre/ui-web@V` tag 锚定提交 C；Release workflow 在 C 上补裸版本 tag `V` 与 `InKCre-logo-pack-V.zip` 附件。缺失内容可重跑补齐，已存在但内容不同则失败，不移动 tag 或覆盖附件。没有 Swift manifest 的旧版本不补发。PNG 已提交，发布只打包，禁止在重试时重新渲染。
+
+`pnpm logo:pack` 可本地检查版本 ZIP；尚未发行的 checkout 产物不是正式下载入口。`python3 scripts/logo-release.py publish` 会写 GitHub，只用于已有发布授权的发行流程；它不批准 npm 发行或合并 PR。
 
 ## Token pipeline
 

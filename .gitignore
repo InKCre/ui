@@ -40,6 +40,9 @@ coverage/
 
 # Logo delivery is copied from the root asset owner during the package build.
 /packages/web/assets/
+/.build/
+/.swiftpm/
+__pycache__/
 
 # svc:begin local-config sha256=0cb2591848c4e5675766aa516f16dfb9981fc52e1dcbadd8cec89b6982db927d
 svc.local.json

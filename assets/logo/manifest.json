@@ -13,48 +13,16 @@
     512,
     1024
   ],
-  "variants": {
-    "original-transparent": [
-      "#000000",
-      "#808080",
-      null
-    ],
-    "original-white": [
-      "#000000",
-      "#808080",
-      "#FFFFFF"
-    ],
-    "reverse-transparent": [
-      "#FFFFFF",
-      "#808080",
-      null
-    ],
-    "reverse-black": [
-      "#FFFFFF",
-      "#808080",
-      "#000000"
-    ],
-    "black-transparent": [
-      "#000000",
-      "#000000",
-      null
-    ],
-    "black-white": [
-      "#000000",
-      "#000000",
-      "#FFFFFF"
-    ],
-    "white-transparent": [
-      "#FFFFFF",
-      "#FFFFFF",
-      null
-    ],
-    "white-black": [
-      "#FFFFFF",
-      "#FFFFFF",
-      "#000000"
-    ]
-  },
+  "variants": [
+    "original-transparent",
+    "original-white",
+    "reverse-transparent",
+    "reverse-black",
+    "black-transparent",
+    "black-white",
+    "white-transparent",
+    "white-black"
+  ],
   "counts": {
     "svg_exports": 80,
     "svg_masters": 8,
@@ -62,7 +30,7 @@
     "png_2x_3x": 96,
     "all_asset_files": 264
   },
-  "geometry_rule": "logical sizes 16/20/24/32 use official optical-32; 48/64/128/256/512/1024 use official standard-256; retina follows logical size",
+  "geometry_rule": "logical sizes 16/20/24/32 use optical-32; 48/64/128/256/512/1024 use standard-256; retina follows logical size",
   "assets": [
     {
       "path": "svg/original-transparent/inkcre-original-transparent-16.svg",
@@ -425,8 +393,8 @@
       "scale": 1,
       "geometry": "optical-32",
       "master": true,
-      "bytes": 714,
-      "sha256": "77c8ebb4508714039fe1b9064ac4489eb515a3e644a3847aec0f62e77d668e18"
+      "bytes": 885,
+      "sha256": "0610aa288461c2ef5b6d6b3d27c1fd9126e2e8b8aaa1a0983fa174dfdaa5157d"
     },
     {
       "path": "masters/inkcre-original-transparent-standard-256.svg",
@@ -437,8 +405,8 @@
       "scale": 1,
       "geometry": "standard-256",
       "master": true,
-      "bytes": 795,
-      "sha256": "2e72f4ee4e7e90f4c33247005cee77044ac6aeed6f765b5533717ed8263df3d5"
+      "bytes": 966,
+      "sha256": "d970503c5cb0a0309d24ebc240675dcbc01c4d2156fa845f5e3b6da71134ab02"
     },
     {
       "path": "svg/original-white/inkcre-original-white-16.svg",
@@ -2979,44 +2947,18 @@
   ],
   "supporting_files": [
     {
-      "path": "InKCre-logo-pack-preview.png",
-      "bytes": 107429,
-      "sha256": "6988d35e02743b27931e1edff4745ef24d8bf4df0aa44a8439ccf94762690fc5"
-    },
-    {
-      "path": "PROVENANCE.json",
-      "bytes": 4094,
-      "sha256": "5cbc0a5b3a9891d6ca7ed90f90d6ea9e0d975ddb5bb34f05c471a94c4dfa8d34"
-    },
-    {
-      "path": "QA-report.json",
-      "bytes": 955,
-      "sha256": "e74ff2a51160364bf88055963fe0095d1504be967e7721d493145e175431966f"
-    },
-    {
       "path": "README.zh-CN.md",
-      "bytes": 4691,
-      "sha256": "0862800eb26eee6af830c16c77ecb58bdd0672cc2accd74fcff8f860a7a85f17"
-    },
-    {
-      "path": "build_pack.py",
-      "bytes": 12960,
-      "sha256": "cbb148909fdd1574bbfee7429b5d8aa3c29f6768503498086b805d9c83d8182d"
-    },
-    {
-      "path": "sources/ui-logo-32.svg",
-      "bytes": 614,
-      "sha256": "0f0f4da5fe7f6f622db588ead15897caacd4f4fe4ea09751dc82c49632b169b9"
-    },
-    {
-      "path": "sources/web-logo-256.svg",
-      "bytes": 691,
-      "sha256": "e80336e812b4bfff8e047767c0b79657dc6339d763abfc923fa73f23f26e7b48"
-    },
-    {
-      "path": "sources/website-mark-32.svg",
-      "bytes": 487,
-      "sha256": "ebef77ee9c1b55888712fde765b6101326b253a79d6c3ea636f6d591d6663864"
+      "bytes": 5743,
+      "sha256": "411dc310d93799e301ad420322aacc0d85c35db0a78c60af6b8d7e5814cf3420"
     }
-  ]
+  ],
+  "generation_inputs": {
+    "masters/inkcre-original-transparent-optical-32.svg": "0610aa288461c2ef5b6d6b3d27c1fd9126e2e8b8aaa1a0983fa174dfdaa5157d",
+    "masters/inkcre-original-transparent-standard-256.svg": "d970503c5cb0a0309d24ebc240675dcbc01c4d2156fa845f5e3b6da71134ab02",
+    "build_pack.py": "5d0c22ca0087dd35d2018dcfccce13d42ea4de02d324c125e107b882726de090"
+  },
+  "renderer": {
+    "inkscape": "1.4",
+    "pillow": "12.3.0"
+  }
 }

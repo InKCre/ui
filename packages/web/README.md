@@ -59,7 +59,7 @@ import logoUrl from "@inkcre/ui-web/logo/svg/original-transparent/inkcre-origina
 
 深色背景选择 `reverse-transparent`，单色场景选择 `black-transparent` 或 `white-transparent`。按实际显示尺寸选择文件；32px@2x PNG 是 64 个物理像素，应显示为 32px，不能当作常规 64px 资产。几何切换阈值是本资产包的导出约定。
 
-不使用 Web 库的消费者可直接解压[独立 ZIP](assets/InKCre-logo-pack-20261021.zip)。包内文件是 UI 仓库根级 `assets/logo/` 的构建副本；来源记录保留历史，不要求消费者回到其他仓库寻找母版。
+Swift 消费者使用 UI 仓库的 `InKCreLogoAssets` SwiftPM product。人工和设计工具可从[对应 UI Release](https://github.com/InKCre/ui/releases)下载版本 ZIP，npm 包不夹带 ZIP 或渲染工具。应用图标由消费者根据 Logo 制作；UI 不拥有 App Icon 的画布、圆角或平台绑定。
 
 ## 本地源码联调
 

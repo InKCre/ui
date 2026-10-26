@@ -22,7 +22,7 @@
 
 `src/public-components.ts`、`src/components.d.ts`、`src/version.ts`、Token 输出和 `skills/ui-web/` 是生成物。修改源头后，从仓库根执行 `pnpm generate`；不要手改生成物。
 
-Logo 源由仓库根 `assets/logo/` 持有；`assets/` 是包构建时生成的完整交付副本，不手改。消费者从 `@inkcre/ui-web/logo/*` 取静态资源，维护流程见根级贡献指南。
+Logo 源由仓库根 `assets/logo/` 持有；`assets/` 是包构建时生成的消费资源副本（不含 ZIP、重建脚本与历史 QA），不手改。消费者从 `@inkcre/ui-web/logo/*` 取静态资源，维护流程见根级贡献指南。
 
 ## 开发与验证
 

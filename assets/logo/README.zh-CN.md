@@ -1,6 +1,6 @@
 # InKCre Logo Pack
 
-2026-10-21 · 保留现有标志，不重新设计。
+UI 维护源与导出，npm／SwiftPM 管理工程消费，版本 ZIP 供人工和设计工具使用。
 
 ## 快速选择
 
@@ -10,8 +10,7 @@
 - 需要自带纯色画布：`original-white`、`reverse-black`、`black-white`、`white-black`。
 - 没有加入黑标黑底、白标白底等不可见组合。
 
-`svg/` 是可编辑的真实矢量文件；`png/` 是由这些 SVG 直接渲染的位图，不是描摹图。
-`masters/` 包含两套原始比例的透明底母版，四种配色各一份。
+人工维护 `masters/inkcre-original-transparent-optical-32.svg` 和 `masters/inkcre-original-transparent-standard-256.svg`。其 `data-inkcre-color="ink"`／`"accent"` 标记主体与灰块；原色取自 SVG，其他变体由生成器转换。`svg/`、其余配色母版及 `png/` 均为生成物，不手改。
 
 ## 尺寸与小图标
 
@@ -44,42 +43,44 @@ SVG 可以缩放，但选择母版时仍应考虑实际显示尺寸。
 背景版使用全尺寸纯白或纯黑画布，不新增圆角容器、描边、阴影或装饰。
 没有新增文字标、横向组合或品牌规范。
 
-## 文件内容
+## 工程消费与交付
 
-- `masters/`：8 个透明矢量母版。
-- `svg/`：8 种有效配色/背景组合 × 10 种尺寸，共 80 个 SVG。
-- `png/`：80 个常规 PNG，另有 96 个 2x/3x UI PNG。
-- `sources/`：3 份未修改的当前仓库 SVG，保留原始字节。
-- `PROVENANCE.json`：来源、固定版本链接、Git blob SHA 与选择原因。
-- `QA-report.json`：自动验证结果。
-- `manifest.json`：全部导出文件的尺寸、几何、变体、字节数与 SHA-256。
-- `InKCre-logo-pack-preview.png`：配色、透明效果、实际像素尺寸和高 DPI 预览。
-- `build_pack.py`：可复现构建脚本。
+Web 通过 `@inkcre/ui-web/logo/svg/original-transparent/inkcre-original-transparent-32.svg?url` 取 32px 原色透明 SVG；暗色替换为 `reverse-transparent`。也可从 `/logo/png/…` 导入对应 PNG。npm 包只包含 SVG、PNG、这份说明和清单，不安装渲染器或解压 ZIP。
 
-共 264 个可用导出资产（88 SVG + 176 PNG），不含 3 份原始 SVG 和说明文件。
+Swift 在 Package.swift 声明 UI 仓库依赖，并添加 `.product(name: "InKCreLogoAssets", package: "ui")`。正式版本使用本仓库裸 SemVer tag；发布前验收固定完整 Git revision。代码可访问：
+
+```swift
+import InKCreLogoAssets
+let url = InKCreLogoAssets.bundle.url(
+    forResource: "inkcre-original-transparent-24px@2x", withExtension: "png",
+    subdirectory: "png/2x/original-transparent")
+```
+
+资源逻辑尺寸、主题选择和 template 设置属于宿主。Xcode／标准 SwiftPM 消费使用资源 bundle；自行组装 `.app` 的消费者须将 `InKCreUI_InKCreLogoAssets.bundle` 嵌入 `Contents/Resources` 并从该目录定位，验收不能依赖本机构建目录回退。
+
+交付仍包含 264 个 SVG／PNG（88 SVG、176 PNG）；`manifest.json` 记录文件与生成输入摘要。ZIP 与 npm 使用相同资源，在对应 UI GitHub Release 下载。App Icon 由消费者根据 Logo 制作，UI 不提供平台画布、圆角、ICNS 或 AppIcon catalog。
+
+仓库额外保留 `sources/`、`PROVENANCE.json`、日期 ZIP 和历史 `QA-report.json` 作为输入与验收记录；它们不是持续生成的权威源，也不表示新版已经人工验收。
 
 ## 来源及修改边界
 
-标准几何来自 InKCre/impl-ts 当前 Web 应用的 `apps/client-web/public/logo/256.svg`。
+初始标准几何来自 InKCre/impl-ts Web 应用的 `apps/client-web/public/logo/256.svg`。
 小尺寸几何来自 InKCre/ui 的 `packages/web/src/logo.svg`；该文件与 Web 应用的 `logo/32.svg` 具有相同的 Git blob SHA。
 InKCre/docs 网站的 `inkcre-mark.svg` 也使用相同的三方块标志，连接线写法有所简化。
 所有具体链接与固定版本见 `PROVENANCE.json`。
 
-此包只改造了透明度表达、配色、画布背景和导出尺寸。标准版和小尺寸版的原色白底在 256 px 与 32 px 下，分别与原始源文件渲染结果逐像素一致。
+初始导入批次只改造了透明度表达、配色、画布背景和导出尺寸。该批次标准版和小尺寸版的原色白底在 256 px 与 32 px 下，分别与原始源文件渲染结果逐像素一致。
 浏览器扩展中的旧式描摹 SVG 带有近白圆角底板和孤立灰点，未用于制作。旧仓库或图标缓存不作为本包的母版。
 包内没有另行授予商标或品牌使用权限。
 
 ## 重建与验证
 
-需要 Python 3.10+、Pillow 和 Inkscape。本次使用 Inkscape 1.4 与 Pillow 12.3.0。
-
-在此目录运行：
+仅在图形输入或生成规则改变时执行完整重建，要求 Inkscape 1.4、Pillow 12.3.0、Python 3.10+：
 
 ```sh
-python build_pack.py
+python3 assets/logo/build_pack.py
 ```
 
-构建不访问网络。PNG 由 Inkscape 渲染；Pillow 仅用于预览排版与像素 QA，不用于修改标志。
-脚本验证原始参考尺寸的逐像素一致、矢量中无嵌入位图/文字、导出尺寸、透明区域、透明孔洞及画布边距。
-文件哈希可能随渲染器或字体版本变化；几何、尺寸和颜色以 SVG 为准。预览中的字体只用于说明文字，不属于 InKCre 文字标。
+生成器读取两份源 SVG，生成导出并更新 manifest；最多同时运行两个渲染进程。自动报告只声明自动检查。维护者另行核对常规与小尺寸、浅深色和透明孔洞；不能自动声称人工验收完成。
 
+Web 本地迭代可使用 `python3 assets/logo/build_pack.py --svg-only`，不加载渲染工具、不更新 PNG 或清单；发布前仍必须完成相关产物重建。普通构建只校验已提交产物，不重新渲染。

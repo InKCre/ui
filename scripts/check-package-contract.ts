@@ -12,7 +12,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
-import { execFileSync, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import * as sass from "sass";
 import { verifyLogoPack } from "./lib/logo-pack.js";
 import {
@@ -235,31 +235,15 @@ try {
       `Packed logo differs: ${file}`,
     );
   }
-  const archive = resolve(repositoryRoot, "assets", logoInventory.archiveName);
-  assert.ok(
-    readFileSync(resolve(packedRoot, "assets", logoInventory.archiveName)).equals(
-      readFileSync(archive),
-    ),
-    "Packed logo ZIP differs from the standalone delivery",
-  );
-  const prefix = `${logoInventory.archiveName.slice(0, -4)}/`;
-  const archiveEntries = run("unzip", ["-Z1", archive], { capture: true })
-    .trim()
-    .split("\n")
-    .filter((name) => !name.endsWith("/"));
   assert.deepEqual(
-    [...archiveEntries].sort(),
-    logoInventory.files.map((file) => prefix + file).sort(),
-    "Standalone logo ZIP inventory differs from the source",
-  );
-  const archivedBytes = execFileSync("unzip", ["-p", archive], { maxBuffer: 16 * 1024 * 1024 });
-  assert.ok(
-    archivedBytes.equals(
-      Buffer.concat(
-        archiveEntries.map((name) => readFileSync(resolve(logoSource, name.slice(prefix.length)))),
-      ),
-    ),
-    "Standalone logo ZIP bytes differ from the source",
+    readdirSync(packedLogo, { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) =>
+        relative(packedLogo, resolve(entry.parentPath, entry.name)).split("\\").join("/"),
+      )
+      .sort(),
+    logoInventory.files,
+    "The npm package must contain only the declared consumer assets",
   );
   const packedManifest = JSON.parse(
     readFileSync(resolve(packedRoot, "package.json"), "utf8"),

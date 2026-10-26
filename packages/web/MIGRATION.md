@@ -4,7 +4,11 @@
 
 ## 下一版本
 
-<!-- migration-base: 2.4.0 -->
+<!-- migration-base: 2.5.0 -->
+
+### Logo 资产
+
+新增 `@inkcre/ui-web/logo/*` 静态资源入口，原有组件 API 不变。Web 消费者直接导入 SVG／PNG；Swift 消费者使用 UI 仓库的 `InKCreLogoAssets` product。两个渠道共享 UI 发行版本，ZIP 在对应 GitHub Release 下载。App Icon 的平台规格和绑定由消费者维护；无需在工程构建中解压 ZIP 或安装渲染工具。
 
 ## 2.3.0：InkImage 连续缩放与平移
 

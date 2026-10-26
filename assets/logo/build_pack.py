@@ -3,18 +3,18 @@
 Requires Python 3.10+, Pillow and Inkscape 1.4+. No network access is used.
 """
 from pathlib import Path
-import concurrent.futures, hashlib, json, shutil, subprocess, tempfile
+import argparse, concurrent.futures, hashlib, json, shutil, subprocess
 import xml.etree.ElementTree as ET
-from PIL import Image, ImageDraw, ImageFont, ImageChops
+# Raster tooling is loaded only for explicit full regeneration.
 
 ROOT = Path(__file__).resolve().parent
 SIZES = (16,20,24,32,48,64,128,256,512,1024)
 RETINA_SIZES = (16,20,24,32,48,64)
 VARIANTS = {
- 'original-transparent': ('#000000','#808080',None),
- 'original-white': ('#000000','#808080','#FFFFFF'),
- 'reverse-transparent': ('#FFFFFF','#808080',None),
- 'reverse-black': ('#FFFFFF','#808080','#000000'),
+ 'original-transparent': (None,None,None),
+ 'original-white': (None,None,'#FFFFFF'),
+ 'reverse-transparent': ('#FFFFFF',None,None),
+ 'reverse-black': ('#FFFFFF',None,'#000000'),
  'black-transparent': ('#000000','#000000',None),
  'black-white': ('#000000','#000000','#FFFFFF'),
  'white-transparent': ('#FFFFFF','#FFFFFF',None),
@@ -23,34 +23,41 @@ VARIANTS = {
 
 def geometry(size): return 'optical-32' if size <= 32 else 'standard-256'
 
+SOURCE_FILES = {
+    'optical-32': 'masters/inkcre-original-transparent-optical-32.svg',
+    'standard-256': 'masters/inkcre-original-transparent-standard-256.svg',
+}
+ET.register_namespace('', 'http://www.w3.org/2000/svg')
+
 def svg(variant, size, geo=None):
     geo = geo or geometry(size)
+    root = ET.parse(ROOT / SOURCE_FILES[geo]).getroot()
+    root.set('width', str(size))
+    root.set('height', str(size))
     ink, gray, bg = VARIANTS[variant]
-    vb = 32 if geo == 'optical-32' else 256
-    background = f'<rect width="{vb}" height="{vb}" fill="{bg}"/>' if bg else ''
-    if vb == 32:
-        body = f'''<path d="M4 11h9v9H4Z M5 12h7v7H5Z" fill="{ink}" fill-rule="evenodd"/>
-<rect x="7" y="14" width="3" height="3" fill="{ink}"/>
-<rect x="20" y="3" width="8" height="8" fill="{ink}"/>
-<line x1="13" y1="15.5" x2="16" y2="15.5" stroke="{ink}"/>
-<line x1="16.5" y1="16" x2="16.5" y2="9" stroke="{ink}"/>
-<line x1="16" y1="8.5" x2="20" y2="8.5" stroke="{ink}"/>
-<rect x="20" y="20" width="8" height="8" fill="{gray}"/>'''
-    else:
-        body = f'''<path d="M51 102h52v52H51Z M59 110h36v36H59Z" fill="{ink}" fill-rule="evenodd"/>
-<rect x="68" y="119" width="18" height="18" fill="{ink}"/>
-<rect x="153" y="51" width="52" height="52" fill="{ink}"/>
-<line x1="103" y1="128" x2="128" y2="128" stroke="{ink}" stroke-width="4"/>
-<line x1="128" y1="130" x2="128" y2="79" stroke="{ink}" stroke-width="4"/>
-<line x1="126" y1="77" x2="153" y2="77" stroke="{ink}" stroke-width="4"/>
-<rect x="153" y="153" width="52" height="52" fill="{gray}"/>'''
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" viewBox="0 0 {vb} {vb}" fill="none">
-<title>InKCre — {variant}, {geo}</title>
-<desc>Native source geometry. The nested-square counter is a true transparent cutout. Display-size master: {geo}.</desc>
-{background}
-{body}
-</svg>
-'''
+    for element in root.iter():
+        role = element.attrib.pop('data-inkcre-color', None)
+        if role:
+            if role not in ('ink', 'accent'): raise ValueError(f'Unknown color role: {role}')
+            replacement = ink if role == 'ink' else gray
+            if replacement is not None:
+                attribute = 'stroke' if 'stroke' in element.attrib else 'fill'
+                element.set(attribute, replacement)
+        if element.tag.endswith('}title'):
+            element.text = f'InKCre — {variant}, {geo}'
+    if bg:
+        _, _, width, height = root.attrib['viewBox'].split()
+        background = ET.Element('{http://www.w3.org/2000/svg}rect',
+                                width=width, height=height, fill=bg)
+        background.tail = '\n'
+        root[1].tail = '\n'
+        root.insert(2, background)
+    return ET.tostring(root, encoding='unicode').replace(' />', '/>') + '\n'
+
+def generation_inputs():
+    paths = [*SOURCE_FILES.values(), 'build_pack.py']
+    return {path: hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in paths}
+
 
 def write(path, content):
     path.parent.mkdir(parents=True,exist_ok=True)
@@ -166,19 +173,21 @@ def qa(records):
             else:
                 assert a.getextrema()==(255,255),p
     checks.append({'test':'All exported SVGs are native vector with even-odd counter; all PNG dimensions, alpha, margins and counter probes correct','result':'pass','assets_checked':len(records)})
-    with tempfile.TemporaryDirectory() as tmp:
-        for s,src in [(32,'ui-logo-32.svg'),(256,'web-logo-256.svg')]:
-            out=Path(tmp)/f'{s}.png';render((ROOT/'sources'/src,out,s))
-            a=Image.open(out).convert('RGBA');b=Image.open(pngpath('original-white',s)).convert('RGBA')
-            # Compare all channels, not just alpha.
-            diff=ImageChops.difference(a,b)
-            assert not any(c.getbbox() for c in diff.split()),f'{s}: source geometry changed'
-            checks.append({'test':f'Original on white {s}px pixel-identical to unmodified native source','result':'pass','max_channel_difference':0})
     checks.append({'test':'Geometry selected by logical display size, never by physical 2x/3x raster size','result':'pass'})
-    write(ROOT/'QA-report.json',json.dumps({'status':'pass','checks':checks,'source_of_truth':'Original repository SVGs; no bitmap tracing or AI redrawing','manual_review':'Preview inspected separately before delivery'},ensure_ascii=False,indent=2)+'\n')
+    write(ROOT/'QA-report.json',json.dumps({'status':'pass','checks':checks,'source_of_truth':'masters/inkcre-original-transparent-{optical-32,standard-256}.svg'},ensure_ascii=False,indent=2)+'\n')
 
 def main():
-    if not shutil.which('inkscape'): raise RuntimeError('Inkscape is required')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--svg-only", action="store_true", help="Update SVG exports for local web development; PNG inventory remains stale until full generation")
+    args = parser.parse_args()
+    if not args.svg_only:
+        if not shutil.which('inkscape'): raise RuntimeError('Inkscape 1.4 is required')
+        version = subprocess.check_output(['inkscape', '--version'], text=True).split()[1]
+        if version != '1.4': raise RuntimeError(f'Expected Inkscape 1.4, got {version}')
+        import PIL
+        global Image, ImageDraw, ImageFont
+        from PIL import Image, ImageDraw, ImageFont
+        if PIL.__version__ != '12.3.0': raise RuntimeError('Pillow 12.3.0 is required')
     records=[]; tasks=[]
     for v in VARIANTS:
         for s in SIZES:
@@ -192,20 +201,22 @@ def main():
                     records.append({'path':str(out.relative_to(ROOT)),'kind':'png','variant':v,'logical_size':s,'pixel_size':s*scale,'scale':scale,'geometry':geometry(s)})
         if v.endswith('transparent'):
             for geo,s in [('optical-32',32),('standard-256',256)]:
-                path=ROOT/'masters'/f'inkcre-{v}-{geo}.svg';write(path,svg(v,s,geo))
+                path=ROOT/'masters'/f'inkcre-{v}-{geo}.svg'
+                if v != 'original-transparent': write(path,svg(v,s,geo))
                 records.append({'path':str(path.relative_to(ROOT)),'kind':'svg','variant':v,'logical_size':s,'pixel_size':s,'scale':1,'geometry':geo,'master':True})
+    if args.svg_only: return
     print(f'Rendering {len(tasks)} PNGs with Inkscape...',flush=True)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex: list(ex.map(render,tasks))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex: list(ex.map(render,tasks))
     qa(records);preview()
     for r in records:
         b=(ROOT/r['path']).read_bytes();r.update(bytes=len(b),sha256=hashlib.sha256(b).hexdigest())
     other=[]
-    for p in sorted(ROOT.rglob('*')):
-        if p.is_file() and p.name!='manifest.json' and str(p.relative_to(ROOT)) not in {r['path'] for r in records} and '__pycache__' not in str(p):
-            b=p.read_bytes();other.append({'path':str(p.relative_to(ROOT)),'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
-    manifest={'brand':'InKCre','edition':'2026-10-21','sizes':SIZES,'variants':VARIANTS,'counts':{'svg_exports':80,'svg_masters':8,'png_1x':80,'png_2x_3x':96,'all_asset_files':len(records)},'geometry_rule':'logical sizes 16/20/24/32 use official optical-32; 48/64/128/256/512/1024 use official standard-256; retina follows logical size','assets':records,'supporting_files':other}
+    for name in ['README.zh-CN.md']:
+        b=(ROOT/name).read_bytes()
+        other.append({'path':name,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
+    manifest={'brand':'InKCre','edition':'2026-10-21','sizes':SIZES,'variants':list(VARIANTS),'counts':{'svg_exports':80,'svg_masters':8,'png_1x':80,'png_2x_3x':96,'all_asset_files':len(records)},'generation_inputs': generation_inputs(), 'renderer': {'inkscape': '1.4', 'pillow': '12.3.0'}, 'geometry_rule':'logical sizes 16/20/24/32 use optical-32; 48/64/128/256/512/1024 use standard-256; retina follows logical size','assets':records,'supporting_files':other}
     write(ROOT/'manifest.json',json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(manifest['counts']),flush=True)
-    print('PASS: pixel equality, vector-only, alpha counters, dimensions and margins.',flush=True)
+    print('PASS: vector-only, alpha counters, dimensions and margins.',flush=True)
 
 if __name__=='__main__':main()

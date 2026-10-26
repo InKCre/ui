@@ -1,7 +1,7 @@
-import { copyFileSync, cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { repositoryRoot, resolveWebPackageRoot } from "./lib/ui-package.js";
-import { verifyLogoPack } from "./lib/logo-pack.js";
+import { verifyLogoInputs, verifyLogoPack } from "./lib/logo-pack.js";
 
 const packageRoot = resolveWebPackageRoot();
 const declarationPath = resolve(packageRoot, "dist/index.d.ts");
@@ -16,11 +16,15 @@ if (!declaration.startsWith(reference)) {
 }
 
 const logoSource = resolve(repositoryRoot, "assets/logo");
-const { archiveName } = verifyLogoPack(logoSource);
+verifyLogoInputs(logoSource);
+const { files } = verifyLogoPack(logoSource);
 const assetsTarget = resolve(packageRoot, "assets");
 rmSync(assetsTarget, { recursive: true, force: true });
 mkdirSync(assetsTarget, { recursive: true });
-cpSync(logoSource, resolve(assetsTarget, "logo"), { recursive: true });
-copyFileSync(resolve(repositoryRoot, "assets", archiveName), resolve(assetsTarget, archiveName));
+for (const file of files) {
+  const destination = resolve(assetsTarget, "logo", file);
+  mkdirSync(dirname(destination), { recursive: true });
+  copyFileSync(resolve(logoSource, file), destination);
+}
 
 process.stdout.write("Finalized package declarations, global components, and logo assets.\n");
