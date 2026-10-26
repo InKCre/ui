@@ -12,9 +12,9 @@ export default defineConfig({
     defaultColorScheme: "light",
     storeColorScheme: false,
     logo: {
-      square: "./src/logo.svg",
-      light: "./src/logo.svg",
-      dark: "./src/logo.svg",
+      square: "../../assets/logo/svg/original-white/inkcre-original-white-256.svg",
+      light: "../../assets/logo/svg/original-transparent/inkcre-original-transparent-32.svg",
+      dark: "../../assets/logo/svg/reverse-transparent/inkcre-reverse-transparent-32.svg",
     },
   },
   sandboxDarkClass: "dark",

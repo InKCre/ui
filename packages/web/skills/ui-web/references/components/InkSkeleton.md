@@ -44,7 +44,7 @@
 
 - None.
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Known list structure`
 
 

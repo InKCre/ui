@@ -28,8 +28,7 @@
     "avoid": [
       "Do not invent props or events from conventions used by another UI library.",
       "Do not treat low-level InkPopup or InkScrim as a replacement for InkDialog when the standard dialog workflow fits.",
-      "Do not expose repository paths, generated implementation files, or internal prop helpers to consumers.",
-      "Do not edit this generated skill tree directly; update skill.seed.json or public component facts and regenerate it."
+      "Do not depend on repository paths, generated implementation files, or internal prop helpers."
     ]
   },
   "components": {
@@ -107,7 +106,7 @@
       ],
       "avoidWhen": [
         "Only a low-level positioned surface is needed; use InkPopup.",
-        "A compact confirmation popup attached to one trigger is enough; use InkDoubleCheck."
+        "A simple action needs a centered confirmation with title, message, and two choices; use InkDoubleCheck."
       ],
       "composeWith": ["InkButton", "InkForm", "InkLoading", "InkPopup"],
       "apiCaveats": [
@@ -444,7 +443,8 @@
       ],
       "commonMistakes": [
         "Do not keep a second local selection state when the route already owns it."
-      ]
+      ],
+      "publicTypes": ["InkTab", "InkTabsExpose"]
     },
     "InkTextarea": {
       "intent": ["multiline text input", "description field", "long-form form value"],
@@ -507,7 +507,7 @@
       "caveats": [
         "Do not normalize every control to the same model prop name; use each component's actual API.",
         "Do not wrap controls in duplicate InkField labels when they already consume InkForm context.",
-        "示例的文本和颜色工具类需要 presetInk；应用入口加载样式。未使用 Uno 时可用同名 Sass 角色和系统变量。"
+        "示例使用普通 CSS 和系统变量；应用入口加载 @inkcre/ui-web/styles 即可，无需 UnoCSS。"
       ],
       "exampleFile": "SettingsForm.vue"
     },

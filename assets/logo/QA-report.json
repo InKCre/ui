@@ -1,0 +1,30 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "test": "Three untouched source files match recorded Git blob SHA values",
+      "result": "pass"
+    },
+    {
+      "test": "All exported SVGs are native vector with even-odd counter; all PNG dimensions, alpha, margins and counter probes correct",
+      "result": "pass",
+      "assets_checked": 264
+    },
+    {
+      "test": "Original on white 32px pixel-identical to unmodified native source",
+      "result": "pass",
+      "max_channel_difference": 0
+    },
+    {
+      "test": "Original on white 256px pixel-identical to unmodified native source",
+      "result": "pass",
+      "max_channel_difference": 0
+    },
+    {
+      "test": "Geometry selected by logical display size, never by physical 2x/3x raster size",
+      "result": "pass"
+    }
+  ],
+  "source_of_truth": "Original repository SVGs; no bitmap tracing or AI redrawing",
+  "manual_review": "Preview inspected separately before delivery"
+}

@@ -50,9 +50,22 @@
 
 - `default`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Default Popup`, `Modeless Popup`
 
+### API type definitions
+
+以下源码定义解释参数和事件载荷；可从包根导入的类型仅限上面列出的名称。
+
+```ts
+export type PopupPosition =
+  | "center"
+  | "left"
+  | "right"
+  | "bottom"
+  | "top"
+  | [number, number, number, number];
+```
 
 ## API Caveats
 

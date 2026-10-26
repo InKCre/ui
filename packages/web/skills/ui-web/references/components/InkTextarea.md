@@ -58,7 +58,7 @@
 
 - None.
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Default`, `Optional`, `Required`, `Customize Rows`, `代码显式使用等宽字体`
 
 

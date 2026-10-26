@@ -4,6 +4,7 @@
 
 - [设计总纲与阅读路径](../DESIGN.md)：[设计立场](design/principles.md)、[视觉语言](design/visual-language.md)、[页面组合](design/composition.md)、[判断依据](design/reference.md)
 - [Repository overview](../README.md)
+- [Logo 资产与尺寸选择](../assets/logo/README.zh-CN.md)
 - [Web package usage and development](../packages/web/README.md)
 - [Package migration contract](../packages/web/MIGRATION.md)
 - [UI Web Agent Skill generation](../scripts/build-agent-skills.md)

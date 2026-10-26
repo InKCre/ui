@@ -1,5 +1,17 @@
 # @inkcre/ui-web
 
+## 2.6.0
+
+### Minor Changes
+
+- a43c873: 纳入 InKCre Logo Pack，随包交付 SVG、PNG、消费说明和清单，通过 `@inkcre/ui-web/logo/*` 提供公开静态资源入口，新增 SwiftPM 资源 product；版本 ZIP 作为 GitHub Release 附件，App Icon 由消费者制作。
+
+### Patch Changes
+
+- a43c873: 修正 Agent 组件选型和表单示例说明，按实际版本整理迁移要求；API 参考从签名补出组件本地类型结构，明确与包根导出类型的区别，并移除重复的组件误用汇总及消费者入口中的维护指令。
+
+  迁移指南增加统一的下一版本区，由现有版本准备命令自动归档，并在发布前检查待定内容已处理。
+
 ## 2.5.0
 
 ### Minor Changes

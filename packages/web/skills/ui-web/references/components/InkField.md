@@ -54,7 +54,7 @@
 - `label-right`: `{}`
 - `default`: `{}`
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Column`, `Inline`, `Row`, `Optional`, `Required`, `Very Long Label`, `Very Long Value`, `Empty Value`
 
 

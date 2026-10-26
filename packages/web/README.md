@@ -45,6 +45,22 @@ Sass helper 与 Token 子路径见[样式入口](styles/README.md)。构建 CSS 
 
 路由和国际化通过公开的 `InkRouter`、`InkI18n` 及对应注入键适配，接口边界见[随包集成参考](skills/ui-web/references/integration.md)。Locale bundle 从 `@inkcre/ui-web/locales` 导入。组件选型与组合入口见[随包 Skill](skills/ui-web/SKILL.md)。这些 Markdown 可直接阅读，不要求先安装 Agent 工具。
 
+## Logo 资产
+
+Logo 与当前包版本一起交付，文件清单、配色、尺寸和高 DPI 规则见 [Logo Pack](assets/logo/README.zh-CN.md)。Vite 消费者通过公开子路径取得资源 URL：
+
+```vue
+<script setup lang="ts">
+import logoUrl from "@inkcre/ui-web/logo/svg/original-transparent/inkcre-original-transparent-32.svg?url";
+</script>
+
+<template><img :src="logoUrl" width="32" height="32" alt="InKCre" /></template>
+```
+
+深色背景选择 `reverse-transparent`，单色场景选择 `black-transparent` 或 `white-transparent`。按实际显示尺寸选择文件；32px@2x PNG 是 64 个物理像素，应显示为 32px，不能当作常规 64px 资产。几何切换阈值是本资产包的导出约定。
+
+Swift 消费者使用 UI 仓库的 `InKCreLogoAssets` SwiftPM product。人工和设计工具可从[对应 UI Release](https://github.com/InKCre/ui/releases)下载版本 ZIP，npm 包不夹带 ZIP 或渲染工具。应用图标由消费者根据 Logo 制作；UI 不拥有 App Icon 的画布、圆角或平台绑定。
+
 ## 本地源码联调
 
 以下命令在 UI 源码仓库根执行，要求存在相邻的 impl-ts checkout，且两个工作区都已按各自指南安装依赖：

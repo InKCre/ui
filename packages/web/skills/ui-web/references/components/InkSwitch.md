@@ -53,7 +53,7 @@
 
 - None.
 
-- Public types: None
+- Types exported from the package root: None
 - Story variants: `Extra Small`, `Small`, `Medium`, `Large`, `Off`, `On`, `长状态文案保持轨道尺寸`
 
 
