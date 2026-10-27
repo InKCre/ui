@@ -1,0 +1,8 @@
+.ink-content-reader {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  color: sys-var(color, text, base);
+  background: sys-var(color, surface, base);
+}

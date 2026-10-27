@@ -5,6 +5,7 @@ declare module "vue" {
   export interface GlobalComponents {
     InkAutoForm: typeof import("./index.js")["InkAutoForm"];
     InkButton: typeof import("./index.js")["InkButton"];
+    InkContentReader: typeof import("./index.js")["InkContentReader"];
     InkDatetimePickerView: typeof import("./index.js")["InkDatetimePickerView"];
     InkDialog: typeof import("./index.js")["InkDialog"];
     InkDoubleCheck: typeof import("./index.js")["InkDoubleCheck"];

@@ -123,9 +123,7 @@ const [DefineInput, ReuseInput] = createReusableTemplate();
       >
         <slot>{{ modelValue || placeholder }}</slot>
       </button>
-      <span v-else-if="type !== 'inline' || !editable" :id="controlId" class="ink-input__value">{{
-        modelValue
-      }}</span>
+      <span v-else-if="!editable" :id="controlId" class="ink-input__value">{{ modelValue }}</span>
     </div>
   </DefineInput>
   <InkField

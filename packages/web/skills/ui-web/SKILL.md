@@ -36,6 +36,7 @@ matches a product task.
 - Empty or error state: InkPlaceholder
 - Expandable media: InkImage
 - Paged collection: InkPagination
+- HTML or Markdown reading: InkContentReader
 
 ## Import And Registration
 

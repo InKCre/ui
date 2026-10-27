@@ -1,4 +1,5 @@
 export default {
+  contentReader: { title: "正文" },
   image: {
     fit: "适应窗口",
     originalSize: "原尺寸",
