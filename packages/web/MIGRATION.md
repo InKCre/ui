@@ -6,6 +6,10 @@
 
 <!-- migration-base: 2.6.0 -->
 
+### HTML 与 Markdown 阅读
+
+新增 `InkContentReader`，按明确格式安全阅读已有内容。只接收内容和格式，不接管来源或持久化；完整行为见 ContentReader Story。现有组件接口不变。普通可编辑 `InkInput` 不再额外渲染同值、同 ID 的展示 span；升级后可移除针对旧包相同行为的补丁。
+
 ## 2.6.0
 
 ### Logo 资产

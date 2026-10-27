@@ -35,6 +35,7 @@ component references relevant to the task.
 
 ## media
 
+- [InkContentReader](components/InkContentReader.md): Read untrusted HTML or GFM Markdown without executing source code.
 - [InkImage](components/InkImage.md): image display; thumbnail; click-to-expand media
 
 ## overlays

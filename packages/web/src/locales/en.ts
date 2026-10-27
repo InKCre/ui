@@ -1,4 +1,5 @@
 export default {
+  contentReader: { title: "Content" },
   image: {
     fit: "Fit to window",
     originalSize: "Original size",

@@ -12,6 +12,11 @@
       "category": "controls"
     },
     {
+      "name": "InkContentReader",
+      "source": "inkContentReader",
+      "category": "media"
+    },
+    {
       "name": "InkDatetimePickerView",
       "source": "inkDatetimePickerView",
       "category": "specialized"
