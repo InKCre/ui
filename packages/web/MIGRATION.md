@@ -4,7 +4,9 @@
 
 ## 下一版本
 
-<!-- migration-base: 2.6.0 -->
+<!-- migration-base: 2.7.0 -->
+
+## 2.7.0
 
 ### HTML 与 Markdown 阅读
 
