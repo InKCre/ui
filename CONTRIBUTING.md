@@ -119,7 +119,7 @@ modify either manifest or lockfile. Token JSON changes still require `pnpm gener
 
 Run the consumer source-graph check with
 `pnpm --dir ../impl-ts type-check:ui --ui-source ../ui/packages/web`.
-Normal client development, builds, checks, and CI remain pinned to the published
+Normal consumer development, builds, checks, and CI remain pinned to the published
 registry artifact. The consumer's
 [`docs/40-deployment/development-runtime.md`](https://github.com/InKCre/impl-ts/blob/main/docs/40-deployment/development-runtime.md#joint-development-lanes)
 owns the full startup, remotes, cleanup, troubleshooting, and release-fidelity contract.
